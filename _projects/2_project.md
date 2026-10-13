@@ -2,7 +2,7 @@
 layout: page
 title: Wallet Seed to Ethereum Address
 description: Hashing, Key Derivation, and Cryptographic Primitives in Ethereum.
-img: assets/img/12.jpg
+img: assets/img/hmw_2.jpg
 importance: 2
 category: Statistics
 ---

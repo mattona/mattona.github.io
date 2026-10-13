@@ -23,7 +23,11 @@
   color: #999999;
   font-weight: bold;
   font-style: italic;
-} /* Comment.Preproc */ /* Comment.Single */ /* Comment.Special */
+} /* Comment.Preproc */
+.highlight .c1 {
+  color: #999988;
+  font-style: italic;
+} /* Comment.Single */ /* Comment.Special */
 .highlight .gd {
   color: #000000;
   background-color: #ffdddd;
@@ -144,7 +148,4 @@
 } /* Name.Builtin.Pseudo */ /* Name.Variable.Class */ /* Name.Variable.Global */
 .highlight .vi {
   color: #008080;
-} /* Name.Variable.Instance */
-.highlight .il {
-  color: #009999;
-} /* Literal.Number.Integer.Long */
+} /* Name.Variable.Instance */ /* Literal.Number.Integer.Long */

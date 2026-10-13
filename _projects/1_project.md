@@ -4,7 +4,7 @@ title: ECC Public-Key Generation
 description: Homework 1 - Toy example of hashing using SECP256K1
 img: assets/img/12.jpg
 importance: 1
-category: Statistics
+category: work
 ---
 
 L'obiettivo di questo progetto è dimostrare come una chiave privata generi una chiave pubblica tramite la moltiplicazione scalare su una curva ellittica. Invece della curva usata in Ethereum (secp256k1), utilizziamo una curva "giocattolo" su un campo finito ridotto per poterne visualizzare il comportamento.

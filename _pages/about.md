@@ -8,7 +8,7 @@ profile:
   align: right
   image: ms_pic.jpg
   image_circular: true # crops the image to make it circular
-  more_info: >
+  more_info: 
   <p>Cybersecurity student</p>
   <p>Università degli Studi di Roma La Sapienza</p>
 

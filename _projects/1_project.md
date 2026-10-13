@@ -1,187 +1,248 @@
 ---
 layout: page
-title: ECC Public-Key Generation
-description: Homework 1 - Toy example of hashing using SECP256K1
-img: assets/img/12.jpg
+title: Public-Key Cryptography & ECC
+description: Toy example of hashing using secp256k1 concepts and statistical exploration.
+img: assets/img/hmk1.jpg
 importance: 1
-category: work
+category: Statistics
 ---
 
-L'obiettivo di questo progetto è dimostrare come una chiave privata generi una chiave pubblica tramite la moltiplicazione scalare su una curva ellittica. Invece della curva usata in Ethereum (secp256k1), utilizziamo una curva "giocattolo" su un campo finito ridotto per poterne visualizzare il comportamento.
+L'obiettivo di questo progetto è esplorare i fondamenti matematici della crittografia a chiave pubblica utilizzata in Ethereum, basata sulla moltiplicazione scalare su curve ellittiche (ECC). Senza addentrarci nei grandi numeri della curva `secp256k1`, utilizzeremo un modello ridotto (Toy Curve) per visualizzare come una chiave privata generi una chiave pubblica.
 
-**Parametri della Curva Giocattolo:**
-* Equazione: $y^2 = x^3 + 7 \pmod{17}$
-* Modulo ($P$): $17$
-* Punto Base ($G$): $(1, 5)$
+L'equazione della nostra curva giocattolo su campo finito è:  
+$$y^2 = x^3 + 7 \pmod{17}$$
 
-<div class="row">
-    <!-- Colonna Comandi e Output -->
-    <div class="col-sm-4 mt-3 mt-md-0">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Generatore di Chiavi</h5>
-                <div class="form-group">
-                    <label for="privateKeyInput">Chiave Privata (k):</label>
-                    <input type="number" id="privateKeyInput" class="form-control" value="6" min="2" max="30">
-                </div>
-                <button id="calcButton" class="btn btn-primary btn-sm mt-2 w-100">Genera Chiave Pubblica</button>
-            </div>
-        </div>
-        <div class="mt-3">
-            <h6>Log Operazioni:</h6>
-            <pre id="outputLog" style="height: 220px; overflow-y: auto; background: #f8f9fa; padding: 10px; border-radius: 5px; font-size: 0.85em;"></pre>
-        </div>
-    </div>
-
-    <!-- Colonna Canvas Animato (Livello Guru) -->
-    <div class="col-sm-8 mt-3 mt-md-0 text-center">
-        <canvas id="eccCanvas" width="340" height="340" style="border: 1px solid #e0e0e0; background: #fafafa; max-width: 100%; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);"></canvas>
-        <div class="caption">
-            Rappresentazione rallentata dei salti algebrici sul piano cartesiano discreto $17 \times 17$. Il punto rosso finale rappresenta la Chiave Pubblica $Q = kG$.
-        </div>
-    </div>
-</div>
-
----
-
-### Statistical Exploration
-
-L'esecuzione ripetuta dell'algoritmo con diversi valori di $k$ fa emergere importanti proprietà statistiche e crittografiche intrinseche alla matematica delle curve ellittiche.
+### 1. Interactive Toy Example
+In questa sezione puoi interagire con l'algoritmo. Seleziona un punto base generatore $$G$$ valido per la nostra curva e inserisci una chiave privata $$k$$. Il grafico mostrerà il percorso della moltiplicazione scalare calcolando in sequenza $$1G, 2G, \dots, kG$$. La posizione finale rappresenta la tua Chiave Pubblica $$Q$$.
 
 <div class="row justify-content-sm-center mt-4">
-    <div class="col-sm-12">
-        <ul>
-            <li><strong>Distribuzione e Uniformità Apparente:</strong> Osservando l'animazione, i punti generati dalla sequenza $1G, 2G, 3G \dots$ non seguono una traiettoria lineare o geometricamente intuitiva sul piano cartesiano. Le coordinate $x$ e $y$ saltano in modo apparentemente pseudo-casuale distribuendosi su tutto il campo finito modulo 17. Questa caoticità visiva è essenziale per nascondere la relazione diretta tra input e output.</li>
-            <li><strong>Comportamento Valanga (Avalanche-like behavior):</strong> Una variazione minima nell'input (ad esempio passando da $k=6$ a $k=7$) produce un risultato $Q$ con coordinate completamente diverse, situate in una zona opposta del piano. Non esiste una correlazione lineare sfruttabile tra un incremento dell'input e la variazione dell'output.</li>
-            <li><strong>Funzioni Unidirezionali vs Hash:</strong> A differenza di una funzione di hash crittografica (come Keccak-256), che distrugge matematicamente le informazioni di partenza producendo un output caotico ma privo di struttura algebrica, la moltiplicazione scalare ECC mantiene una rigidissima struttura matematica sottostante (è un gruppo abeliano). Questa struttura è ciò che permette di eseguire operazioni avanzate come le firme digitali (ECDSA), mantenendo al contempo la unidirezionalità garantita dalla difficoltà del Problema del Logaritmo Discreto (ECDLP).</li>
-        </ul>
+    <div class="col-sm-4 mt-3 mt-md-0">
+        <div class="card p-3 z-depth-1 rounded">
+            <h5>Impostazioni</h5>
+            <div class="form-group mt-2">
+                <label for="basePoint">Punto Base (G):</label>
+                <select id="basePoint" class="form-control form-control-sm">
+                    <option value="1,5">G = (1, 5)</option>
+                    <option value="2,6">G = (2, 6)</option>
+                    <option value="3,8">G = (3, 8)</option>
+                    <option value="5,8">G = (5, 8)</option>
+                </select>
+            </div>
+            <div class="form-group mt-2">
+                <label for="privateKey">Chiave Privata (k):</label>
+                <input type="number" id="privateKey" class="form-control form-control-sm" value="6" min="1" max="25">
+            </div>
+            <button id="calcBtn" class="btn btn-primary btn-sm mt-3 w-100">Genera Chiave Pubblica</button>
+            <hr>
+            <div id="outputLog" style="font-family: monospace; font-size: 0.9em; max-height: 150px; overflow-y: auto;">
+                <!-- Log dei risultati intermedi -->
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-8 mt-3 mt-md-0">
+        <div class="card p-2 z-depth-1 rounded text-center">
+            <canvas id="eccCanvas" width="400" height="400" style="max-width: 100%;"></canvas>
+            <div class="caption mt-2">Rappresentazione del campo finito 17x17. I salti mostrano l'addizione dei punti sulla curva.</div>
+        </div>
     </div>
 </div>
 
-<!-- Logica JavaScript del progetto -->
-<script>
-    const P = 17;
-    const G = { x: 1, y: 5 };
-    
-    // Funzione modulo per gestire correttamente i numeri negativi in JS
-    function mod(n, p) {
-        return ((n % p) + p) % p;
-    }
+---
 
-    // Calcolo dell'inverso moltiplicativo (metodo iterativo semplice per moduli piccoli)
+### 2. Statistical Exploration
+Testando iterativamente l'algoritmo con diversi valori di $$k$$, possiamo analizzarne il comportamento statistico. Ho simulato la moltiplicazione per i primi 18 valori di $$k$$ partendo dal punto $$G = (1,5)$$.
+
+<div class="row mt-4">
+    <div class="col-sm-6 mt-3 mt-md-0">
+        <canvas id="distChart" class="z-depth-1 rounded p-2 bg-white"></canvas>
+        <div class="caption">Distribuzione delle coordinate X e Y. Si nota un'apparente uniformità senza raggruppamenti lineari.</div>
+    </div>
+    <div class="col-sm-6 mt-3 mt-md-0">
+        <canvas id="avalancheChart" class="z-depth-1 rounded p-2 bg-white"></canvas>
+        <div class="caption">Effetto Valanga: distanza tra Q generata da k e Q generata da k+1. Piccole variazioni di input causano output lontani.</div>
+    </div>
+</div>
+
+**Distribuzione e Uniformità**  
+Come visibile nel grafico a barre, le coordinate X e Y dei punti generati non seguono una distribuzione normale, ma si disperdono in modo apparentemente pseudo-casuale all'interno del campo finito. Non vi è una correlazione visiva immediata tra l'input (crescente linearmente) e le coordinate di output.
+
+**Correlazione ed Effetto Valanga**  
+L'Effetto Valanga (Avalanche Effect) è evidente: incrementare la chiave privata $$k$$ di una sola unità ($$k \to k+1$$) causa un "salto" geometrico drastico sul piano. La distanza euclidea tra due chiavi pubbliche consecutive non è minima né predicibile visivamente, soddisfacendo la necessità crittografica di non rivelare informazioni sull'input partendo da output simili.
+
+---
+
+### 3. Conclusioni: ECC vs Funzioni di Hash
+Dall'analisi emergono alcune riflessioni su quali proprietà siano desiderabili per una funzione crittografica unidirezionale (come ECC) rispetto a una classica funzione di Hash (come Keccak256).
+
+*   **Proprietà Condivise:** Entrambe richiedono unidirezionalità (facilità di calcolo in una direzione, intrattabilità nell'altra) e presentano un forte effetto valanga per evitare la deduzione dell'input. Nel caso di ECC, risalire a $$k$$ conoscendo $$Q$$ e $$G$$ richiede la risoluzione del Problema del Logaritmo Discreto (ECDLP), computazionalmente proibitivo per i grandi moduli usati in Ethereum.
+*   **Differenze Chiave:** Una funzione di hash deve distruggere ogni legame matematico e non ha invertibilità strutturale. Al contrario, la moltiplicazione scalare ECC **deve preservare una struttura algebrica rigorosa** (omomorfismo). Questa struttura matematica sottostante, che sfugge all'analisi statistica visiva, è ciò che permette la verifica formale delle Firme Digitali.
+
+<!-- Script per la logica matematica, interazione Canvas e grafici Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+{% raw %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const P = 17;
+
+    function mod(n, p) { return ((n % p) + p) % p; }
+
     function modInverse(a, p) {
         a = mod(a, p);
         for (let i = 1; i < p; i++) {
             if (mod(a * i, p) === 1) return i;
         }
-        return null; 
+        return null;
     }
 
-    // Somma algebrica di due punti sulla curva ellittica
-    function addPoints(P1, P2) {
+    function addPoints(x1, y1, x2, y2) {
+        if (x1 === null) return {x: x2, y: y2};
+        if (x1 === x2 && y1 === mod(-y2, P)) return {x: null, y: null}; // Infinito
+
         let m;
-        if (P1.x === P2.x && P1.y === P2.y) {
-            // Point Doubling
-            let num = 3 * mod(Math.pow(P1.x, 2), P);
-            let den = 2 * P1.y;
+        if (x1 === x2 && y1 === y2) {
+            let num = 3 * Math.pow(x1, 2);
+            let den = 2 * y1;
             m = mod(num * modInverse(den, P), P);
         } else {
-            // Point Addition
-            let num = P2.y - P1.y;
-            let den = P2.x - P1.x;
+            let num = y2 - y1;
+            let den = x2 - x1;
             m = mod(num * modInverse(den, P), P);
         }
 
-        let x3 = mod(Math.pow(m, 2) - P1.x - P2.x, P);
-        let y3 = mod(m * (P1.x - x3) - P1.y, P);
-
+        let x3 = mod(Math.pow(m, 2) - x1 - x2, P);
+        let y3 = mod(m * (x1 - x3) - y1, P);
         return { x: x3, y: y3 };
     }
 
-    // --- LOGICA DI DISEGNO CANVAS (LIVELLO GURU) ---
-    const canvas = document.getElementById('eccCanvas');
-    const ctx = canvas.getContext('2d');
-    const cellSize = 20;
+    // --- Disegno su Canvas ---
+    const canvas = document.getElementById("eccCanvas");
+    const ctx = canvas.getContext("2d");
+    const gridSize = canvas.width / P;
 
     function drawGrid() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.strokeStyle = '#eee';
+        ctx.strokeStyle = "#e0e0e0";
         ctx.lineWidth = 1;
         for (let i = 0; i <= P; i++) {
             ctx.beginPath();
-            ctx.moveTo(i * cellSize, 0);
-            ctx.lineTo(i * cellSize, P * cellSize);
+            ctx.moveTo(i * gridSize, 0);
+            ctx.lineTo(i * gridSize, canvas.height);
             ctx.stroke();
             ctx.beginPath();
-            ctx.moveTo(0, i * cellSize);
-            ctx.lineTo(P * cellSize, i * cellSize);
+            ctx.moveTo(0, i * gridSize);
+            ctx.lineTo(canvas.width, i * gridSize);
             ctx.stroke();
         }
     }
 
-    function drawPoint(point, color, label) {
-        // Invertiamo l'asse Y per avere lo 0 in basso a sinistra
-        let cx = point.x * cellSize;
-        let cy = (P - point.y) * cellSize;
-        
+    function plotPoint(x, y, color = "blue", label = "") {
+        const px = x * gridSize;
+        const py = canvas.height - (y * gridSize); 
         ctx.beginPath();
-        ctx.arc(cx, cy, 4, 0, 2 * Math.PI);
+        ctx.arc(px, py, 5, 0, 2 * Math.PI);
         ctx.fillStyle = color;
         ctx.fill();
-        ctx.strokeStyle = '#333';
-        ctx.stroke();
-        
-        ctx.fillStyle = '#333';
-        ctx.font = '10px Arial';
-        ctx.fillText(label, cx + 6, cy - 6);
+        if (label) {
+            ctx.fillStyle = "black";
+            ctx.font = "12px Arial";
+            ctx.fillText(label, px + 8, py - 8);
+        }
     }
 
     function drawLine(p1, p2) {
         ctx.beginPath();
-        ctx.moveTo(p1.x * cellSize, (P - p1.y) * cellSize);
-        ctx.lineTo(p2.x * cellSize, (P - p2.y) * cellSize);
-        ctx.strokeStyle = 'rgba(0, 123, 255, 0.3)';
-        ctx.lineWidth = 2;
+        ctx.moveTo(p1.x * gridSize, canvas.height - (p1.y * gridSize));
+        ctx.lineTo(p2.x * gridSize, canvas.height - (p2.y * gridSize));
+        ctx.strokeStyle = "rgba(0, 0, 255, 0.3)";
         ctx.stroke();
     }
 
-    // Funzione asincrona per animare il calcolo
-    async function calculateEcc() {
-        const k = parseInt(document.getElementById('privateKeyInput').value);
-        const logArea = document.getElementById('outputLog');
-        const btn = document.getElementById('calcButton');
+    // --- Interazione UI ---
+    document.getElementById("calcBtn").addEventListener("click", () => {
+        const baseVal = document.getElementById("basePoint").value.split(",");
+        const G = { x: parseInt(baseVal[0]), y: parseInt(baseVal[1]) };
+        const k = parseInt(document.getElementById("privateKey").value);
+        const log = document.getElementById("outputLog");
         
-        btn.disabled = true;
-        logArea.innerHTML = "";
+        log.innerHTML = "";
         drawGrid();
+        plotPoint(G.x, G.y, "green", "G");
 
-        let currentPoint = G;
-        drawPoint(currentPoint, '#007bff', '1G');
-        logArea.innerHTML += `1G = (${currentPoint.x}, ${currentPoint.y})\n`;
+        let current = G;
+        log.innerHTML += `1G = (${current.x}, ${current.y})<br>`;
 
-        for (let i = 2; i <= k; i++) {
-            // Pausa per creare l'animazione visiva (500 millisecondi)
-            await new Promise(r => setTimeout(r, 500));
-            
-            let nextPoint = addPoints(currentPoint, G);
-            drawLine(currentPoint, nextPoint);
-            
-            let color = (i === k) ? '#dc3545' : '#28a745'; // Rosso per il punto finale
-            let label = (i === k) ? `Q=${i}G` : `${i}G`;
-            
-            drawPoint(nextPoint, color, label);
-            logArea.innerHTML += `${i}G = (${nextPoint.x}, ${nextPoint.y})\n`;
-            logArea.scrollTop = logArea.scrollHeight;
-            
-            currentPoint = nextPoint;
+        let prev = current;
+        let step = 2;
+
+        function animateStep() {
+            if (step > k) return;
+            current = addPoints(current.x, current.y, G.x, G.y);
+            if (current.x !== null) {
+                plotPoint(current.x, current.y, step === k ? "red" : "blue", step === k ? "Q" : "");
+                drawLine(prev, current);
+                log.innerHTML += `${step}G = (${current.x}, ${current.y})<br>`;
+                log.scrollTop = log.scrollHeight;
+                prev = current;
+            }
+            step++;
+            setTimeout(animateStep, 300); // Ritardo per visualizzazione umana
         }
         
-        logArea.innerHTML += `\nCHIAVE PUBBLICA (Q) = (${currentPoint.x}, ${currentPoint.y})\n`;
-        btn.disabled = false;
+        if(k > 1) animateStep();
+    });
+
+    // Inizializza
+    drawGrid();
+    plotPoint(1, 5, "green", "G");
+
+    // --- Grafici Statistici ---
+    // Genero dati finti basati sulla logica ECC reale per i grafici
+    let xCounts = Array(17).fill(0);
+    let yCounts = Array(17).fill(0);
+    let distances = [];
+    let pt = {x: 1, y: 5};
+    let prevPt = pt;
+
+    for(let i=1; i<=18; i++) {
+        if(pt.x !== null) {
+            xCounts[pt.x]++;
+            yCounts[pt.y]++;
+            if(i>1) {
+                let d = Math.sqrt(Math.pow(pt.x - prevPt.x, 2) + Math.pow(pt.y - prevPt.y, 2));
+                distances.push(d.toFixed(2));
+            }
+        }
+        prevPt = pt;
+        pt = addPoints(pt.x, pt.y, 1, 5);
     }
 
-    document.getElementById('calcButton').addEventListener('click', calculateEcc);
-    
-    // Disegna la griglia vuota all'avvio
-    drawGrid();
+    new Chart(document.getElementById('distChart'), {
+        type: 'bar',
+        data: {
+            labels: Array.from({length: 17}, (_, i) => i),
+            datasets: [
+                { label: 'Freq. Coord X', data: xCounts, backgroundColor: 'rgba(54, 162, 235, 0.6)' },
+                { label: 'Freq. Coord Y', data: yCounts, backgroundColor: 'rgba(255, 99, 132, 0.6)' }
+            ]
+        },
+        options: { plugins: { title: { display: true, text: 'Frequenza Coordinate (k da 1 a 18)' } } }
+    });
+
+    new Chart(document.getElementById('avalancheChart'), {
+        type: 'line',
+        data: {
+            labels: Array.from({length: distances.length}, (_, i) => `k=${i+1}→${i+2}`),
+            datasets: [{
+                label: 'Distanza dal punto precedente',
+                data: distances,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                tension: 0.1,
+                fill: false
+            }]
+        },
+        options: { plugins: { title: { display: true, text: 'Variazione Distanza tra (k)G e (k+1)G' } } }
+    });
+});
 </script>
+{% endraw %}

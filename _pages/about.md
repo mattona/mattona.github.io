@@ -6,11 +6,11 @@ subtitle: Cybersecurity student
 
 profile:
   align: right
-  image: ms_pic.jpg
+  image: ms_pic1.jpg
   image_circular: true # crops the image to make it circular
 
 selected_papers: false # includes a list of papers marked as "selected={true}"
-social: false # includes social icons at the bottom of the page
+social: true # includes social icons at the bottom of the page
 
 announcements:
   enabled: false # includes a list of news items

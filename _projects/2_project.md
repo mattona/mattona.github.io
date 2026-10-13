@@ -28,35 +28,35 @@ Around the same time, SHA-3 was officially standardized (2015), and shortly afte
 I tried to map out the exact sequence of events that happens under the hood when a wallet processes a seed phrase. Every step alters the data significantly.
 
 <div class="d-flex flex-column align-items-center mt-4 mb-4">
-    <div class="card p-2 text-center z-depth-1 w-75" style="background-color: transparent; border: 1px solid #ccc;">
+    <div class="card p-2 text-center z-depth-1 w-75" style="background-color: rgba(52, 152, 219, 0.1); border: 1px solid #3498db;">
         <strong>Mnemonic Phrase</strong><br>
         <span style="font-size: 0.85em; color: #888;">Initial entropy generation</span>
     </div>
     <div class="my-2" style="font-size: 0.8em;">↓ <i>BIP-39 (PBKDF2 Hashing)</i> ↓</div>
     
-    <div class="card p-2 text-center z-depth-1 w-75" style="background-color: transparent; border: 1px solid #ccc;">
+    <div class="card p-2 text-center z-depth-1 w-75" style="background-color: rgba(46, 204, 113, 0.1); border: 1px solid #2ecc71;">
         <strong>Binary Master Seed</strong>
     </div>
     <div class="my-2" style="font-size: 0.8em;">↓ <i>BIP-32 / BIP-44 (Deterministic Derivation)</i> ↓</div>
     
-    <div class="card p-2 text-center z-depth-1 w-75" style="background-color: transparent; border: 1px solid #ccc;">
+    <div class="card p-2 text-center z-depth-1 w-75" style="background-color: rgba(155, 89, 182, 0.1); border: 1px solid #9b59b6;">
         <strong>Private Key</strong><br>
         <span style="font-size: 0.85em; color: #888;">The 256-bit secret integer</span>
     </div>
     <div class="my-2" style="font-size: 0.8em;">↓ <i>secp256k1 (Elliptic Curve Math)</i> ↓</div>
     
-    <div class="card p-2 text-center z-depth-1 w-75" style="background-color: transparent; border: 1px solid #ccc;">
+    <div class="card p-2 text-center z-depth-1 w-75" style="background-color: rgba(241, 196, 15, 0.1); border: 1px solid #f1c40f;">
         <strong>Public Key</strong>
     </div>
     <div class="my-2" style="font-size: 0.8em;">↓ <i>Keccak-256 (Hashing)</i> ↓</div>
     
-    <div class="card p-2 text-center z-depth-1 w-75" style="background-color: transparent; border: 1px solid #ccc;">
+    <div class="card p-2 text-center z-depth-1 w-75" style="background-color: rgba(230, 126, 34, 0.1); border: 1px solid #e67e22;">
         <strong>Raw Ethereum Address</strong><br>
         <span style="font-size: 0.85em; color: #888;">Last 20 bytes of the hash</span>
     </div>
     <div class="my-2" style="font-size: 0.8em;">↓ <i>EIP-55</i> ↓</div>
     
-    <div class="card p-2 text-center z-depth-1 w-75" style="background-color: rgba(52, 152, 219, 0.1); border: 1px solid #3498db;">
+    <div class="card p-2 text-center z-depth-1 w-75" style="background-color: rgba(231, 76, 60, 0.1); border: 1px solid #e74c3c;">
         <strong>Checksummed Address</strong><br>
         <span style="font-size: 0.85em; color: #888;">Final format with mixed capitalization</span>
     </div>

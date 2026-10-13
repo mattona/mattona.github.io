@@ -2,7 +2,7 @@
 layout: page
 title: Wallet Pipeline & Key Derivation
 description: Research on how Ethereum wallets handle hashing, seeds, and cryptographic primitives.
-img: assets/img/12.jpg
+img: assets/img/hmw_2.jpg
 importance: 2
 category: Statistics
 ---

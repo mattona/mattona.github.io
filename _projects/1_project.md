@@ -104,7 +104,7 @@ By iteratively testing the scalar multiplication algorithm across the cyclic gro
             <canvas id="scatterChart"></canvas>
         </div>
         <div class="caption mt-2 text-center" style="color: #888; font-size: 0.85em;">
-            Input $$k$$ vs Output $$X$$ Coordinate. Shows zero linear correlation.
+            Input $k$ vs Output $X$ Coordinate. Shows zero linear correlation.
         </div>
     </div>
     <div class="col-sm-6 mt-3 mt-md-0 d-flex flex-column">
@@ -112,7 +112,7 @@ By iteratively testing the scalar multiplication algorithm across the cyclic gro
             <canvas id="avalancheChart"></canvas>
         </div>
         <div class="caption mt-2 text-center" style="color: #888; font-size: 0.85em;">
-            Avalanche-like behavior: Geometric distance between consecutive outputs ($$kG$$ and $$(k+1)G$$).
+            Avalanche-like behavior: Geometric distance between consecutive outputs ($kG$ and $(k+1)G$).
         </div>
     </div>
 </div>

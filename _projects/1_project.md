@@ -42,9 +42,12 @@ The interface below simulates the scalar multiplication algorithm on our finite 
                 <label for="basePoint" style="font-weight: 500;">Base Point (G):</label>
                 <select id="basePoint" class="form-control form-control-sm" style="background-color: transparent; border: 1px solid rgba(128,128,128,0.5); color: inherit;">
                     <option value="1,5">G = (1, 5)</option>
-                    <option value="2,6">G = (2, 6)</option>
-                    <option value="3,8">G = (3, 8)</option>
+                    <option value="1,12">G = (1, 12)</option>
+                    <option value="2,7">G = (2, 7)</option>
                     <option value="5,8">G = (5, 8)</option>
+                    <option value="6,6">G = (6, 6)</option>
+                    <option value="8,3">G = (8, 3)</option>
+                    <option value="10,2">G = (10, 2)</option>
                 </select>
             </div>
             <div class="form-group mt-3">
@@ -76,33 +79,41 @@ The interface below simulates the scalar multiplication algorithm on our finite 
 
 By iteratively testing the scalar multiplication algorithm across the cyclic group (evaluating up to $$k=18$$ starting from $$G = (1,5)$$), we can analyze the statistical behavior of the generated points. The following charts break down the coordinate distribution, bit analysis, input/output correlation, and geometric distance.
 
-<div class="row mt-4">
-    <div class="col-sm-6 mt-3 mt-md-0">
-        <div class="card p-2 z-depth-1 rounded" style="background-color: transparent;">
+<div class="row mt-4 align-items-stretch">
+    <div class="col-sm-6 mt-3 mt-md-0 d-flex flex-column">
+        <div class="card p-2 z-depth-1 rounded flex-grow-1 d-flex flex-column justify-content-center" style="background-color: transparent;">
             <canvas id="distChart"></canvas>
         </div>
-        <div class="caption" style="color: #888; font-size: 0.85em;">Frequency of individual values for X and Y coordinates. Displays apparent uniformity.</div>
+        <div class="caption mt-2 text-center" style="color: #888; font-size: 0.85em;">
+            Frequency of individual values for X and Y coordinates. Displays apparent uniformity.
+        </div>
     </div>
-    <div class="col-sm-6 mt-3 mt-md-0">
-        <div class="card p-2 z-depth-1 rounded" style="background-color: transparent;">
+    <div class="col-sm-6 mt-3 mt-md-0 d-flex flex-column">
+        <div class="card p-2 z-depth-1 rounded flex-grow-1 d-flex flex-column justify-content-center" style="background-color: transparent;">
             <canvas id="bitChart"></canvas>
         </div>
-        <div class="caption" style="color: #888; font-size: 0.85em;">Distribution of bits (0s vs 1s) across the 5-bit binary representations of the generated coordinates.</div>
+        <div class="caption mt-2 text-center" style="color: #888; font-size: 0.85em;">
+            Distribution of bits (0s vs 1s) across the 5-bit binary representations of the generated coordinates.
+        </div>
     </div>
 </div>
 
-<div class="row mt-4">
-    <div class="col-sm-6 mt-3 mt-md-0">
-        <div class="card p-2 z-depth-1 rounded" style="background-color: transparent;">
+<div class="row mt-4 align-items-stretch">
+    <div class="col-sm-6 mt-3 mt-md-0 d-flex flex-column">
+        <div class="card p-2 z-depth-1 rounded flex-grow-1 d-flex flex-column justify-content-center" style="background-color: transparent;">
             <canvas id="scatterChart"></canvas>
         </div>
-        <div class="caption" style="color: #888; font-size: 0.85em;">Input $$k$$ vs Output $$X$$ Coordinate. Shows zero linear correlation.</div>
+        <div class="caption mt-2 text-center" style="color: #888; font-size: 0.85em;">
+            Input $$k$$ vs Output $$X$$ Coordinate. Shows zero linear correlation.
+        </div>
     </div>
-    <div class="col-sm-6 mt-3 mt-md-0">
-        <div class="card p-2 z-depth-1 rounded" style="background-color: transparent;">
+    <div class="col-sm-6 mt-3 mt-md-0 d-flex flex-column">
+        <div class="card p-2 z-depth-1 rounded flex-grow-1 d-flex flex-column justify-content-center" style="background-color: transparent;">
             <canvas id="avalancheChart"></canvas>
         </div>
-        <div class="caption" style="color: #888; font-size: 0.85em;">Avalanche-like behavior: Geometric distance between consecutive outputs ($$kG$$ and $$(k+1)G$$).</div>
+        <div class="caption mt-2 text-center" style="color: #888; font-size: 0.85em;">
+            Avalanche-like behavior: Geometric distance between consecutive outputs ($$kG$$ and $$(k+1)G$$).
+        </div>
     </div>
 </div>
 

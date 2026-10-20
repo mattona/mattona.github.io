@@ -1,24 +1,175 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <meta http-equiv="refresh" content="3; url=https://www.wikipedia.org/"> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <title> project 3 with very long name | Matteo Sulmona </title> <meta name="author" content="Matteo Sulmona"> <meta name="description" content="a project that redirects to another website"> <meta name="keywords" content="jekyll, jekyll-theme, academic-website, portfolio-website"> <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' data: https:; media-src 'self' https:; frame-src 'self' https:; connect-src 'self' https:;"> <style>
+<!DOCTYPE html> <html lang="en"> <head> <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <title> Encryption &amp; Cryptanalysis | Matteo Sulmona </title> <meta name="author" content="Matteo Sulmona"> <meta name="description" content="Comparing ECC and Caesar ciphers, statistical leaks, and key-space attacks."> <meta name="keywords" content="jekyll, jekyll-theme, academic-website, portfolio-website"> <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' data: https:; media-src 'self' https:; frame-src 'self' https:; connect-src 'self' https:;"> <style>
   :root {
     --max-content-width: 930px;
   }
 </style> <link rel="stylesheet" href="/assets/css/tailwind.css?v=50c64c15cbb9fd1ce6056fdb8bcb4b62"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/css/all.min.css" integrity="sha256-MVopmdyC2tYTiJ8wlktf0uh0v4NgT+vNdyVFepi7Q0c=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.5/css/academicons.min.css" integrity="sha256-SzrCOBJbGVFMahewkgjwnApaV2+av1DwMAA+/QGLyZw=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/scholar-icons@1.0.3/css/scholar-icons.css" integrity="sha256-VY3hHVj/hNX3fYG6wtbA6TcKJQl7+FthzGSyIB64klY=" crossorigin="anonymous"> <link defer rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:100,300,400,500,700|Material+Icons&amp;display=swap"> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-github.css?v=591dab5a4e56573bf4ef7fd332894c99" media="" id="highlight_theme_light"> <link rel="shortcut icon" href="data:image/svg+xml,&lt;svg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22&gt;&lt;text%20y=%22.9em%22%20font-size=%2290%22&gt;%E2%9A%9B%EF%B8%8F&lt;/text&gt;&lt;/svg&gt;"> <link rel="stylesheet" href="/assets/css/main.css?v=3116ba77db9ee1581d05bb3e86fbf7f1"> <link rel="canonical" href="https://mattona.github.io/projects/3_project/"> <script src="/assets/js/theme.js?v=5286c3e4c334d0ecb8fc0c40ff4fa7ec"></script> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-native.css?v=5847e5ed4a4568527aa6cfab446049ca" media="none" id="highlight_theme_dark"> <script>
     initTheme();
-  </script> </head> <body class="fixed-top-nav "> <header> <nav id="navbar" class="navbar navbar-light navbar-expand-sm fixed-top" role="navigation"> <div class="container"> <a class="navbar-brand title font-weight-lighter" href="/"> Matteo Sulmona </a> <button class="navbar-toggler collapsed navbar-toggler-main" type="button" data-nav-toggle="navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar top-bar"></span> <span class="icon-bar middle-bar"></span> <span class="icon-bar bottom-bar"></span> </button> <div class="collapse navbar-collapse navbar-collapse-main" id="navbarNav"> <ul class="navbar-nav navbar-menu-list flex-nowrap"> <li class="nav-item "> <a class="nav-link" href="/">about </a> </li> <li class="nav-item active"> <a class="nav-link" href="/projects/">Projects <span class="sr-only">(current)</span> </a> </li> <li class="nav-item "> <a class="nav-link" href="/cv/">CV </a> </li> <li class="nav-item"> <button id="search-toggle" type="button" title="Search" aria-label="Open search"> <span class="nav-link">ctrl k <i class="fa-solid fa-magnifying-glass"></i></span> </button> </li> <li class="toggle-container"> <button id="light-toggle" type="button" title="Change theme" aria-label="Change color theme"> <i class="fa-half-sun-moon" id="light-toggle-system"></i> <i class="fa-solid fa-moon" id="light-toggle-dark"></i> <i class="fa-solid fa-sun" id="light-toggle-light"></i> </button> </li> </ul> </div> </div> </nav> <progress id="progress" value="0"> <div class="progress-container"> <span class="progress-bar"></span> </div> </progress> </header> <div class="container mt-5" role="main"> <div class="post"> <header class="post-header"> <h1 class="post-title">project 3 with very long name</h1> <p class="post-description">a project that redirects to another website</p> </header> <article> <p>Every project has a beautiful feature showcase page. It’s easy to include images in a flexible 3-column grid format. Make your photos 1/3, 2/3, or full width.</p> <p>To give your project a background in the portfolio page, just add the img tag to the front matter like so:</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---
-layout: page
-title: project
-description: a project with a background image
-img: /assets/img/12.jpg
----
-</code></pre></div></div> <div class="row"> <div class="col-sm mt-3 mt-md-0"> <figure> <picture> <source class="responsive-img-srcset" srcset="/assets/img/1-480.webp 480w,/assets/img/1-800.webp 800w,/assets/img/1-1400.webp 1400w," type="image/webp" sizes="95vw"></source> <img src="/assets/img/1.jpg" class="img-fluid rounded z-depth-1" width="100%" height="auto" title="example image" loading="eager" onerror="this.onerror=null; document.querySelectorAll('.responsive-img-srcset').forEach(function (n) { n.remove(); });"> </picture> </figure> </div> <div class="col-sm mt-3 mt-md-0"> <figure> <picture> <source class="responsive-img-srcset" srcset="/assets/img/3-480.webp 480w,/assets/img/3-800.webp 800w,/assets/img/3-1400.webp 1400w," type="image/webp" sizes="95vw"></source> <img src="/assets/img/3.jpg" class="img-fluid rounded z-depth-1" width="100%" height="auto" title="example image" loading="eager" onerror="this.onerror=null; document.querySelectorAll('.responsive-img-srcset').forEach(function (n) { n.remove(); });"> </picture> </figure> </div> <div class="col-sm mt-3 mt-md-0"> <figure> <picture> <source class="responsive-img-srcset" srcset="/assets/img/5-480.webp 480w,/assets/img/5-800.webp 800w,/assets/img/5-1400.webp 1400w," type="image/webp" sizes="95vw"></source> <img src="/assets/img/5.jpg" class="img-fluid rounded z-depth-1" width="100%" height="auto" title="example image" loading="eager" onerror="this.onerror=null; document.querySelectorAll('.responsive-img-srcset').forEach(function (n) { n.remove(); });"> </picture> </figure> </div> </div> <div class="caption"> Caption photos easily. On the left, a road goes through a tunnel. Middle, leaves artistically fall in a hipster photoshoot. Right, in another hipster photoshoot, a lumberjack grasps a handful of pine needles. </div> <div class="row"> <div class="col-sm mt-3 mt-md-0"> <figure> <picture> <source class="responsive-img-srcset" srcset="/assets/img/5-480.webp 480w,/assets/img/5-800.webp 800w,/assets/img/5-1400.webp 1400w," type="image/webp" sizes="95vw"></source> <img src="/assets/img/5.jpg" class="img-fluid rounded z-depth-1" width="100%" height="auto" title="example image" loading="eager" onerror="this.onerror=null; document.querySelectorAll('.responsive-img-srcset').forEach(function (n) { n.remove(); });"> </picture> </figure> </div> </div> <div class="caption"> This image can also have a caption. It's like magic. </div> <p>You can also put regular text between your rows of images. Say you wanted to write a little bit about your project before you posted the rest of the images. You describe how you toiled, sweated, <em>bled</em> for your project, and then… you reveal its glory in the next row of images.</p> <div class="row justify-content-sm-center"> <div class="col-sm-8 mt-3 mt-md-0"> <figure> <picture> <source class="responsive-img-srcset" srcset="/assets/img/6-480.webp 480w,/assets/img/6-800.webp 800w,/assets/img/6-1400.webp 1400w," type="image/webp" sizes="95vw"></source> <img src="/assets/img/6.jpg" class="img-fluid rounded z-depth-1" width="100%" height="auto" title="example image" loading="lazy" onerror="this.onerror=null; document.querySelectorAll('.responsive-img-srcset').forEach(function (n) { n.remove(); });"> </picture> </figure> </div> <div class="col-sm-4 mt-3 mt-md-0"> <figure> <picture> <source class="responsive-img-srcset" srcset="/assets/img/11-480.webp 480w,/assets/img/11-800.webp 800w,/assets/img/11-1400.webp 1400w," type="image/webp" sizes="95vw"></source> <img src="/assets/img/11.jpg" class="img-fluid rounded z-depth-1" width="100%" height="auto" title="example image" loading="lazy" onerror="this.onerror=null; document.querySelectorAll('.responsive-img-srcset').forEach(function (n) { n.remove(); });"> </picture> </figure> </div> </div> <div class="caption"> You can also have artistically styled 2/3 + 1/3 images, like these. </div> <p>The code is simple. Just wrap your images with <code class="language-plaintext highlighter-rouge">&lt;div class="col-sm"&gt;</code> and place them inside <code class="language-plaintext highlighter-rouge">&lt;div class="row"&gt;</code> (read more about the <a href="https://getbootstrap.com/docs/4.4/layout/grid/" rel="external nofollow noopener" target="_blank">Bootstrap Grid</a> system). To make images responsive, add <code class="language-plaintext highlighter-rouge">img-fluid</code> class to each; for rounded corners and shadows use <code class="language-plaintext highlighter-rouge">rounded</code> and <code class="language-plaintext highlighter-rouge">z-depth-1</code> classes. Here’s the code for the last row of images above:</p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"row justify-content-sm-center"</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"col-sm-8 mt-3 mt-md-0"</span><span class="nt">&gt;</span>
-    {% include figure.liquid path="assets/img/6.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-  <span class="nt">&lt;/div&gt;</span>
-  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"col-sm-4 mt-3 mt-md-0"</span><span class="nt">&gt;</span>
-    {% include figure.liquid path="assets/img/11.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-  <span class="nt">&lt;/div&gt;</span>
-<span class="nt">&lt;/div&gt;</span>
-</code></pre></div></div> </article> </div> </div> <footer class="fixed-bottom" role="contentinfo"> <div class="container mt-0"> © Copyright 2026 Matteo Sulmona. Powered by <a href="https://jekyllrb.com/" target="_blank" rel="external nofollow noopener">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio" rel="external nofollow noopener" target="_blank">al-folio</a> theme. Hosted by <a href="https://pages.github.com/" target="_blank" rel="external nofollow noopener">GitHub Pages</a>. Photos from <a href="https://unsplash.com" target="_blank" rel="external nofollow noopener">Unsplash</a>. </div> </footer> <script>
+  </script> </head> <body class="fixed-top-nav "> <header> <nav id="navbar" class="navbar navbar-light navbar-expand-sm fixed-top" role="navigation"> <div class="container"> <a class="navbar-brand title font-weight-lighter" href="/"> Matteo Sulmona </a> <button class="navbar-toggler collapsed navbar-toggler-main" type="button" data-nav-toggle="navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar top-bar"></span> <span class="icon-bar middle-bar"></span> <span class="icon-bar bottom-bar"></span> </button> <div class="collapse navbar-collapse navbar-collapse-main" id="navbarNav"> <ul class="navbar-nav navbar-menu-list flex-nowrap"> <li class="nav-item "> <a class="nav-link" href="/">about </a> </li> <li class="nav-item active"> <a class="nav-link" href="/projects/">Projects <span class="sr-only">(current)</span> </a> </li> <li class="nav-item "> <a class="nav-link" href="/cv/">CV </a> </li> <li class="nav-item"> <button id="search-toggle" type="button" title="Search" aria-label="Open search"> <span class="nav-link">ctrl k <i class="fa-solid fa-magnifying-glass"></i></span> </button> </li> <li class="toggle-container"> <button id="light-toggle" type="button" title="Change theme" aria-label="Change color theme"> <i class="fa-half-sun-moon" id="light-toggle-system"></i> <i class="fa-solid fa-moon" id="light-toggle-dark"></i> <i class="fa-solid fa-sun" id="light-toggle-light"></i> </button> </li> </ul> </div> </div> </nav> <progress id="progress" value="0"> <div class="progress-container"> <span class="progress-bar"></span> </div> </progress> </header> <div class="container mt-5" role="main"> <div class="post"> <header class="post-header"> <h1 class="post-title">Encryption &amp; Cryptanalysis</h1> <p class="post-description">Comparing ECC and Caesar ciphers, statistical leaks, and key-space attacks.</p> </header> <article> <p>For this assignment, I had to take the toy elliptic curve from the first project ($y^2 = x^3 + 7 \pmod{17}$) and actually use it to encrypt and decrypt a message, comparing it to the ancient Caesar cipher.</p> <p>Honest admission: encrypting actual text with an Elliptic Curve is a massive headache compared to Caesar. While Caesar just shifts the alphabet (e.g., ‘A’ becomes ‘D’), ECC requires you to first map your text message to a valid $(x, y)$ coordinate on the curve. Once you have that point ($M$), encryption usually follows the ElGamal structure: you pick a random number $r$, compute a shared secret using the recipient’s public key $Q$, and send a pair of points: $(rG, M + rQ)$. Decryption is the reverse process using the private key $k$.</p> <p>It’s mathematically elegant, but implementing it for standard text on a 17x17 grid with only 18 valid points means I can barely encode a single letter, let alone a whole sentence. This structural difference led me to explore how both systems break, but for entirely different reasons.</p> <h3 id="the-caesar-cipher-and-statistical-leaks">The Caesar Cipher and Statistical Leaks</h3> <p>The Caesar cipher is structurally completely different from ECC. Its key space is tiny (only 25 possible shifts for the English alphabet), but its fatal flaw isn’t just the key space—it’s the fact that it preserves the statistical properties of the underlying language.</p> <p>If ‘E’ is the most common letter in English, and we shift the alphabet by 3, ‘H’ becomes the most common letter in the ciphertext. To demonstrate this, I built a quick script that encrypts text and then runs a basic frequency analysis attack to recover the key without any brute-forcing. It simply counts the letters, compares the distribution to standard English using a dot product, and picks the shift with the highest match.</p> <div class="card p-3 my-4 z-depth-1" style="background-color: transparent; border: 1px solid rgba(150,150,150,0.3);"> <h5>Caesar Cipher &amp; Frequency Attack</h5> <div class="form-group mt-2"> <label>Input Text (Try pasting a long English paragraph):</label> <textarea id="caesarInput" class="form-control" rows="3" style="background-color: transparent; color: inherit; border: 1px solid rgba(150,150,150,0.5);">This is a secret message. Cryptography is fascinating because it relies on math to secure data. The quick brown fox jumps over the lazy dog repeatedly to provide enough text for statistical analysis.</textarea> </div> <div class="row align-items-center mt-3"> <div class="col-sm-6"> <label>Shift Key: <span id="shiftVal">7</span></label> <input type="range" id="caesarShift" class="custom-range w-100" min="1" max="25" value="7"> </div> <div class="col-sm-6 text-right"> <button id="encryptBtn" class="btn btn-primary btn-sm mt-2">Encrypt Text</button> </div> </div> <hr> <div class="form-group"> <label>Ciphertext:</label> <textarea id="caesarOutput" class="form-control" rows="3" readonly style="background-color: rgba(0,0,0,0.05); color: inherit;"></textarea> </div> <button id="crackBtn" class="btn btn-danger btn-sm w-100 mt-2">Run Statistical Cryptanalysis</button> <div id="crackResult" class="mt-3 text-center font-weight-bold text-success"></div> <div class="mt-4"> <canvas id="freqChart" height="100"></canvas> </div> </div> <p>Playing around with the tool, I noticed the algorithm’s effectiveness heavily depends on the ciphertext length. Give it a three-word sentence, and it fails because short texts don’t normalize to standard English frequencies. But give it a decent paragraph, and the letter frequencies naturally align with the English corpus, making the attack trivial. You could theoretically use exhaustive key search (trying all 25 shifts manually), but frequency analysis is programmatic and instantaneous, making it the standard approach for substitution ciphers.</p> <h3 id="cracking-the-toy-ecc">Cracking the Toy ECC</h3> <p>Unlike the Caesar cipher, the ECC ciphertext leaks absolutely zero statistical information about the plaintext. The coordinates are pseudo-randomly distributed over the finite field. You cannot map the frequency of $X$ coordinates to the English alphabet.</p> <p>However, the toy scheme I built in Part 1 has a fatal flaw of its own: the private key space is ridiculously small. Because the curve operates modulo 17, there are only 18 valid points. That means the private key $k$ can only be an integer between 1 and 18.</p> <p>I wrote a simple loop that exploits this restricted key space. It simply calculates $1G, 2G, 3G…$ and stops when the output matches the target public key $Q$.</p> <div class="card p-3 my-4 z-depth-1" style="background-color: transparent; border: 1px solid rgba(150,150,150,0.3);"> <h5>ECC Toy Curve Exhaustive Search</h5> <p style="font-size: 0.9em; color: #888;">Targeting Public Key Q on curve $y^2 = x^3 + 7 \pmod{17}$ with Base $G=(1,5)$</p> <div class="row align-items-center"> <div class="col-sm-6 mt-2"> <label>Intercepted Public Key (Q):</label> <select id="targetQ" class="form-control form-control-sm" style="background-color: transparent; color: inherit; border: 1px solid rgba(150,150,150,0.5);"> <option value="10,15">Q = (10, 15)</option> <option value="6,11">Q = (6, 11)</option> <option value="3,9">Q = (3, 9)</option> </select> </div> <div class="col-sm-6 mt-2 text-right"> <button id="bruteForceBtn" class="btn btn-warning btn-sm mt-4">Start Exhaustive Search</button> </div> </div> <div class="mt-3 p-2 rounded" style="background-color: rgba(0,0,0,0.1); font-family: monospace; max-height: 120px; overflow-y: auto;" id="eccLog"> <i>Awaiting execution...</i> </div> </div> <h3 id="comparing-the-vulnerabilities">Comparing the Vulnerabilities</h3> <p>The differences between these two attacks highlight exactly why modern cryptography relies on elliptic curves over massive fields.</p> <p>With the Caesar cipher, the encryption logic itself is flawed. The statistical attack works regardless of how “large” the alphabet is; even if you applied substitution to a 10,000-character language, letter frequency analysis would eventually crack it because the mapping is static and data patterns leak through.</p> <p>With ECC, the logic is sound, but my specific implementation failed because of the <em>parameters</em>. The exhaustive search attack I wrote above only works because iterating 18 times takes my browser about two milliseconds. This is known as solving the Elliptic Curve Discrete Logarithm Problem (ECDLP) by brute force.</p> <p>If this were a properly configured scheme using Ethereum’s <code class="language-plaintext highlighter-rouge">secp256k1</code> curve, the prime modulus wouldn’t be 17; it would be a 256-bit number. The key space jumps from 18 to roughly $2^{256}$. Running that same simple exhaustive search loop on a modern CPU would take longer than the current age of the universe. Since ECC doesn’t leak statistical patterns, and the key space is too large to brute force, the encrypted message remains secure.</p> <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <script>
+document.addEventListener("DOMContentLoaded", function() {
+    // --- CAESAR CIPHER LOGIC ---
+    const englishFreq = [8.167, 1.492, 2.782, 4.253, 12.702, 2.228, 2.015, 6.094, 6.966, 0.153, 0.772, 4.025, 2.406, 6.749, 7.507, 1.929, 0.095, 5.987, 6.327, 9.056, 2.758, 0.978, 2.360, 0.150, 1.974, 0.074];
+    
+    let freqChart;
+
+    function initChart() {
+        const ctx = document.getElementById('freqChart').getContext('2d');
+        Chart.defaults.color = "#888888";
+        freqChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""),
+                datasets: [{
+                    label: 'Ciphertext Freq (%)',
+                    data: Array(26).fill(0),
+                    backgroundColor: 'rgba(231, 76, 60, 0.7)'
+                }, {
+                    label: 'English Expected (%)',
+                    data: englishFreq,
+                    backgroundColor: 'rgba(150, 150, 150, 0.3)'
+                }]
+            },
+            options: { responsive: true, scales: { y: { beginAtZero: true } } }
+        });
+    }
+
+    function caesarShiftText(text, shift) {
+        return text.split('').map(char => {
+            if (char.match(/[a-z]/i)) {
+                let code = char.charCodeAt(0);
+                let base = (code >= 65 && code <= 90) ? 65 : 97;
+                return String.fromCharCode(((code - base + shift) % 26) + base);
+            }
+            return char;
+        }).join('');
+    }
+
+    function updateFrequencies(text) {
+        let counts = Array(26).fill(0);
+        let total = 0;
+        text.toUpperCase().replace(/[^A-Z]/g, '').split('').forEach(char => {
+            counts[char.charCodeAt(0) - 65]++;
+            total++;
+        });
+        
+        let freqs = counts.map(c => total === 0 ? 0 : (c / total) * 100);
+        freqChart.data.datasets[0].data = freqs;
+        freqChart.update();
+        return freqs;
+    }
+
+    document.getElementById("caesarShift").addEventListener("input", function(e) {
+        document.getElementById("shiftVal").innerText = e.target.value;
+    });
+
+    document.getElementById("encryptBtn").addEventListener("click", () => {
+        let text = document.getElementById("caesarInput").value;
+        let shift = parseInt(document.getElementById("caesarShift").value);
+        let cipher = caesarShiftText(text, shift);
+        document.getElementById("caesarOutput").value = cipher;
+        updateFrequencies(cipher);
+        document.getElementById("crackResult").innerText = "";
+    });
+
+    document.getElementById("crackBtn").addEventListener("click", () => {
+        let cipher = document.getElementById("caesarOutput").value;
+        if(!cipher) return;
+        
+        let bestShift = 0;
+        let maxDotProduct = -1;
+
+        // Try all 26 shifts, calculate dot product of frequencies
+        for(let s = 0; s < 26; s++) {
+            let decryptedAttempt = caesarShiftText(cipher, 26 - s);
+            let attemptFreqs = getFrequencies(decryptedAttempt);
+            
+            let dotProduct = 0;
+            for(let i=0; i<26; i++) {
+                dotProduct += attemptFreqs[i] * englishFreq[i];
+            }
+
+            if(dotProduct > maxDotProduct) {
+                maxDotProduct = dotProduct;
+                bestShift = s;
+            }
+        }
+
+        document.getElementById("crackResult").innerText = `Analysis complete! Probable key found: Shift = ${bestShift}. Decrypting...`;
+        document.getElementById("caesarInput").value = caesarShiftText(cipher, 26 - bestShift);
+    });
+
+    function getFrequencies(text) {
+        let counts = Array(26).fill(0);
+        let total = 0;
+        text.toUpperCase().replace(/[^A-Z]/g, '').split('').forEach(char => {
+            counts[char.charCodeAt(0) - 65]++;
+            total++;
+        });
+        return counts.map(c => total === 0 ? 0 : (c / total) * 100);
+    }
+
+    initChart();
+
+    // --- ECC BRUTE FORCE LOGIC ---
+    const P = 17;
+    function mod(n, p) { return ((n % p) + p) % p; }
+    function modInverse(a, p) {
+        a = mod(a, p);
+        for (let i = 1; i < p; i++) if (mod(a * i, p) === 1) return i;
+        return null;
+    }
+    function addPoints(x1, y1, x2, y2) {
+        if (x1 === null) return {x: x2, y: y2};
+        if (x1 === x2 && y1 === mod(-y2, P)) return {x: null, y: null}; 
+        let m;
+        if (x1 === x2 && y1 === y2) {
+            let num = 3 * Math.pow(x1, 2);
+            let den = 2 * y1;
+            m = mod(num * modInverse(den, P), P);
+        } else {
+            let num = y2 - y1;
+            let den = x2 - x1;
+            m = mod(num * modInverse(den, P), P);
+        }
+        let x3 = mod(Math.pow(m, 2) - x1 - x2, P);
+        let y3 = mod(m * (x1 - x3) - y1, P);
+        return { x: x3, y: y3 };
+    }
+
+    document.getElementById("bruteForceBtn").addEventListener("click", () => {
+        let targetArr = document.getElementById("targetQ").value.split(",");
+        let targetQ = { x: parseInt(targetArr[0]), y: parseInt(targetArr[1]) };
+        let G = { x: 1, y: 5 };
+        let log = document.getElementById("eccLog");
+        
+        log.innerHTML = "Starting brute force attack...<br>";
+        
+        let current = G;
+        let step = 1;
+        
+        function forceStep() {
+            log.innerHTML += `Trying k=${step}... Computed ${step}G = (${current.x}, ${current.y})<br>`;
+            
+            if(current.x === targetQ.x && current.y === targetQ.y) {
+                log.innerHTML += `<span class="text-danger font-weight-bold">Success! Match found at k=${step}. Private key compromised.</span>`;
+                log.scrollTop = log.scrollHeight;
+                return;
+            }
+            
+            if(step > 25) {
+                log.innerHTML += `Limit reached. Point not found.`;
+                return;
+            }
+
+            current = addPoints(current.x, current.y, G.x, G.y);
+            step++;
+            log.scrollTop = log.scrollHeight;
+            setTimeout(forceStep, 100); // Slowed down visually
+        }
+        
+        forceStep();
+    });
+});
+</script> </article> </div> </div> <footer class="fixed-bottom" role="contentinfo"> <div class="container mt-0"> © Copyright 2026 Matteo Sulmona. Powered by <a href="https://jekyllrb.com/" target="_blank" rel="external nofollow noopener">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio" rel="external nofollow noopener" target="_blank">al-folio</a> theme. Hosted by <a href="https://pages.github.com/" target="_blank" rel="external nofollow noopener">GitHub Pages</a>. Photos from <a href="https://unsplash.com" target="_blank" rel="external nofollow noopener">Unsplash</a>. </div> </footer> <script>
   window.alFolio = {
     compatBootstrap: false
   };
@@ -461,9 +612,9 @@ ninja.data = [{
           description: "Research on how Ethereum wallets handle hashing, seeds, and cryptographic primitives.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/2_project/";
-            },},{id: "projects-project-3-with-very-long-name",
-          title: 'project 3 with very long name',
-          description: "a project that redirects to another website",
+            },},{id: "projects-encryption-amp-cryptanalysis",
+          title: 'Encryption &amp; Cryptanalysis',
+          description: "Comparing ECC and Caesar ciphers, statistical leaks, and key-space attacks.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/3_project/";
             },},{id: "projects-project-4",

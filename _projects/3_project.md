@@ -19,37 +19,53 @@ The Caesar cipher is structurally completely different from ECC. Its key space i
 
 If 'E' is the most common letter in English, and we shift the alphabet by 3, 'H' becomes the most common letter in the ciphertext. To demonstrate this, I built a quick script that encrypts text and then runs a basic frequency analysis attack to recover the key without any brute-forcing.
 
-<div class="card p-4 my-4 z-depth-1 text-center" style="background-color: transparent; border: 1px solid rgba(150,150,150,0.3);">
-    <h5 class="mb-4">Caesar Cipher & Frequency Attack</h5>
+<div class="card py-4 my-4 z-depth-1" style="background-color: transparent; border: 1px solid rgba(150,150,150,0.3);">
+    <h5 class="text-center mb-4">Caesar Cipher & Frequency Attack</h5>
     
-    <div class="form-group">
+    <!-- Input Text Row -->
+    <div class="form-group text-center mb-3">
         <label class="font-weight-bold">Input Text:</label>
-        <textarea id="caesarInput" class="form-control mx-auto" rows="3" style="resize: none; width: 65%; background-color: rgba(128,128,128,0.05); color: inherit; border: 1px solid rgba(150,150,150,0.5);">This is a secret message. Cryptography is fascinating because it relies on math to secure data. The quick brown fox jumps over the lazy dog repeatedly to provide enough text for statistical analysis.</textarea>
+        <textarea id="caesarInput" class="form-control mx-auto" rows="3" style="resize: none; width: 60%; background-color: rgba(128,128,128,0.05); color: inherit; border: 1px solid rgba(150,150,150,0.5);">This is a secret message. Cryptography is fascinating because it relies on math to secure data. The quick brown fox jumps over the lazy dog repeatedly to provide enough text for statistical analysis.</textarea>
     </div>
     
-    <div class="form-group mt-3">
+    <!-- Shift Key Row -->
+    <div class="form-group text-center mb-3 mt-4">
         <label class="font-weight-bold">Shift Key: <span id="shiftVal" style="color: #ff9800; font-size: 1.2em;">7</span></label>
-        <input type="range" id="caesarShift" class="custom-range mx-auto" min="1" max="25" value="7" style="width: 50%; display: block;" oninput="document.getElementById('shiftVal').innerText = this.value">
+        <input type="range" id="caesarShift" class="custom-range mx-auto" min="1" max="25" value="7" style="width: 60%; display: block;" oninput="document.getElementById('shiftVal').innerText = this.value">
     </div>
     
-    <button onclick="runEncryption()" class="btn mt-2 mb-4 font-weight-bold" style="background-color: #ff9800; color: #111; width: 40%; font-size: 1.1em; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
-        Encrypt Text
-    </button>
+    <!-- Encrypt Button -->
+    <div class="text-center mb-4 mt-4">
+        <button onclick="runEncryption()" class="btn font-weight-bold" style="background-color: #ff9800; color: #111; width: 250px; font-size: 1.1em; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+            Encrypt Text
+        </button>
+    </div>
     
     <hr class="w-75 mx-auto" style="border-color: rgba(150,150,150,0.2);">
     
-    <div class="form-group mt-4">
+    <!-- Ciphertext Row -->
+    <div class="form-group text-center mb-4 mt-4">
         <label class="font-weight-bold">Ciphertext:</label>
-        <textarea id="caesarOutput" class="form-control mx-auto" rows="3" readonly style="resize: none; width: 65%; background-color: rgba(0,0,0,0.1); color: inherit; border: 1px solid rgba(150,150,150,0.3);"></textarea>
+        <textarea id="caesarOutput" class="form-control mx-auto" rows="3" readonly style="resize: none; width: 60%; background-color: rgba(0,0,0,0.1); color: inherit; border: 1px solid rgba(150,150,150,0.3);"></textarea>
     </div>
     
-    <button onclick="runCryptanalysis()" class="btn mt-2 font-weight-bold" style="background-color: #e74c3c; color: #fff; width: 50%; font-size: 1.1em; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
-        Run Statistical Cryptanalysis
-    </button>
+    <!-- Decrypt Button -->
+    <div class="text-center mb-3 mt-4">
+        <button onclick="runCryptanalysis()" class="btn font-weight-bold" style="background-color: #e74c3c; color: #fff; width: 250px; font-size: 1.1em; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+            Run Statistical Cryptanalysis
+        </button>
+    </div>
     
-    <div id="crackResult" class="mt-3 font-weight-bold" style="color: #2ecc71; font-size: 1.1em;"></div>
+    <div id="crackResult" class="text-center font-weight-bold mb-4" style="color: #2ecc71; font-size: 1.1em;"></div>
+
+    <!-- Decrypted Text Row -->
+    <div class="form-group text-center mb-4">
+        <label class="font-weight-bold">Decrypted Text:</label>
+        <textarea id="caesarDecrypted" class="form-control mx-auto" rows="3" readonly style="resize: none; width: 60%; background-color: rgba(46,204,113,0.1); color: inherit; border: 1px solid rgba(46,204,113,0.3);"></textarea>
+    </div>
     
-    <div class="mt-4 mx-auto" style="width: 85%;">
+    <!-- Chart -->
+    <div class="mx-auto mt-2" style="width: 80%;">
         <canvas id="freqChart" height="100"></canvas>
     </div>
 </div>
@@ -64,25 +80,29 @@ However, the toy scheme I built in Part 1 has a fatal flaw of its own: the priva
 
 I wrote a simple loop that exploits this restricted key space. It simply calculates $1G, 2G, 3G...$ and stops when the output matches the target public key $Q$.
 
-<div class="card p-4 my-4 z-depth-1 text-center" style="background-color: transparent; border: 1px solid rgba(150,150,150,0.3);">
-    <h5 class="mb-2">ECC Toy Curve Exhaustive Search</h5>
-    <p style="font-size: 0.9em; color: #888;">Targeting Public Key Q on curve $y^2 = x^3 + 7 \pmod{17}$ with Base $G=(1,5)$</p>
+<div class="card py-4 my-4 z-depth-1" style="background-color: transparent; border: 1px solid rgba(150,150,150,0.3);">
+    <h5 class="text-center mb-2">ECC Toy Curve Exhaustive Search</h5>
+    <p class="text-center" style="font-size: 0.9em; color: #888;">Targeting Public Key Q on curve $y^2 = x^3 + 7 \pmod{17}$ with Base $G=(1,5)$</p>
     
-    <div class="form-group mt-3">
+    <!-- Target Q Row -->
+    <div class="form-group text-center mt-3">
         <label class="font-weight-bold">Intercepted Public Key (Q):</label>
-        <select id="targetQ" class="form-control mx-auto" style="width: 40%; background-color: transparent; color: inherit; border: 1px solid rgba(150,150,150,0.5);">
-            <option value="10,15">Q = (10, 15)</option>
-            <option value="6,11">Q = (6, 11)</option>
-            <option value="3,9">Q = (3, 9)</option>
+        <select id="targetQ" class="form-control mx-auto" style="width: 250px; background-color: transparent; color: inherit; border: 1px solid rgba(150,150,150,0.5);">
+            <option value="5,9">Q = (5, 9)</option>
             <option value="5,8">Q = (5, 8)</option>
+            <option value="2,7">Q = (2, 7)</option>
+            <option value="12,16">Q = (12, 16)</option>
         </select>
     </div>
     
-    <button onclick="runEccBruteForce()" class="btn mt-3 font-weight-bold" style="background-color: #9b59b6; color: #fff; width: 40%; font-size: 1.1em; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
-        Start Exhaustive Search
-    </button>
+    <!-- Brute Force Button -->
+    <div class="text-center mt-4">
+        <button onclick="runEccBruteForce()" class="btn font-weight-bold" style="background-color: #9b59b6; color: #fff; width: 250px; font-size: 1.1em; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+            Start Exhaustive Search
+        </button>
+    </div>
     
-    <div class="mt-4 p-3 rounded mx-auto text-left" style="width: 65%; background-color: rgba(0,0,0,0.1); font-family: monospace; max-height: 150px; overflow-y: auto; border: 1px solid rgba(150,150,150,0.2);" id="eccLog">
+    <div class="mt-4 p-3 rounded mx-auto text-left" style="width: 60%; background-color: rgba(0,0,0,0.1); font-family: monospace; max-height: 150px; overflow-y: auto; border: 1px solid rgba(150,150,150,0.2);" id="eccLog">
         <i>Awaiting execution...</i>
     </div>
 </div>
@@ -162,6 +182,7 @@ function runEncryption() {
     document.getElementById("caesarOutput").value = cipher;
     updateFrequencies(cipher);
     document.getElementById("crackResult").innerText = "";
+    document.getElementById("caesarDecrypted").value = "";
 }
 
 function runCryptanalysis() {
@@ -193,8 +214,8 @@ function runCryptanalysis() {
         }
     }
 
-    document.getElementById("crackResult").innerText = `Analysis complete! Probable key found: Shift = ${bestShift}. Decrypting...`;
-    document.getElementById("caesarInput").value = caesarShiftText(cipher, 26 - bestShift);
+    document.getElementById("crackResult").innerText = `Analysis complete! Probable key found: Shift = ${bestShift}.`;
+    document.getElementById("caesarDecrypted").value = caesarShiftText(cipher, 26 - bestShift);
     document.getElementById("caesarShift").value = bestShift;
     document.getElementById("shiftVal").innerText = bestShift;
 }
@@ -271,7 +292,6 @@ function runEccBruteForce() {
         step++;
         log.scrollTop = log.scrollHeight;
         
-        // Use a short timeout to make the loop visually apparent to the user
         setTimeout(forceStep, 150); 
     }
     

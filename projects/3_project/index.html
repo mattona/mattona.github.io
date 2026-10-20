@@ -74,7 +74,7 @@ function runCryptanalysis() {
     if(!cipher) return;
     
     let bestShift = 0;
-    let maxDotProduct = -1;
+    let minChiSquare = Infinity; // Utilizziamo il Chi-Quadrato per minimizzare l'errore statistico
 
     for(let s = 0; s < 26; s++) {
         let decryptedAttempt = caesarShiftText(cipher, 26 - s);
@@ -87,13 +87,19 @@ function runCryptanalysis() {
         });
         let attemptFreqs = counts.map(c => total === 0 ? 0 : (c / total) * 100);
         
-        let dotProduct = 0;
+        let chiSquare = 0;
         for(let i=0; i<26; i++) {
-            dotProduct += attemptFreqs[i] * englishFreq[i];
+            let expected = englishFreq[i];
+            let observed = attemptFreqs[i];
+            if(expected > 0) {
+                // Formula del Chi-Quadrato: sum( (Osservato - Atteso)^2 / Atteso )
+                chiSquare += Math.pow(observed - expected, 2) / expected;
+            }
         }
 
-        if(dotProduct > maxDotProduct) {
-            maxDotProduct = dotProduct;
+        // Cerchiamo il valore minimo di deviazione rispetto all'inglese standard
+        if(chiSquare < minChiSquare) {
+            minChiSquare = chiSquare;
             bestShift = s;
         }
     }
@@ -103,7 +109,6 @@ function runCryptanalysis() {
     document.getElementById("caesarShift").value = bestShift;
     document.getElementById("shiftVal").innerText = bestShift;
 }
-
 // --- ECC BRUTE FORCE LOGIC ---
 const P = 17;
 function mod(n, p) { return ((n % p) + p) % p; }

@@ -17,35 +17,39 @@ It's mathematically elegant, but implementing it for standard text on a 17x17 gr
 
 The Caesar cipher is structurally completely different from ECC. Its key space is tiny (only 25 possible shifts for the English alphabet), but its fatal flaw isn't just the key space—it's the fact that it preserves the statistical properties of the underlying language. 
 
-If 'E' is the most common letter in English, and we shift the alphabet by 3, 'H' becomes the most common letter in the ciphertext. To demonstrate this, I built a quick script that encrypts text and then runs a basic frequency analysis attack to recover the key without any brute-forcing. It simply counts the letters, compares the distribution to standard English using a dot product, and picks the shift with the highest match.
+If 'E' is the most common letter in English, and we shift the alphabet by 3, 'H' becomes the most common letter in the ciphertext. To demonstrate this, I built a quick script that encrypts text and then runs a basic frequency analysis attack to recover the key without any brute-forcing.
 
-<div class="card p-4 my-4 z-depth-1" style="background-color: transparent; border: 1px solid rgba(150,150,150,0.3);">
+<div class="card p-4 my-4 z-depth-1 text-center" style="background-color: transparent; border: 1px solid rgba(150,150,150,0.3);">
     <h5 class="mb-4">Caesar Cipher & Frequency Attack</h5>
     
     <div class="form-group">
-        <label style="font-weight: 600;">Input Text:</label>
-        <textarea id="caesarInput" class="form-control" rows="4" style="background-color: transparent; color: inherit; border: 1px solid rgba(150,150,150,0.5); resize: none;">This is a secret message. Cryptography is fascinating because it relies on math to secure data. The quick brown fox jumps over the lazy dog repeatedly to provide enough text for statistical analysis.</textarea>
+        <label class="font-weight-bold">Input Text:</label>
+        <textarea id="caesarInput" class="form-control mx-auto" rows="3" style="resize: none; width: 65%; background-color: rgba(128,128,128,0.05); color: inherit; border: 1px solid rgba(150,150,150,0.5);">This is a secret message. Cryptography is fascinating because it relies on math to secure data. The quick brown fox jumps over the lazy dog repeatedly to provide enough text for statistical analysis.</textarea>
     </div>
     
     <div class="form-group mt-3">
-        <label style="font-weight: 600;">Shift Key: <span id="shiftVal" class="badge badge-secondary" style="font-size: 1em;">7</span></label>
-        <input type="range" id="caesarShift" class="custom-range w-100" min="1" max="25" value="7">
+        <label class="font-weight-bold">Shift Key: <span id="shiftVal" style="color: #ff9800; font-size: 1.2em;">7</span></label>
+        <input type="range" id="caesarShift" class="custom-range mx-auto" min="1" max="25" value="7" style="width: 50%; display: block;" oninput="document.getElementById('shiftVal').innerText = this.value">
     </div>
     
-    <button id="encryptBtn" class="btn btn-block my-4 py-3" style="background-color: #ff5722; color: #ffffff; font-weight: 700; font-size: 1.1em; border: none; border-radius: 6px; box-shadow: 0 4px 12px rgba(255, 87, 34, 0.4); text-transform: uppercase; cursor: pointer; transition: 0.2s;">
+    <button onclick="runEncryption()" class="btn mt-2 mb-4 font-weight-bold" style="background-color: #ff9800; color: #111; width: 40%; font-size: 1.1em; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
         Encrypt Text
     </button>
     
-    <div class="form-group">
-        <label style="font-weight: 600;">Ciphertext (Output):</label>
-        <textarea id="caesarOutput" class="form-control" rows="4" readonly style="background-color: rgba(0,0,0,0.05); color: inherit; border: 1px dashed rgba(150,150,150,0.5); resize: none;"></textarea>
+    <hr class="w-75 mx-auto" style="border-color: rgba(150,150,150,0.2);">
+    
+    <div class="form-group mt-4">
+        <label class="font-weight-bold">Ciphertext:</label>
+        <textarea id="caesarOutput" class="form-control mx-auto" rows="3" readonly style="resize: none; width: 65%; background-color: rgba(0,0,0,0.1); color: inherit; border: 1px solid rgba(150,150,150,0.3);"></textarea>
     </div>
     
-    <hr class="mt-4 mb-3">
+    <button onclick="runCryptanalysis()" class="btn mt-2 font-weight-bold" style="background-color: #e74c3c; color: #fff; width: 50%; font-size: 1.1em; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+        Run Statistical Cryptanalysis
+    </button>
     
-    <button id="crackBtn" class="btn btn-danger btn-sm w-100 font-weight-bold">Run Statistical Cryptanalysis</button>
-    <div id="crackResult" class="mt-3 text-center font-weight-bold" style="color: #2ecc71;"></div>
-    <div class="mt-4">
+    <div id="crackResult" class="mt-3 font-weight-bold" style="color: #2ecc71; font-size: 1.1em;"></div>
+    
+    <div class="mt-4 mx-auto" style="width: 85%;">
         <canvas id="freqChart" height="100"></canvas>
     </div>
 </div>
@@ -60,23 +64,25 @@ However, the toy scheme I built in Part 1 has a fatal flaw of its own: the priva
 
 I wrote a simple loop that exploits this restricted key space. It simply calculates $1G, 2G, 3G...$ and stops when the output matches the target public key $Q$.
 
-<div class="card p-3 my-4 z-depth-1" style="background-color: transparent; border: 1px solid rgba(150,150,150,0.3);">
-    <h5>ECC Toy Curve Exhaustive Search</h5>
+<div class="card p-4 my-4 z-depth-1 text-center" style="background-color: transparent; border: 1px solid rgba(150,150,150,0.3);">
+    <h5 class="mb-2">ECC Toy Curve Exhaustive Search</h5>
     <p style="font-size: 0.9em; color: #888;">Targeting Public Key Q on curve $y^2 = x^3 + 7 \pmod{17}$ with Base $G=(1,5)$</p>
-    <div class="row align-items-center">
-        <div class="col-sm-6 mt-2">
-            <label style="font-weight: 600;">Intercepted Public Key (Q):</label>
-            <select id="targetQ" class="form-control form-control-sm" style="background-color: transparent; color: inherit; border: 1px solid rgba(150,150,150,0.5);">
-                <option value="10,15">Q = (10, 15)</option>
-                <option value="6,11">Q = (6, 11)</option>
-                <option value="3,9">Q = (3, 9)</option>
-            </select>
-        </div>
-        <div class="col-sm-6 mt-2 text-right">
-            <button id="bruteForceBtn" class="btn btn-warning btn-sm mt-4 font-weight-bold" style="color: #000;">Start Exhaustive Search</button>
-        </div>
+    
+    <div class="form-group mt-3">
+        <label class="font-weight-bold">Intercepted Public Key (Q):</label>
+        <select id="targetQ" class="form-control mx-auto" style="width: 40%; background-color: transparent; color: inherit; border: 1px solid rgba(150,150,150,0.5);">
+            <option value="10,15">Q = (10, 15)</option>
+            <option value="6,11">Q = (6, 11)</option>
+            <option value="3,9">Q = (3, 9)</option>
+            <option value="5,8">Q = (5, 8)</option>
+        </select>
     </div>
-    <div class="mt-4 p-3 rounded" style="background-color: rgba(0,0,0,0.05); border: 1px inset rgba(150,150,150,0.2); font-family: 'Courier New', monospace; font-size: 0.9em; max-height: 150px; overflow-y: auto;" id="eccLog">
+    
+    <button onclick="runEccBruteForce()" class="btn mt-3 font-weight-bold" style="background-color: #9b59b6; color: #fff; width: 40%; font-size: 1.1em; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+        Start Exhaustive Search
+    </button>
+    
+    <div class="mt-4 p-3 rounded mx-auto text-left" style="width: 65%; background-color: rgba(0,0,0,0.1); font-family: monospace; max-height: 150px; overflow-y: auto; border: 1px solid rgba(150,150,150,0.2);" id="eccLog">
         <i>Awaiting execution...</i>
     </div>
 </div>
@@ -95,172 +101,181 @@ If this were a properly configured scheme using Ethereum's `secp256k1` curve, th
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {% raw %}
 <script>
+// --- Global Variables & Initialization ---
+const englishFreq = [8.167, 1.492, 2.782, 4.253, 12.702, 2.228, 2.015, 6.094, 6.966, 0.153, 0.772, 4.025, 2.406, 6.749, 7.507, 1.929, 0.095, 5.987, 6.327, 9.056, 2.758, 0.978, 2.360, 0.150, 1.974, 0.074];
+let freqChart;
+
 document.addEventListener("DOMContentLoaded", function() {
+    const ctx = document.getElementById('freqChart').getContext('2d');
+    Chart.defaults.color = "#888888";
+    freqChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""),
+            datasets: [{
+                label: 'Ciphertext Freq (%)',
+                data: Array(26).fill(0),
+                backgroundColor: 'rgba(231, 76, 60, 0.8)',
+                borderRadius: 2
+            }, {
+                label: 'English Expected (%)',
+                data: englishFreq,
+                backgroundColor: 'rgba(150, 150, 150, 0.3)',
+                borderRadius: 2
+            }]
+        },
+        options: { responsive: true, scales: { y: { beginAtZero: true } } }
+    });
+});
+
+// --- CAESAR CIPHER LOGIC ---
+function caesarShiftText(text, shift) {
+    return text.split('').map(char => {
+        if (char.match(/[a-z]/i)) {
+            let code = char.charCodeAt(0);
+            let base = (code >= 65 && code <= 90) ? 65 : 97;
+            return String.fromCharCode(((code - base + shift) % 26) + base);
+        }
+        return char;
+    }).join('');
+}
+
+function updateFrequencies(text) {
+    let counts = Array(26).fill(0);
+    let total = 0;
+    text.toUpperCase().replace(/[^A-Z]/g, '').split('').forEach(char => {
+        counts[char.charCodeAt(0) - 65]++;
+        total++;
+    });
+    let freqs = counts.map(c => total === 0 ? 0 : (c / total) * 100);
+    if(freqChart) {
+        freqChart.data.datasets[0].data = freqs;
+        freqChart.update();
+    }
+    return freqs;
+}
+
+function runEncryption() {
+    let text = document.getElementById("caesarInput").value;
+    let shift = parseInt(document.getElementById("caesarShift").value);
+    let cipher = caesarShiftText(text, shift);
+    document.getElementById("caesarOutput").value = cipher;
+    updateFrequencies(cipher);
+    document.getElementById("crackResult").innerText = "";
+}
+
+function runCryptanalysis() {
+    let cipher = document.getElementById("caesarOutput").value;
+    if(!cipher) return;
     
-    // --- CAESAR CIPHER LOGIC ---
-    const englishFreq = [8.167, 1.492, 2.782, 4.253, 12.702, 2.228, 2.015, 6.094, 6.966, 0.153, 0.772, 4.025, 2.406, 6.749, 7.507, 1.929, 0.095, 5.987, 6.327, 9.056, 2.758, 0.978, 2.360, 0.150, 1.974, 0.074];
-    let freqChart = null;
+    let bestShift = 0;
+    let maxDotProduct = -1;
 
-    try {
-        const ctx = document.getElementById('freqChart').getContext('2d');
-        Chart.defaults.color = "#888888";
-        freqChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""),
-                datasets: [{
-                    label: 'Ciphertext Freq (%)',
-                    data: Array(26).fill(0),
-                    backgroundColor: 'rgba(231, 76, 60, 0.8)'
-                }, {
-                    label: 'English Expected (%)',
-                    data: englishFreq,
-                    backgroundColor: 'rgba(150, 150, 150, 0.3)'
-                }]
-            },
-            options: { responsive: true, scales: { y: { beginAtZero: true } } }
-        });
-    } catch (e) {
-        console.log("Chart.js failed to load. Graphical analysis disabled.");
-    }
-
-    function caesarShiftText(text, shift) {
-        return text.split('').map(char => {
-            if (char.match(/[a-z]/i)) {
-                let code = char.charCodeAt(0);
-                let base = (code >= 65 && code <= 90) ? 65 : 97;
-                return String.fromCharCode(((code - base + shift) % 26) + base);
-            }
-            return char;
-        }).join('');
-    }
-
-    function updateFrequencies(text) {
+    for(let s = 0; s < 26; s++) {
+        let decryptedAttempt = caesarShiftText(cipher, 26 - s);
+        
         let counts = Array(26).fill(0);
         let total = 0;
-        text.toUpperCase().replace(/[^A-Z]/g, '').split('').forEach(char => {
+        decryptedAttempt.toUpperCase().replace(/[^A-Z]/g, '').split('').forEach(char => {
             counts[char.charCodeAt(0) - 65]++;
             total++;
         });
+        let attemptFreqs = counts.map(c => total === 0 ? 0 : (c / total) * 100);
         
-        let freqs = counts.map(c => total === 0 ? 0 : (c / total) * 100);
-        if(freqChart) {
-            freqChart.data.datasets[0].data = freqs;
-            freqChart.update();
-        }
-        return freqs;
-    }
-
-    document.getElementById("caesarShift").addEventListener("input", function(e) {
-        document.getElementById("shiftVal").innerText = e.target.value;
-    });
-
-    document.getElementById("encryptBtn").addEventListener("click", () => {
-        let text = document.getElementById("caesarInput").value;
-        let shift = parseInt(document.getElementById("caesarShift").value);
-        let cipher = caesarShiftText(text, shift);
-        document.getElementById("caesarOutput").value = cipher;
-        updateFrequencies(cipher);
-        document.getElementById("crackResult").innerText = "";
-    });
-
-    document.getElementById("crackBtn").addEventListener("click", () => {
-        let cipher = document.getElementById("caesarOutput").value;
-        if(!cipher) return;
-        
-        let bestShift = 0;
-        let maxDotProduct = -1;
-
-        for(let s = 0; s < 26; s++) {
-            let decryptedAttempt = caesarShiftText(cipher, 26 - s);
-            
-            let counts = Array(26).fill(0);
-            let total = 0;
-            decryptedAttempt.toUpperCase().replace(/[^A-Z]/g, '').split('').forEach(char => {
-                counts[char.charCodeAt(0) - 65]++;
-                total++;
-            });
-            let attemptFreqs = counts.map(c => total === 0 ? 0 : (c / total) * 100);
-            
-            let dotProduct = 0;
-            for(let i=0; i<26; i++) {
-                dotProduct += attemptFreqs[i] * englishFreq[i];
-            }
-
-            if(dotProduct > maxDotProduct) {
-                maxDotProduct = dotProduct;
-                bestShift = s;
-            }
+        let dotProduct = 0;
+        for(let i=0; i<26; i++) {
+            dotProduct += attemptFreqs[i] * englishFreq[i];
         }
 
-        document.getElementById("crackResult").innerText = `Analysis complete! Probable key found: Shift = ${bestShift}. Decrypting...`;
-        document.getElementById("caesarInput").value = caesarShiftText(cipher, 26 - bestShift);
-    });
-
-    // --- ECC ASYNC BRUTE FORCE LOGIC ---
-    const P = 17;
-    function mod(n, p) { return ((n % p) + p) % p; }
-    function modInverse(a, p) {
-        a = mod(a, p);
-        for (let i = 1; i < p; i++) if (mod(a * i, p) === 1) return i;
-        return null;
+        if(dotProduct > maxDotProduct) {
+            maxDotProduct = dotProduct;
+            bestShift = s;
+        }
     }
-    function addPoints(x1, y1, x2, y2) {
-        if (x1 === null) return {x: x2, y: y2};
-        if (x1 === x2 && y1 === mod(-y2, P)) return {x: null, y: null}; 
-        let m;
-        if (x1 === x2 && y1 === y2) {
-            let num = 3 * Math.pow(x1, 2);
-            let den = 2 * y1;
-            m = mod(num * modInverse(den, P), P);
+
+    document.getElementById("crackResult").innerText = `Analysis complete! Probable key found: Shift = ${bestShift}. Decrypting...`;
+    document.getElementById("caesarInput").value = caesarShiftText(cipher, 26 - bestShift);
+    document.getElementById("caesarShift").value = bestShift;
+    document.getElementById("shiftVal").innerText = bestShift;
+}
+
+// --- ECC BRUTE FORCE LOGIC ---
+const P = 17;
+function mod(n, p) { return ((n % p) + p) % p; }
+
+function modInverse(a, p) {
+    a = mod(a, p);
+    for (let i = 1; i < p; i++) {
+        if (mod(a * i, p) === 1) return i;
+    }
+    return null;
+}
+
+function addPoints(x1, y1, x2, y2) {
+    if (x1 === null) return {x: x2, y: y2};
+    if (x2 === null) return {x: x1, y: y1};
+    if (x1 === x2 && mod(y1 + y2, P) === 0) return {x: null, y: null}; // Point at infinity
+    
+    let m;
+    if (x1 === x2 && y1 === y2) {
+        if (y1 === 0) return {x: null, y: null};
+        let num = 3 * Math.pow(x1, 2);
+        let den = 2 * y1;
+        let inv = modInverse(den, P);
+        if(inv === null) return {x: null, y: null};
+        m = mod(num * inv, P);
+    } else {
+        let num = y2 - y1;
+        let den = x2 - x1;
+        let inv = modInverse(den, P);
+        if(inv === null) return {x: null, y: null};
+        m = mod(num * inv, P);
+    }
+    
+    let x3 = mod(Math.pow(m, 2) - x1 - x2, P);
+    let y3 = mod(m * (x1 - x3) - y1, P);
+    return { x: x3, y: y3 };
+}
+
+function runEccBruteForce() {
+    let targetArr = document.getElementById("targetQ").value.split(",");
+    let targetQ = { x: parseInt(targetArr[0]), y: parseInt(targetArr[1]) };
+    let G = { x: 1, y: 5 };
+    let log = document.getElementById("eccLog");
+    
+    log.innerHTML = "<span style='color: #9b59b6;'>Starting brute force attack...</span><br>";
+    
+    let current = G;
+    let step = 1;
+    
+    function forceStep() {
+        if(current.x === null) {
+            log.innerHTML += `Trying k=${step}... Computed ${step}G = Point at Infinity<br>`;
         } else {
-            let num = y2 - y1;
-            let den = x2 - x1;
-            m = mod(num * modInverse(den, P), P);
+            log.innerHTML += `Trying k=${step}... Computed ${step}G = (${current.x}, ${current.y})<br>`;
         }
-        let x3 = mod(Math.pow(m, 2) - x1 - x2, P);
-        let y3 = mod(m * (x1 - x3) - y1, P);
-        return { x: x3, y: y3 };
-    }
-
-    document.getElementById("bruteForceBtn").addEventListener("click", async () => {
-        const btn = document.getElementById("bruteForceBtn");
-        btn.disabled = true; // Prevent double clicks
         
-        let targetArr = document.getElementById("targetQ").value.split(",");
-        let targetQ = { x: parseInt(targetArr[0]), y: parseInt(targetArr[1]) };
-        let G = { x: 1, y: 5 };
-        let log = document.getElementById("eccLog");
-        
-        log.innerHTML = "Initializing exhaustive search...<br><br>";
-        
-        let current = G;
-        
-        for(let step = 1; step <= 20; step++) {
-            let pointStr = current.x === null ? "Point at Infinity" : `(${current.x}, ${current.y})`;
-            log.innerHTML += `> Trying k=${step}... Computed ${step}G = ${pointStr}<br>`;
-            
-            if(current.x === targetQ.x && current.y === targetQ.y) {
-                log.innerHTML += `<br><span style="color: #e74c3c; font-weight: bold; font-size: 1.1em;">Success! Match found at k=${step}.<br>Private key is compromised.</span>`;
-                log.scrollTop = log.scrollHeight;
-                break;
-            }
-            
-            if(step === 20) {
-                log.innerHTML += `<br><span style="color: #888;">Search limit reached. Target point not found.</span>`;
-                break;
-            }
-
-            current = addPoints(current.x, current.y, G.x, G.y);
+        if(current.x === targetQ.x && current.y === targetQ.y) {
+            log.innerHTML += `<br><span style="color: #2ecc71; font-size: 1.1em; font-weight: bold;">[!] Success! Match found at k = ${step}. Private key compromised.</span>`;
             log.scrollTop = log.scrollHeight;
-            
-            // Pausa asincrona per far visualizzare il log e creare un piccolo ritardo visivo
-            await new Promise(resolve => setTimeout(resolve, 200));
+            return;
         }
         
-        btn.disabled = false;
-    });
+        if(step > 25) {
+            log.innerHTML += `<br><span style="color: #e74c3c;">Limit reached. Point not found in this subgroup.</span>`;
+            log.scrollTop = log.scrollHeight;
+            return;
+        }
 
-});
+        current = addPoints(current.x, current.y, G.x, G.y);
+        step++;
+        log.scrollTop = log.scrollHeight;
+        
+        // Use a short timeout to make the loop visually apparent to the user
+        setTimeout(forceStep, 150); 
+    }
+    
+    forceStep();
+}
 </script>
 {% endraw %}

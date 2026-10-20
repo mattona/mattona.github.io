@@ -23,19 +23,19 @@ If 'E' is the most common letter in English, and we shift the alphabet by 3, 'H'
     <h5 class="text-center mb-4">Caesar Cipher & Frequency Attack</h5>
     
     <!-- Input Text Row -->
-    <div class="form-group text-center mb-3">
-        <label class="font-weight-bold">Input Text:</label>
-        <textarea id="caesarInput" class="form-control mx-auto" rows="3" style="resize: none; width: 60%; background-color: rgba(128,128,128,0.05); color: inherit; border: 1px solid rgba(150,150,150,0.5);">This is a secret message. Cryptography is fascinating because it relies on math to secure data. The quick brown fox jumps over the lazy dog repeatedly to provide enough text for statistical analysis.</textarea>
+    <div class="d-flex flex-column align-items-center mb-3">
+        <label class="font-weight-bold mb-1" style="width: 65%; text-align: left;">Input Text:</label>
+        <textarea id="caesarInput" class="form-control" rows="3" style="resize: none; width: 65%; background-color: rgba(128,128,128,0.05); color: inherit; border: 1px solid rgba(150,150,150,0.5);">This is a secret message. Cryptography is fascinating because it relies on math to secure data. The quick brown fox jumps over the lazy dog repeatedly to provide enough text for statistical analysis.</textarea>
     </div>
     
     <!-- Shift Key Row -->
-    <div class="form-group text-center mb-3 mt-4">
-        <label class="font-weight-bold">Shift Key: <span id="shiftVal" style="color: #ff9800; font-size: 1.2em;">7</span></label>
-        <input type="range" id="caesarShift" class="custom-range mx-auto" min="1" max="25" value="7" style="width: 60%; display: block;" oninput="document.getElementById('shiftVal').innerText = this.value">
+    <div class="d-flex flex-column align-items-center mb-4 mt-3">
+        <label class="font-weight-bold mb-1" style="width: 65%; text-align: left;">Shift Key: <span id="shiftVal" style="color: #ff9800; font-size: 1.2em;">7</span></label>
+        <input type="range" id="caesarShift" class="custom-range" min="1" max="25" value="7" style="width: 65%;" oninput="document.getElementById('shiftVal').innerText = this.value">
     </div>
     
     <!-- Encrypt Button -->
-    <div class="text-center mb-4 mt-4">
+    <div class="text-center mb-4">
         <button onclick="runEncryption()" class="btn font-weight-bold" style="background-color: #ff9800; color: #111; width: 250px; font-size: 1.1em; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
             Encrypt Text
         </button>
@@ -44,24 +44,24 @@ If 'E' is the most common letter in English, and we shift the alphabet by 3, 'H'
     <hr class="w-75 mx-auto" style="border-color: rgba(150,150,150,0.2);">
     
     <!-- Ciphertext Row -->
-    <div class="form-group text-center mb-4 mt-4">
-        <label class="font-weight-bold">Ciphertext:</label>
-        <textarea id="caesarOutput" class="form-control mx-auto" rows="3" readonly style="resize: none; width: 60%; background-color: rgba(0,0,0,0.1); color: inherit; border: 1px solid rgba(150,150,150,0.3);"></textarea>
+    <div class="d-flex flex-column align-items-center mb-3 mt-4">
+        <label class="font-weight-bold mb-1" style="width: 65%; text-align: left;">Ciphertext:</label>
+        <textarea id="caesarOutput" class="form-control" rows="3" readonly style="resize: none; width: 65%; background-color: rgba(0,0,0,0.1); color: inherit; border: 1px solid rgba(150,150,150,0.3);"></textarea>
     </div>
     
     <!-- Decrypt Button -->
-    <div class="text-center mb-3 mt-4">
+    <div class="text-center mb-3 mt-3">
         <button onclick="runCryptanalysis()" class="btn font-weight-bold" style="background-color: #e74c3c; color: #fff; width: 250px; font-size: 1.1em; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
             Run Statistical Cryptanalysis
         </button>
     </div>
     
-    <div id="crackResult" class="text-center font-weight-bold mb-4" style="color: #2ecc71; font-size: 1.1em;"></div>
+    <div id="crackResult" class="text-center font-weight-bold mb-3" style="color: #2ecc71; font-size: 1.1em; min-height: 24px;"></div>
 
     <!-- Decrypted Text Row -->
-    <div class="form-group text-center mb-4">
-        <label class="font-weight-bold">Decrypted Text:</label>
-        <textarea id="caesarDecrypted" class="form-control mx-auto" rows="3" readonly style="resize: none; width: 60%; background-color: rgba(46,204,113,0.1); color: inherit; border: 1px solid rgba(46,204,113,0.3);"></textarea>
+    <div class="d-flex flex-column align-items-center mb-4">
+        <label class="font-weight-bold mb-1" style="width: 65%; text-align: left;">Decrypted Text:</label>
+        <textarea id="caesarDecrypted" class="form-control" rows="3" readonly style="resize: none; width: 65%; background-color: rgba(46,204,113,0.1); color: inherit; border: 1px solid rgba(46,204,113,0.3);"></textarea>
     </div>
     
     <!-- Chart -->
@@ -85,9 +85,9 @@ I wrote a simple loop that exploits this restricted key space. It simply calcula
     <p class="text-center" style="font-size: 0.9em; color: #888;">Targeting Public Key Q on curve $y^2 = x^3 + 7 \pmod{17}$ with Base $G=(1,5)$</p>
     
     <!-- Target Q Row -->
-    <div class="form-group text-center mt-3">
-        <label class="font-weight-bold">Intercepted Public Key (Q):</label>
-        <select id="targetQ" class="form-control mx-auto" style="width: 250px; background-color: transparent; color: inherit; border: 1px solid rgba(150,150,150,0.5);">
+    <div class="d-flex flex-column align-items-center mt-3 mb-4">
+        <label class="font-weight-bold mb-1" style="width: 250px; text-align: left;">Intercepted Public Key (Q):</label>
+        <select id="targetQ" class="form-control" style="width: 250px; background-color: transparent; color: inherit; border: 1px solid rgba(150,150,150,0.5);">
             <option value="5,9">Q = (5, 9)</option>
             <option value="5,8">Q = (5, 8)</option>
             <option value="2,7">Q = (2, 7)</option>
@@ -96,13 +96,13 @@ I wrote a simple loop that exploits this restricted key space. It simply calcula
     </div>
     
     <!-- Brute Force Button -->
-    <div class="text-center mt-4">
+    <div class="text-center mb-3">
         <button onclick="runEccBruteForce()" class="btn font-weight-bold" style="background-color: #9b59b6; color: #fff; width: 250px; font-size: 1.1em; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
             Start Exhaustive Search
         </button>
     </div>
     
-    <div class="mt-4 p-3 rounded mx-auto text-left" style="width: 60%; background-color: rgba(0,0,0,0.1); font-family: monospace; max-height: 150px; overflow-y: auto; border: 1px solid rgba(150,150,150,0.2);" id="eccLog">
+    <div class="mt-3 p-3 rounded mx-auto text-left" style="width: 65%; background-color: rgba(0,0,0,0.1); font-family: monospace; max-height: 150px; overflow-y: auto; border: 1px solid rgba(150,150,150,0.2);" id="eccLog">
         <i>Awaiting execution...</i>
     </div>
 </div>

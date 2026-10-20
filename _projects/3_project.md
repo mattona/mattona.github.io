@@ -23,24 +23,26 @@ If 'E' is the most common letter in English, and we shift the alphabet by 3, 'H'
     <h5>Caesar Cipher & Frequency Attack</h5>
     <div class="form-group mt-2">
         <label>Input Text (Try pasting a long English paragraph):</label>
-        <textarea id="caesarInput" class="form-control" rows="3" style="background-color: transparent; color: inherit; border: 1px solid rgba(150,150,150,0.5);">This is a secret message. Cryptography is fascinating because it relies on math to secure data. The quick brown fox jumps over the lazy dog repeatedly to provide enough text for statistical analysis.</textarea>
+        <textarea id="caesarInput" class="form-control" rows="4" style="resize: none; background-color: transparent; color: inherit; border: 1px solid rgba(150,150,150,0.5);">This is a secret message. Cryptography is fascinating because it relies on math to secure data. The quick brown fox jumps over the lazy dog repeatedly to provide enough text for statistical analysis.</textarea>
     </div>
     <div class="row align-items-center mt-3">
-        <div class="col-sm-6">
-            <label>Shift Key: <span id="shiftVal">7</span></label>
+        <div class="col-sm-6 mt-2">
+            <label>Shift Key: <span id="shiftVal" class="font-weight-bold">7</span></label>
             <input type="range" id="caesarShift" class="custom-range w-100" min="1" max="25" value="7">
         </div>
-        <div class="col-sm-6 text-right">
-            <button id="encryptBtn" class="btn btn-primary btn-sm mt-2">Encrypt Text</button>
+        <div class="col-sm-6 mt-2 text-right">
+            <button id="encryptBtn" class="btn mt-2" style="background-color: #e67e22; color: #ffffff; font-weight: bold; padding: 10px 20px; border: none; border-radius: 5px; box-shadow: 0 4px 6px rgba(0,0,0,0.15); transition: background-color 0.2s;">
+                Encrypt Text
+            </button>
         </div>
     </div>
-    <hr>
+    <hr style="border-color: rgba(150,150,150,0.2);">
     <div class="form-group">
         <label>Ciphertext:</label>
-        <textarea id="caesarOutput" class="form-control" rows="3" readonly style="background-color: rgba(0,0,0,0.05); color: inherit;"></textarea>
+        <textarea id="caesarOutput" class="form-control" rows="4" readonly style="resize: none; background-color: rgba(0,0,0,0.05); color: inherit; border: 1px solid rgba(150,150,150,0.5);"></textarea>
     </div>
-    <button id="crackBtn" class="btn btn-danger btn-sm w-100 mt-2">Run Statistical Cryptanalysis</button>
-    <div id="crackResult" class="mt-3 text-center font-weight-bold text-success"></div>
+    <button id="crackBtn" class="btn btn-danger w-100 mt-2 font-weight-bold">Run Statistical Cryptanalysis</button>
+    <div id="crackResult" class="mt-3 text-center font-weight-bold text-success" style="min-height: 24px;"></div>
     <div class="mt-4">
         <canvas id="freqChart" height="100"></canvas>
     </div>
@@ -69,10 +71,10 @@ I wrote a simple loop that exploits this restricted key space. It simply calcula
             </select>
         </div>
         <div class="col-sm-6 mt-2 text-right">
-            <button id="bruteForceBtn" class="btn btn-warning btn-sm mt-4">Start Exhaustive Search</button>
+            <button id="bruteForceBtn" class="btn btn-warning btn-sm mt-4 font-weight-bold">Start Exhaustive Search</button>
         </div>
     </div>
-    <div class="mt-3 p-2 rounded" style="background-color: rgba(0,0,0,0.1); font-family: monospace; max-height: 120px; overflow-y: auto;" id="eccLog">
+    <div class="mt-3 p-2 rounded" style="background-color: rgba(0,0,0,0.1); font-family: monospace; height: 120px; overflow-y: auto;" id="eccLog">
         <i>Awaiting execution...</i>
     </div>
 </div>
@@ -163,7 +165,6 @@ document.addEventListener("DOMContentLoaded", function() {
         let bestShift = 0;
         let maxDotProduct = -1;
 
-        // Try all 26 shifts, calculate dot product of frequencies
         for(let s = 0; s < 26; s++) {
             let decryptedAttempt = caesarShiftText(cipher, 26 - s);
             let attemptFreqs = getFrequencies(decryptedAttempt);
@@ -249,7 +250,7 @@ document.addEventListener("DOMContentLoaded", function() {
             current = addPoints(current.x, current.y, G.x, G.y);
             step++;
             log.scrollTop = log.scrollHeight;
-            setTimeout(forceStep, 100); // Slowed down visually
+            setTimeout(forceStep, 100);
         }
         
         forceStep();

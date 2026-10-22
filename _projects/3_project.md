@@ -17,7 +17,7 @@ It's mathematically elegant, but implementing it for standard text on a 17x17 gr
 
 The Caesar cipher is structurally completely different from ECC. Its key space is tiny (only 25 possible shifts for the English alphabet), but its fatal flaw isn't just the key space—it's the fact that it preserves the statistical properties of the underlying language. 
 
-If 'E' is the most common letter in English, and we shift the alphabet by 3, 'H' becomes the most common letter in the ciphertext. To demonstrate this, I built a quick script that encrypts text and then runs a basic frequency analysis attack to recover the key without any brute-forcing.
+If 'E' is the most common letter in English, and we shift the alphabet by 3, 'H' becomes the most common letter in the ciphertext. To demonstrate this, I built a quick script that encrypts text and then runs a frequency analysis attack. Instead of a simple dot product, this updated version uses the **Chi-Square statistic** to accurately minimize the error between the ciphertext's distribution and the expected English corpus.
 
 <div class="card py-4 my-4 z-depth-1" style="background-color: transparent; border: 1px solid rgba(150,150,150,0.3);">
     <h5 class="text-center mb-4">Caesar Cipher & Frequency Attack</h5>
@@ -70,7 +70,7 @@ If 'E' is the most common letter in English, and we shift the alphabet by 3, 'H'
     </div>
 </div>
 
-Playing around with the tool, I noticed the algorithm's effectiveness heavily depends on the ciphertext length. Give it a three-word sentence, and it fails because short texts don't normalize to standard English frequencies. But give it a decent paragraph, and the letter frequencies naturally align with the English corpus, making the attack trivial. You could theoretically use exhaustive key search (trying all 25 shifts manually), but frequency analysis is programmatic and instantaneous, making it the standard approach for substitution ciphers.
+Playing around with the tool, I noticed the algorithm's effectiveness heavily depends on the ciphertext length. Give it a three-word sentence, and it fails because short texts don't normalize to standard English frequencies. But give it a decent paragraph, and the letter frequencies naturally align with the English corpus, making the attack trivial. 
 
 ### Cracking the Toy ECC
 
@@ -107,15 +107,22 @@ I wrote a simple loop that exploits this restricted key space. It simply calcula
     </div>
 </div>
 
-### Comparing the Vulnerabilities 
+### Beyond Brute Force: Alternative Attacks & Design Flaws
 
-The differences between these two attacks highlight exactly why modern cryptography relies on elliptic curves over massive fields.
+While writing the brute-force script, I started looking into the optional prompt about alternative attacks and deeper vulnerabilities. It turns out, my toy scheme is broken on multiple levels—not just because the key space is small, but fundamentally in how it is designed.
 
-With the Caesar cipher, the encryption logic itself is flawed. The statistical attack works regardless of how "large" the alphabet is; even if you applied substitution to a 10,000-character language, letter frequency analysis would eventually crack it because the mapping is static and data patterns leak through. 
+**Alternative Attacks (Beyond Exhaustive Search)**  
+If the key space were slightly larger (say, taking a few days to brute force), an exhaustive search would be inefficient. Instead, attackers use algorithmic shortcuts to solve the Elliptic Curve Discrete Logarithm Problem (ECDLP):
+*   **Baby-step Giant-step (BSGS) & Pollard's rho:** These are time-memory trade-off algorithms that reduce the time complexity from $O(n)$ to roughly $O(\sqrt{n})$. For a massive curve, it's still computationally unfeasible, but it mathematically halves the effective bit-length of the security.
+*   **Pohlig-Hellman algorithm:** This attack specifically targets curves where the number of points (the group order) has small prime factors. 
 
-With ECC, the logic is sound, but my specific implementation failed because of the *parameters*. The exhaustive search attack I wrote above only works because iterating 18 times takes my browser about two milliseconds. This is known as solving the Elliptic Curve Discrete Logarithm Problem (ECDLP) by brute force. 
+**Weaknesses Arising from the Restricted Key Space**  
+The most obvious flaw is the prime modulus ($p=17$). Because the field is so small, the total number of valid points is only 18. This tiny key space makes brute force instantaneous. In a real-world scenario using `secp256k1`, the key space is roughly $2^{256}$. At that scale, even advanced $O(\sqrt{n})$ attacks like Pollard's rho require impossible amounts of computing power, keeping the encrypted message secure.
 
-If this were a properly configured scheme using Ethereum's `secp256k1` curve, the prime modulus wouldn't be 17; it would be a 256-bit number. The key space jumps from 18 to roughly $2^{256}$. Running that same simple exhaustive search loop on a modern CPU would take longer than the current age of the universe. Since ECC doesn't leak statistical patterns, and the key space is too large to brute force, the encrypted message remains secure.
+**Weaknesses Arising from the Toy Scheme Design Itself**  
+Even if we artificially scaled this specific curve up, the *design* of the toy scheme is fundamentally flawed:
+1.  **Weak Group Order (Pohlig-Hellman Vulnerability):** The number of points on my curve $y^2 = x^3 + 7 \pmod{17}$ is exactly 18. The prime factors of 18 are 2, 3, and 3. Because these factors are incredibly small, a Pohlig-Hellman attack would completely shred this curve in fractions of a second. Real curves are strictly designed to have a large prime order to prevent this exact mathematical exploit.
+2.  **Deterministic Mapping (No Padding):** In my conceptual scheme, I mapped text directly to coordinates. If you map 'A' to $(1,5)$ and encrypt it deterministically, the same plaintext always produces the same ciphertext point. This leaks metadata and fails IND-CPA (Indistinguishability under Chosen Plaintext Attack). Modern ECC schemes use robust padding frameworks (like ECIES) and introduce fresh randomness for every single encryption to ensure identical messages look completely different when encrypted.
 
 <!-- Scripts for interactive tools -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -190,7 +197,7 @@ function runCryptanalysis() {
     if(!cipher) return;
     
     let bestShift = 0;
-    let minChiSquare = Infinity; // Utilizziamo il Chi-Quadrato per minimizzare l'errore statistico
+    let minChiSquare = Infinity;
 
     for(let s = 0; s < 26; s++) {
         let decryptedAttempt = caesarShiftText(cipher, 26 - s);
@@ -208,12 +215,10 @@ function runCryptanalysis() {
             let expected = englishFreq[i];
             let observed = attemptFreqs[i];
             if(expected > 0) {
-                // Formula del Chi-Quadrato: sum( (Osservato - Atteso)^2 / Atteso )
                 chiSquare += Math.pow(observed - expected, 2) / expected;
             }
         }
 
-        // Cerchiamo il valore minimo di deviazione rispetto all'inglese standard
         if(chiSquare < minChiSquare) {
             minChiSquare = chiSquare;
             bestShift = s;
@@ -225,6 +230,7 @@ function runCryptanalysis() {
     document.getElementById("caesarShift").value = bestShift;
     document.getElementById("shiftVal").innerText = bestShift;
 }
+
 // --- ECC BRUTE FORCE LOGIC ---
 const P = 17;
 function mod(n, p) { return ((n % p) + p) % p; }

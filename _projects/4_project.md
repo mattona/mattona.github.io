@@ -2,26 +2,26 @@
 layout: page
 title: Stochastic Penetration Models
 description: Simulating network breaches using Bernoulli and Rademacher stochastic processes.
-img: assets/img/hmw4.jpg
+img: assets/img/hmw3.jpg
 importance: 4
 category: Statistics
 permalink: /projects/homework3/
 ---
 
-At first glance, modeling a cyberattack as a simple coin flip feels overly reductive. A real penetration test involves exploiting specific CVEs, chaining vulnerabilities, and bypassing firewalls. However, when trying to evaluate risk across a massive infrastructure, individual technical details become noise. 
+For this assignment, I had to simulate a stochastic penetration process. We have $m$ attackers interacting with $n$ systems, represented by independent and identically distributed (i.i.d.) increments $X_1, X_2, \dots, X_n$. 
 
-For this assignment, I modeled the aggregate penetration process of a network. We have $m$ independent attackers trying to compromise a sequence of $n$ systems (or moving through $n$ security layers). At each step, the attacker either succeeds or fails. By zooming out and running this stochastic process thousands of times, we can observe fundamental laws of probability emerging from the chaos.
+Building the simulation in JavaScript was actually a bit of a headache. When implementing the histograms, I had to write custom logic to dynamically resize the bins, because computing the raw sum $S_n$ for $n=1000$ causes the variance to blow up, completely breaking standard charting scales.
 
-### The Two Stochastic Models
+### 1. The Mathematical Models
 
-To simulate the trajectory of an attacker, we use a stochastic process with independent and identically distributed (i.i.d.) increments $X_1, X_2, \dots, X_n$. I explored two specific variations:
+We are looking at two specific stochastic processes for the increment $X_i$:
 
-1.  **The Bernoulli Model:** This is the realistic scenario. At each step, the attacker succeeds $X_i = 1$ with probability $p$, or fails $X_i = 0$ with probability $1-p$.
-2.  **The Rademacher Model:** This is a theoretical, symmetric model used to study zero-mean random walks. The attacker either advances $X_i = +1$ or retreats $X_i = -1$ with equal probability ($p = 0.5$). While hackers don't usually "un-hack" a system, this symmetric boundary allows us to perfectly isolate and observe the Central Limit Theorem in action.
+1.  **Bernoulli Model:** $X_i \in \{0, 1\}$, with $P(X_i = 1) = p$. The expected value is $E[X_i] = p$ and the variance is $Var(X_i) = p(1-p)$.
+2.  **Rademacher Model:** $X_i \in \{-1, 1\}$, with $P(X_i = 1) = P(X_i = -1) = 0.5$. This provides a symmetric, zero-mean baseline where $E[X_i] = 0$ and $Var(X_i) = 1$.
 
 ### Interactive Simulation Dashboard
 
-I built the engine below to simulate these random walks in real-time. The charts are generated automatically based on default parameters. By tweaking $n$ (time steps) and $m$ (sample trajectories), you can observe how the distributions scale mathematically.
+The engine below simulates these random walks in real-time. By tweaking $n$ (time steps) and $m$ (sample trajectories), you can observe how the distributions scale according to the theoretical limits.
 
 <div class="card py-4 my-4 z-depth-1" style="background-color: transparent; border: 1px solid rgba(150,150,150,0.3);">
     <h5 class="text-center mb-4">Stochastic Trajectory Generator</h5>
@@ -61,19 +61,16 @@ I built the engine below to simulate these random walks in real-time. The charts
         </div>
 
         <h6 class="font-weight-bold mb-2 text-center">Total Score ($S_n$)</h6>
-        <p style="font-size: 0.85em; color: #888;" class="mb-2">Variance grows with n.</p>
         <div class="w-100 px-3 mb-5">
             <canvas id="histTotal" height="100"></canvas>
         </div>
 
         <h6 class="font-weight-bold mb-2 text-center">Average Score ($S_n / n$)</h6>
-        <p style="font-size: 0.85em; color: #888;" class="mb-2">Variance shrinks to zero (Law of Large Numbers).</p>
         <div class="w-100 px-3 mb-5">
             <canvas id="histAverage" height="100"></canvas>
         </div>
 
         <h6 class="font-weight-bold mb-2 text-center">Normalized Score ($S_n / \sqrt{n}$)</h6>
-        <p style="font-size: 0.85em; color: #888;" class="mb-2">Variance remains stable (Central Limit Theorem).</p>
         <div class="w-100 px-3 mb-2">
             <canvas id="histNormalized" height="100"></canvas>
         </div>
@@ -81,16 +78,30 @@ I built the engine below to simulate these random walks in real-time. The charts
     </div>
 </div>
 
-### Interpreting the Statistics
+### 2. Analytical Results vs. Simulation
 
-Running the simulations repeatedly makes the theoretical formulas click. Notice that the three bar charts share the exact same bell shape. This is because they represent the identical underlying data ($S_n$), just scaled by a constant. The mathematical magic lies entirely in the **X-axis scale**.
+Let the total penetration score be $S_n = \sum_{i=1}^n X_i$. Running the simulation for increasing values of $n$ demonstrates three fundamental limit theorems, depending on how we scale the aggregate score.
 
-**1. The Law of Large Numbers ($S_n / n$)**  
-If you increase $n$ up to 1000, you are witnessing the Law of Large Numbers (LLN). Look at the X-axis for the *Average Score*: the spread collapses into an incredibly tight cluster exactly at $p$. The variance of this average goes to zero. In a security context, this means that while a single attacker's success is unpredictable, the overall penetration *rate* against a massive cluster of servers is virtually guaranteed to match the baseline vulnerability probability. 
+**Total Score ($S_n$):**  
+For the Bernoulli model, the expected value is $E[S_n] = np$ and the variance is $Var(S_n) = np(1-p)$. As $n$ increases, the variance grows linearly to infinity. You can see this in the first histogram: as $n$ goes up, the X-axis continuously expands to accommodate the growing spread.
 
-**2. The Central Limit Theorem ($S_n / \sqrt{n}$)**  
-While the average score stabilizes, the absolute number of hacked systems $S_n$ does not (its X-axis expands infinitely). If we apply the specific normalization factor of $1/\sqrt{n}$, we prevent the variance from blowing up to infinity or shrinking to zero. 
-This is where the Rademacher model shines. Because it has a mean of zero and a variance of 1, plotting the *Normalized Score* ($S_n / \sqrt{n}$) visually proves the Central Limit Theorem (CLT). As you increase $n$, the X-axis of the normalized chart remains perfectly stable between -3 and +3, and the bell curve emerges perfectly from the binary randomness.
+**Average Score and the WLLN ($S_n / n$):**  
+When we divide by $n$, the expected value remains $p$, but the variance scales down quadratically:
+$$ Var\left(\frac{S_n}{n}\right) = \frac{1}{n^2} Var(S_n) = \frac{p(1-p)}{n} $$
+As $n \to \infty$, this variance tends to 0. This algebraic property is the basis of the **Weak Law of Large Numbers (WLLN)**, which states that the sample mean converges in probability to the expected value. We can formalize this using Chebyshev's inequality:
+$$ P\left(\left|\frac{S_n}{n} - p\right| \ge \epsilon\right) \le \frac{Var(S_n/n)}{\epsilon^2} = \frac{p(1-p)}{n\epsilon^2} \xrightarrow{n \to \infty} 0 $$
+Visually, the average score histogram collapses into a single spike at exactly $p$. 
+
+**Normalized Score and the CLT ($S_n / \sqrt{n}$):**  
+To stabilize the variance, we scale by $1/\sqrt{n}$. Looking at the symmetric Rademacher model:
+$$ Var\left(\frac{S_n}{\sqrt{n}}\right) = \frac{1}{n} Var(S_n) = \frac{1}{n}(n \cdot 1) = 1 $$
+Because the variance remains exactly 1, the distribution doesn't collapse or blow up. According to the **Central Limit Theorem (CLT)**, the cumulative distribution function (CDF) of this normalized sum converges pointwise to the CDF of a Standard Normal distribution $\Phi(x)$. The simulation confirms this: the normalized chart maintains a stable $N(0,1)$ shape between -3 and +3.
+
+### 3. The Effect of $m$ and Extreme Value Theory
+
+The prompt also asks to interpret the role of $m$ (the number of attackers). While a high $m$ is necessary in the simulation just to get a smooth histogram, in a real security context, increasing $m$ fundamentally shifts the threat model.
+
+If we face a massive number of attackers, looking at the mean $E[S_n]$ is insufficient. We need to evaluate the maximum penetration: $M_m = \max(S_n^{(1)}, \dots, S_n^{(m)})$. As $m$ increases, the probability of drawing an outlier from the extreme right tail of the normal distribution approaches 1. This behavior is studied in **Extreme Value Theory (EVT)**. Even if a single attacker has a low success probability, with $m = 10,000$ parallel attacks, it is mathematically almost certain that at least one attacker will reach a critically high penetration score simply due to variance.
 
 <!-- Scripts for interactive tools -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

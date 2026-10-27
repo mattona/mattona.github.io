@@ -1,24 +1,164 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <title> project 4 | Matteo Sulmona </title> <meta name="author" content="Matteo Sulmona"> <meta name="description" content="another without an image"> <meta name="keywords" content="jekyll, jekyll-theme, academic-website, portfolio-website"> <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' data: https:; media-src 'self' https:; frame-src 'self' https:; connect-src 'self' https:;"> <style>
+<!DOCTYPE html> <html lang="en"> <head> <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <title> Stochastic Penetration Models | Matteo Sulmona </title> <meta name="author" content="Matteo Sulmona"> <meta name="description" content="Simulating network breaches using Bernoulli and Rademacher stochastic processes."> <meta name="keywords" content="jekyll, jekyll-theme, academic-website, portfolio-website"> <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' data: https:; media-src 'self' https:; frame-src 'self' https:; connect-src 'self' https:;"> <style>
   :root {
     --max-content-width: 930px;
   }
 </style> <link rel="stylesheet" href="/assets/css/tailwind.css?v=50c64c15cbb9fd1ce6056fdb8bcb4b62"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/css/all.min.css" integrity="sha256-MVopmdyC2tYTiJ8wlktf0uh0v4NgT+vNdyVFepi7Q0c=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.5/css/academicons.min.css" integrity="sha256-SzrCOBJbGVFMahewkgjwnApaV2+av1DwMAA+/QGLyZw=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/scholar-icons@1.0.3/css/scholar-icons.css" integrity="sha256-VY3hHVj/hNX3fYG6wtbA6TcKJQl7+FthzGSyIB64klY=" crossorigin="anonymous"> <link defer rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:100,300,400,500,700|Material+Icons&amp;display=swap"> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-github.css?v=591dab5a4e56573bf4ef7fd332894c99" media="" id="highlight_theme_light"> <link rel="shortcut icon" href="data:image/svg+xml,&lt;svg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22&gt;&lt;text%20y=%22.9em%22%20font-size=%2290%22&gt;%E2%9A%9B%EF%B8%8F&lt;/text&gt;&lt;/svg&gt;"> <link rel="stylesheet" href="/assets/css/main.css?v=3116ba77db9ee1581d05bb3e86fbf7f1"> <link rel="canonical" href="https://mattona.github.io/projects/4_project/"> <script src="/assets/js/theme.js?v=5286c3e4c334d0ecb8fc0c40ff4fa7ec"></script> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-native.css?v=5847e5ed4a4568527aa6cfab446049ca" media="none" id="highlight_theme_dark"> <script>
     initTheme();
-  </script> </head> <body class="fixed-top-nav "> <header> <nav id="navbar" class="navbar navbar-light navbar-expand-sm fixed-top" role="navigation"> <div class="container"> <a class="navbar-brand title font-weight-lighter" href="/"> Matteo Sulmona </a> <button class="navbar-toggler collapsed navbar-toggler-main" type="button" data-nav-toggle="navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar top-bar"></span> <span class="icon-bar middle-bar"></span> <span class="icon-bar bottom-bar"></span> </button> <div class="collapse navbar-collapse navbar-collapse-main" id="navbarNav"> <ul class="navbar-nav navbar-menu-list flex-nowrap"> <li class="nav-item "> <a class="nav-link" href="/">about </a> </li> <li class="nav-item active"> <a class="nav-link" href="/projects/">Projects <span class="sr-only">(current)</span> </a> </li> <li class="nav-item "> <a class="nav-link" href="/cv/">CV </a> </li> <li class="nav-item"> <button id="search-toggle" type="button" title="Search" aria-label="Open search"> <span class="nav-link">ctrl k <i class="fa-solid fa-magnifying-glass"></i></span> </button> </li> <li class="toggle-container"> <button id="light-toggle" type="button" title="Change theme" aria-label="Change color theme"> <i class="fa-half-sun-moon" id="light-toggle-system"></i> <i class="fa-solid fa-moon" id="light-toggle-dark"></i> <i class="fa-solid fa-sun" id="light-toggle-light"></i> </button> </li> </ul> </div> </div> </nav> <progress id="progress" value="0"> <div class="progress-container"> <span class="progress-bar"></span> </div> </progress> </header> <div class="container mt-5" role="main"> <div class="post"> <header class="post-header"> <h1 class="post-title">project 4</h1> <p class="post-description">another without an image</p> </header> <article> <p>Every project has a beautiful feature showcase page. It’s easy to include images in a flexible 3-column grid format. Make your photos 1/3, 2/3, or full width.</p> <p>To give your project a background in the portfolio page, just add the img tag to the front matter like so:</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---
-layout: page
-title: project
-description: a project with a background image
-img: /assets/img/12.jpg
----
-</code></pre></div></div> <div class="row"> <div class="col-sm mt-3 mt-md-0"> <figure> <picture> <source class="responsive-img-srcset" srcset="/assets/img/1-480.webp 480w,/assets/img/1-800.webp 800w,/assets/img/1-1400.webp 1400w," type="image/webp" sizes="95vw"></source> <img src="/assets/img/1.jpg" class="img-fluid rounded z-depth-1" width="100%" height="auto" title="example image" loading="eager" onerror="this.onerror=null; document.querySelectorAll('.responsive-img-srcset').forEach(function (n) { n.remove(); });"> </picture> </figure> </div> <div class="col-sm mt-3 mt-md-0"> <figure> <picture> <source class="responsive-img-srcset" srcset="/assets/img/3-480.webp 480w,/assets/img/3-800.webp 800w,/assets/img/3-1400.webp 1400w," type="image/webp" sizes="95vw"></source> <img src="/assets/img/3.jpg" class="img-fluid rounded z-depth-1" width="100%" height="auto" title="example image" loading="eager" onerror="this.onerror=null; document.querySelectorAll('.responsive-img-srcset').forEach(function (n) { n.remove(); });"> </picture> </figure> </div> <div class="col-sm mt-3 mt-md-0"> <figure> <picture> <source class="responsive-img-srcset" srcset="/assets/img/5-480.webp 480w,/assets/img/5-800.webp 800w,/assets/img/5-1400.webp 1400w," type="image/webp" sizes="95vw"></source> <img src="/assets/img/5.jpg" class="img-fluid rounded z-depth-1" width="100%" height="auto" title="example image" loading="eager" onerror="this.onerror=null; document.querySelectorAll('.responsive-img-srcset').forEach(function (n) { n.remove(); });"> </picture> </figure> </div> </div> <div class="caption"> Caption photos easily. On the left, a road goes through a tunnel. Middle, leaves artistically fall in a hipster photoshoot. Right, in another hipster photoshoot, a lumberjack grasps a handful of pine needles. </div> <div class="row"> <div class="col-sm mt-3 mt-md-0"> <figure> <picture> <source class="responsive-img-srcset" srcset="/assets/img/5-480.webp 480w,/assets/img/5-800.webp 800w,/assets/img/5-1400.webp 1400w," type="image/webp" sizes="95vw"></source> <img src="/assets/img/5.jpg" class="img-fluid rounded z-depth-1" width="100%" height="auto" title="example image" loading="eager" onerror="this.onerror=null; document.querySelectorAll('.responsive-img-srcset').forEach(function (n) { n.remove(); });"> </picture> </figure> </div> </div> <div class="caption"> This image can also have a caption. It's like magic. </div> <p>You can also put regular text between your rows of images. Say you wanted to write a little bit about your project before you posted the rest of the images. You describe how you toiled, sweated, <em>bled</em> for your project, and then… you reveal its glory in the next row of images.</p> <div class="row justify-content-sm-center"> <div class="col-sm-8 mt-3 mt-md-0"> <figure> <picture> <source class="responsive-img-srcset" srcset="/assets/img/6-480.webp 480w,/assets/img/6-800.webp 800w,/assets/img/6-1400.webp 1400w," type="image/webp" sizes="95vw"></source> <img src="/assets/img/6.jpg" class="img-fluid rounded z-depth-1" width="100%" height="auto" title="example image" loading="lazy" onerror="this.onerror=null; document.querySelectorAll('.responsive-img-srcset').forEach(function (n) { n.remove(); });"> </picture> </figure> </div> <div class="col-sm-4 mt-3 mt-md-0"> <figure> <picture> <source class="responsive-img-srcset" srcset="/assets/img/11-480.webp 480w,/assets/img/11-800.webp 800w,/assets/img/11-1400.webp 1400w," type="image/webp" sizes="95vw"></source> <img src="/assets/img/11.jpg" class="img-fluid rounded z-depth-1" width="100%" height="auto" title="example image" loading="lazy" onerror="this.onerror=null; document.querySelectorAll('.responsive-img-srcset').forEach(function (n) { n.remove(); });"> </picture> </figure> </div> </div> <div class="caption"> You can also have artistically styled 2/3 + 1/3 images, like these. </div> <p>The code is simple. Just wrap your images with <code class="language-plaintext highlighter-rouge">&lt;div class="col-sm"&gt;</code> and place them inside <code class="language-plaintext highlighter-rouge">&lt;div class="row"&gt;</code> (read more about the <a href="https://getbootstrap.com/docs/4.4/layout/grid/" rel="external nofollow noopener" target="_blank">Bootstrap Grid</a> system). To make images responsive, add <code class="language-plaintext highlighter-rouge">img-fluid</code> class to each; for rounded corners and shadows use <code class="language-plaintext highlighter-rouge">rounded</code> and <code class="language-plaintext highlighter-rouge">z-depth-1</code> classes. Here’s the code for the last row of images above:</p> <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"row justify-content-sm-center"</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"col-sm-8 mt-3 mt-md-0"</span><span class="nt">&gt;</span>
-    {% include figure.liquid path="assets/img/6.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-  <span class="nt">&lt;/div&gt;</span>
-  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"col-sm-4 mt-3 mt-md-0"</span><span class="nt">&gt;</span>
-    {% include figure.liquid path="assets/img/11.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-  <span class="nt">&lt;/div&gt;</span>
-<span class="nt">&lt;/div&gt;</span>
-</code></pre></div></div> </article> </div> </div> <footer class="fixed-bottom" role="contentinfo"> <div class="container mt-0"> © Copyright 2026 Matteo Sulmona. Powered by <a href="https://jekyllrb.com/" target="_blank" rel="external nofollow noopener">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio" rel="external nofollow noopener" target="_blank">al-folio</a> theme. Hosted by <a href="https://pages.github.com/" target="_blank" rel="external nofollow noopener">GitHub Pages</a>. Photos from <a href="https://unsplash.com" target="_blank" rel="external nofollow noopener">Unsplash</a>. </div> </footer> <script>
+  </script> </head> <body class="fixed-top-nav "> <header> <nav id="navbar" class="navbar navbar-light navbar-expand-sm fixed-top" role="navigation"> <div class="container"> <a class="navbar-brand title font-weight-lighter" href="/"> Matteo Sulmona </a> <button class="navbar-toggler collapsed navbar-toggler-main" type="button" data-nav-toggle="navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar top-bar"></span> <span class="icon-bar middle-bar"></span> <span class="icon-bar bottom-bar"></span> </button> <div class="collapse navbar-collapse navbar-collapse-main" id="navbarNav"> <ul class="navbar-nav navbar-menu-list flex-nowrap"> <li class="nav-item "> <a class="nav-link" href="/">about </a> </li> <li class="nav-item active"> <a class="nav-link" href="/projects/">Projects <span class="sr-only">(current)</span> </a> </li> <li class="nav-item "> <a class="nav-link" href="/cv/">CV </a> </li> <li class="nav-item"> <button id="search-toggle" type="button" title="Search" aria-label="Open search"> <span class="nav-link">ctrl k <i class="fa-solid fa-magnifying-glass"></i></span> </button> </li> <li class="toggle-container"> <button id="light-toggle" type="button" title="Change theme" aria-label="Change color theme"> <i class="fa-half-sun-moon" id="light-toggle-system"></i> <i class="fa-solid fa-moon" id="light-toggle-dark"></i> <i class="fa-solid fa-sun" id="light-toggle-light"></i> </button> </li> </ul> </div> </div> </nav> <progress id="progress" value="0"> <div class="progress-container"> <span class="progress-bar"></span> </div> </progress> </header> <div class="container mt-5" role="main"> <div class="post"> <header class="post-header"> <h1 class="post-title">Stochastic Penetration Models</h1> <p class="post-description">Simulating network breaches using Bernoulli and Rademacher stochastic processes.</p> </header> <article> <p>At first glance, modeling a cyberattack as a simple coin flip feels overly reductive. A real penetration test involves exploiting specific CVEs, chaining vulnerabilities, and bypassing firewalls. However, when trying to evaluate risk across a massive infrastructure, individual technical details become noise.</p> <p>For this assignment, I modeled the aggregate penetration process of a network. We have $m$ independent attackers trying to compromise a sequence of $n$ systems (or moving through $n$ security layers). At each step, the attacker either succeeds or fails. By zooming out and running this stochastic process thousands of times, we can observe fundamental laws of probability emerging from the chaos.</p> <h3 id="the-two-stochastic-models">The Two Stochastic Models</h3> <p>To simulate the trajectory of an attacker, we use a stochastic process with independent and identically distributed (i.i.d.) increments $X_1, X_2, \dots, X_n$. I explored two specific variations:</p> <ol> <li> <strong>The Bernoulli Model:</strong> This is the realistic scenario. At each step, the attacker succeeds $X_i = 1$ with probability $p$, or fails $X_i = 0$ with probability $1-p$.</li> <li> <strong>The Rademacher Model:</strong> This is a theoretical, symmetric model used to study zero-mean random walks. The attacker either advances $X_i = +1$ or retreats $X_i = -1$ with equal probability ($p = 0.5$). While hackers don’t usually “un-hack” a system, this symmetric boundary allows us to perfectly isolate and observe the Central Limit Theorem in action.</li> </ol> <h3 id="interactive-simulation-dashboard">Interactive Simulation Dashboard</h3> <p>I built the engine below to simulate these random walks in real-time. You can adjust the number of systems $n$ (time steps), the number of attackers $m$ (sample trajectories), and switch between the raw score, the average score, and the normalized score to see how the distributions behave.</p> <div class="card py-4 my-4 z-depth-1" style="background-color: transparent; border: 1px solid rgba(150,150,150,0.3);"> <h5 class="text-center mb-4">Stochastic Trajectory Generator</h5> <div class="d-flex flex-column align-items-center mb-3"> <label class="font-weight-bold mb-1" style="width: 65%; text-align: left;">Simulation Model:</label> <select id="simModel" class="form-control" style="width: 65%; background-color: rgba(128,128,128,0.05); color: inherit; border: 1px solid rgba(150,150,150,0.5);" onchange="updateProbSlider()"> <option value="bernoulli">Bernoulli (0 or 1)</option> <option value="rademacher">Rademacher (-1 or +1)</option> </select> </div> <div class="d-flex flex-column align-items-center mb-3 mt-3"> <label class="font-weight-bold mb-1" style="width: 65%; text-align: left;">Number of Attackers (m): <span id="mVal" style="color: #3498db;">100</span></label> <input type="range" id="mAttackers" class="custom-range" min="10" max="500" step="10" value="100" style="width: 65%;" oninput="document.getElementById('mVal').innerText = this.value"> </div> <div class="d-flex flex-column align-items-center mb-3 mt-3"> <label class="font-weight-bold mb-1" style="width: 65%; text-align: left;">Number of Systems (n): <span id="nVal" style="color: #e74c3c;">200</span></label> <input type="range" id="nSystems" class="custom-range" min="10" max="1000" step="10" value="200" style="width: 65%;" oninput="document.getElementById('nVal').innerText = this.value"> </div> <div class="d-flex flex-column align-items-center mb-4 mt-3" id="probContainer"> <label class="font-weight-bold mb-1" style="width: 65%; text-align: left;">Success Probability (p): <span id="pVal" style="color: #f1c40f;">0.30</span></label> <input type="range" id="pProb" class="custom-range" min="0.05" max="0.95" step="0.05" value="0.30" style="width: 65%;" oninput="document.getElementById('pVal').innerText = parseFloat(this.value).toFixed(2)"> </div> <div class="text-center mb-4"> <button onclick="runSimulation()" class="btn font-weight-bold" style="background-color: #3498db; color: #fff; width: 250px; font-size: 1.1em; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);"> Run Simulation </button> </div> <hr class="w-75 mx-auto" style="border-color: rgba(150,150,150,0.2);"> <h6 class="text-center mt-3 font-weight-bold">Attacker Trajectories over Time</h6> <div class="mx-auto mt-2 mb-4" style="width: 90%;"> <canvas id="trajectoryChart" height="120"></canvas> </div> <hr class="w-75 mx-auto" style="border-color: rgba(150,150,150,0.2);"> <div class="d-flex flex-column align-items-center mb-3 mt-4"> <label class="font-weight-bold mb-1" style="width: 65%; text-align: left;">Analyze Final Distribution:</label> <select id="distType" class="form-control" style="width: 65%; background-color: rgba(128,128,128,0.05); color: inherit; border: 1px solid rgba(150,150,150,0.5);" onchange="updateHistogram()"> <option value="total">Total Score ($S_n$)</option> <option value="average">Average Score ($S_n / n$)</option> <option value="normalized">Normalized Score ($S_n / \sqrt{n}$)</option> </select> </div> <div class="mx-auto mt-2" style="width: 80%;"> <canvas id="histogramChart" height="120"></canvas> </div> </div> <h3 id="interpreting-the-statistics">Interpreting the Statistics</h3> <p>Running the simulations repeatedly and switching between the distribution views made the theoretical formulas click for me. Depending on how we scale the aggregate penetration score $S_n$, the mathematical behavior of the system changes entirely.</p> <p><strong>1. The Law of Large Numbers ($S_n / n$)</strong><br> If you select the <em>Average Score</em> in the dashboard and crank $n$ up to 1000, you are witnessing the Law of Large Numbers (LLN). The LLN states that as the number of trials increases, the sample mean converges in probability to the expected value. In the Bernoulli model with $p = 0.3$, the histogram of $S_n/n$ becomes an incredibly tight spike exactly at $0.3$. In a security context, this means that while a single attacker’s success is unpredictable, the overall penetration <em>rate</em> against a massive cluster of servers is virtually guaranteed to match the baseline vulnerability probability. The variance of this average goes to zero.</p> <p><strong>2. The Central Limit Theorem ($S_n / \sqrt{n}$)</strong><br> While the average score stabilizes, the absolute number of hacked systems $S_n$ does not. The variance of the total score grows linearly with $n$. If we apply the specific normalization factor of $1/\sqrt{n}$, we prevent the variance from blowing up to infinity or shrinking to zero. This is where the Rademacher model shines. Because it has a mean of zero and a variance of 1, plotting the <em>Normalized Score</em> ($S_n / \sqrt{n}$) visually proves the Central Limit Theorem (CLT). No matter what the individual discrete steps look like, the aggregate distribution converges precisely to the continuous Standard Normal Distribution $N(0,1)$. The bell curve emerges perfectly from the binary randomness.</p> <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <script>
+let trajChartInstance = null;
+let histChartInstance = null;
+let currentFinalScores = { total: [], average: [], normalized: [] };
+
+function updateProbSlider() {
+    let model = document.getElementById("simModel").value;
+    let probContainer = document.getElementById("probContainer");
+    if(model === 'rademacher') {
+        probContainer.style.opacity = '0.3';
+        document.getElementById("pProb").disabled = true;
+    } else {
+        probContainer.style.opacity = '1';
+        document.getElementById("pProb").disabled = false;
+    }
+}
+
+function runSimulation() {
+    let n = parseInt(document.getElementById('nSystems').value);
+    let m = parseInt(document.getElementById('mAttackers').value);
+    let p = parseFloat(document.getElementById('pProb').value);
+    let model = document.getElementById('simModel').value;
+
+    let datasets = [];
+    currentFinalScores = { total: [], average: [], normalized: [] };
+
+    // Generate random walks
+    for (let a = 0; a < m; a++) {
+        let path = [0];
+        let currentScore = 0;
+        
+        for (let s = 1; s <= n; s++) {
+            let step = 0;
+            if (model === 'bernoulli') {
+                step = Math.random() < p ? 1 : 0;
+            } else {
+                step = Math.random() < 0.5 ? 1 : -1;
+            }
+            currentScore += step;
+            path.push(currentScore);
+        }
+        
+        // Save final states
+        currentFinalScores.total.push(currentScore);
+        currentFinalScores.average.push(currentScore / n);
+        currentFinalScores.normalized.push(currentScore / Math.sqrt(n));
+
+        // Downsample lines slightly if rendering gets too heavy (visual optimization)
+        datasets.push({
+            data: path,
+            borderColor: `hsla(${Math.random() * 360}, 70%, 50%, 0.3)`,
+            borderWidth: 1,
+            pointRadius: 0,
+            fill: false,
+            tension: 0.1
+        });
+    }
+
+    renderTrajectories(n, datasets);
+    updateHistogram();
+}
+
+function renderTrajectories(n, datasets) {
+    const ctx = document.getElementById('trajectoryChart').getContext('2d');
+    Chart.defaults.color = "#888888";
+
+    if (trajChartInstance) trajChartInstance.destroy();
+
+    let labels = Array.from({length: n + 1}, (_, i) => i);
+
+    trajChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: { labels: labels, datasets: datasets },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { title: { display: true, text: 'Systems / Steps (n)' } },
+                y: { title: { display: true, text: 'Cumulative Penetration Score' } }
+            },
+            animation: false // Disable animation for performance with many lines
+        }
+    });
+}
+
+function createBins(data, numBins) {
+    let min = Math.min(...data);
+    let max = Math.max(...data);
+    if (min === max) { min -= 0.5; max += 0.5; }
+    
+    let binWidth = (max - min) / numBins;
+    let counts = new Array(numBins).fill(0);
+    
+    for (let val of data) {
+        let idx = Math.floor((val - min) / binWidth);
+        if (idx >= numBins) idx = numBins - 1;
+        counts[idx]++;
+    }
+    
+    let labels = [];
+    for (let i = 0; i < numBins; i++) {
+        let binCenter = min + (i * binWidth) + (binWidth / 2);
+        labels.push(binCenter.toFixed(2));
+    }
+    return { labels, counts };
+}
+
+function updateHistogram() {
+    if(currentFinalScores.total.length === 0) return; // Not run yet
+
+    let type = document.getElementById('distType').value;
+    let dataToBin = currentFinalScores[type];
+    
+    // Choose dynamic bin count based on sample size, clamp between 10 and 40
+    let binCount = Math.max(10, Math.min(40, Math.floor(dataToBin.length / 5)));
+    let histData = createBins(dataToBin, binCount);
+
+    const ctx = document.getElementById('histogramChart').getContext('2d');
+
+    if (histChartInstance) histChartInstance.destroy();
+
+    let xLabel = type === 'total' ? 'Total Score (S_n)' : 
+                 type === 'average' ? 'Average Score (S_n / n)' : 
+                 'Normalized Score (S_n / √n)';
+
+    histChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: histData.labels,
+            datasets: [{
+                label: 'Frequency of Attackers',
+                data: histData.counts,
+                backgroundColor: 'rgba(46, 204, 113, 0.7)',
+                borderColor: 'rgba(46, 204, 113, 1)',
+                borderWidth: 1,
+                borderRadius: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { title: { display: true, text: xLabel } },
+                y: { title: { display: true, text: 'Count' }, beginAtZero: true }
+            },
+            animation: { duration: 400 }
+        }
+    });
+}
+
+// Init slider UI state on load
+document.addEventListener("DOMContentLoaded", function() {
+    updateProbSlider();
+});
+</script> </article> </div> </div> <footer class="fixed-bottom" role="contentinfo"> <div class="container mt-0"> © Copyright 2026 Matteo Sulmona. Powered by <a href="https://jekyllrb.com/" target="_blank" rel="external nofollow noopener">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio" rel="external nofollow noopener" target="_blank">al-folio</a> theme. Hosted by <a href="https://pages.github.com/" target="_blank" rel="external nofollow noopener">GitHub Pages</a>. Photos from <a href="https://unsplash.com" target="_blank" rel="external nofollow noopener">Unsplash</a>. </div> </footer> <script>
   window.alFolio = {
     compatBootstrap: false
   };
@@ -466,9 +606,9 @@ ninja.data = [{
           description: "Comparing ECC and Caesar ciphers, statistical leaks, and key-space attacks.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/3_project/";
-            },},{id: "projects-project-4",
-          title: 'project 4',
-          description: "another without an image",
+            },},{id: "projects-stochastic-penetration-models",
+          title: 'Stochastic Penetration Models',
+          description: "Simulating network breaches using Bernoulli and Rademacher stochastic processes.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/4_project/";
             },},{id: "projects-project-5",

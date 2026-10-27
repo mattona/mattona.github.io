@@ -5,6 +5,7 @@ description: Simulating network breaches using Bernoulli and Rademacher stochast
 img: assets/img/hmw4.jpg
 importance: 4
 category: Statistics
+permalink: /projects/homework3/
 ---
 
 At first glance, modeling a cyberattack as a simple coin flip feels overly reductive. A real penetration test involves exploiting specific CVEs, chaining vulnerabilities, and bypassing firewalls. However, when trying to evaluate risk across a massive infrastructure, individual technical details become noise. 
@@ -20,7 +21,7 @@ To simulate the trajectory of an attacker, we use a stochastic process with inde
 
 ### Interactive Simulation Dashboard
 
-I built the engine below to simulate these random walks in real-time. The charts are generated automatically based on default parameters, but you can adjust the number of systems $n$ (time steps), the number of attackers $m$ (sample trajectories), and the model type to see how the distributions behave dynamically.
+I built the engine below to simulate these random walks in real-time. The charts are generated automatically based on default parameters. By tweaking $n$ (time steps) and $m$ (sample trajectories), you can observe how the distributions scale mathematically.
 
 <div class="card py-4 my-4 z-depth-1" style="background-color: transparent; border: 1px solid rgba(150,150,150,0.3);">
     <h5 class="text-center mb-4">Stochastic Trajectory Generator</h5>
@@ -28,7 +29,7 @@ I built the engine below to simulate these random walks in real-time. The charts
     <!-- Controls Section -->
     <div class="d-flex flex-column align-items-center mb-3">
         <label class="font-weight-bold mb-1" style="width: 65%; text-align: left;">Simulation Model:</label>
-        <select id="simModel" class="form-control" style="width: 65%; background-color: rgba(128,128,128,0.05); color: inherit; border: 1px solid rgba(150,150,150,0.5);" onchange="updateProbSlider()">
+        <select id="simModel" class="form-control" style="width: 65%; background-color: rgba(128,128,128,0.05); color: inherit; border: 1px solid rgba(150,150,150,0.5);" onchange="updateProbSlider(); runSimulation();">
             <option value="bernoulli">Bernoulli (0 or 1)</option>
             <option value="rademacher">Rademacher (-1 or +1)</option>
         </select>
@@ -36,23 +37,17 @@ I built the engine below to simulate these random walks in real-time. The charts
     
     <div class="d-flex flex-column align-items-center mb-3 mt-3">
         <label class="font-weight-bold mb-1" style="width: 65%; text-align: left;">Number of Attackers (m): <span id="mVal" style="color: #3498db;">100</span></label>
-        <input type="range" id="mAttackers" class="custom-range" min="10" max="500" step="10" value="100" style="width: 65%;" oninput="document.getElementById('mVal').innerText = this.value">
+        <input type="range" id="mAttackers" class="custom-range" min="10" max="500" step="10" value="100" style="width: 65%;" oninput="document.getElementById('mVal').innerText = this.value; runSimulation();">
     </div>
 
     <div class="d-flex flex-column align-items-center mb-3 mt-3">
         <label class="font-weight-bold mb-1" style="width: 65%; text-align: left;">Number of Systems (n): <span id="nVal" style="color: #e74c3c;">200</span></label>
-        <input type="range" id="nSystems" class="custom-range" min="10" max="1000" step="10" value="200" style="width: 65%;" oninput="document.getElementById('nVal').innerText = this.value">
+        <input type="range" id="nSystems" class="custom-range" min="10" max="1000" step="10" value="200" style="width: 65%;" oninput="document.getElementById('nVal').innerText = this.value; runSimulation();">
     </div>
 
     <div class="d-flex flex-column align-items-center mb-4 mt-3" id="probContainer">
         <label class="font-weight-bold mb-1" style="width: 65%; text-align: left;">Success Probability (p): <span id="pVal" style="color: #f1c40f;">0.30</span></label>
-        <input type="range" id="pProb" class="custom-range" min="0.05" max="0.95" step="0.05" value="0.30" style="width: 65%;" oninput="document.getElementById('pVal').innerText = parseFloat(this.value).toFixed(2)">
-    </div>
-    
-    <div class="text-center mb-4">
-        <button onclick="runSimulation()" class="btn font-weight-bold" style="background-color: #3498db; color: #fff; width: 250px; font-size: 1.1em; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
-            Run Simulation
-        </button>
+        <input type="range" id="pProb" class="custom-range" min="0.05" max="0.95" step="0.05" value="0.30" style="width: 65%;" oninput="document.getElementById('pVal').innerText = parseFloat(this.value).toFixed(2); runSimulation();">
     </div>
     
     <hr class="w-75 mx-auto mb-4" style="border-color: rgba(150,150,150,0.2);">
@@ -61,21 +56,26 @@ I built the engine below to simulate these random walks in real-time. The charts
     <div class="d-flex flex-column align-items-center w-100">
         
         <h6 class="font-weight-bold mb-3">Attacker Trajectories over Time</h6>
-        <div class="w-100 mb-4 px-3">
+        <div class="w-100 mb-5 px-3">
             <canvas id="trajectoryChart" height="120"></canvas>
         </div>
 
-        <div class="d-flex flex-column align-items-center w-100 mt-4 mb-3">
-            <label class="font-weight-bold mb-1" style="width: 65%; text-align: left;">Analyze Final Distribution:</label>
-            <select id="distType" class="form-control" style="width: 65%; background-color: rgba(128,128,128,0.05); color: inherit; border: 1px solid rgba(150,150,150,0.5);" onchange="updateHistogram()">
-                <option value="total">Total Score ($S_n$)</option>
-                <option value="average">Average Score ($S_n / n$)</option>
-                <option value="normalized">Normalized Score ($S_n / \sqrt{n}$)</option>
-            </select>
+        <h6 class="font-weight-bold mb-2 text-center">Total Score ($S_n$)</h6>
+        <p style="font-size: 0.85em; color: #888;" class="mb-2">Variance grows with n.</p>
+        <div class="w-100 px-3 mb-5">
+            <canvas id="histTotal" height="100"></canvas>
         </div>
 
+        <h6 class="font-weight-bold mb-2 text-center">Average Score ($S_n / n$)</h6>
+        <p style="font-size: 0.85em; color: #888;" class="mb-2">Variance shrinks to zero (Law of Large Numbers).</p>
+        <div class="w-100 px-3 mb-5">
+            <canvas id="histAverage" height="100"></canvas>
+        </div>
+
+        <h6 class="font-weight-bold mb-2 text-center">Normalized Score ($S_n / \sqrt{n}$)</h6>
+        <p style="font-size: 0.85em; color: #888;" class="mb-2">Variance remains stable (Central Limit Theorem).</p>
         <div class="w-100 px-3 mb-2">
-            <canvas id="histogramChart" height="120"></canvas>
+            <canvas id="histNormalized" height="100"></canvas>
         </div>
         
     </div>
@@ -83,22 +83,23 @@ I built the engine below to simulate these random walks in real-time. The charts
 
 ### Interpreting the Statistics
 
-Running the simulations repeatedly and switching between the distribution views made the theoretical formulas click for me. Depending on how we scale the aggregate penetration score $S_n$, the mathematical behavior of the system changes entirely.
+Running the simulations repeatedly makes the theoretical formulas click. Notice that the three bar charts share the exact same bell shape. This is because they represent the identical underlying data ($S_n$), just scaled by a constant. The mathematical magic lies entirely in the **X-axis scale**.
 
 **1. The Law of Large Numbers ($S_n / n$)**  
-If you select the *Average Score* in the dashboard and crank $n$ up to 1000, you are witnessing the Law of Large Numbers (LLN). The LLN states that as the number of trials increases, the sample mean converges in probability to the expected value. In the Bernoulli model with $p = 0.3$, the histogram of $S_n/n$ becomes an incredibly tight spike exactly at $0.3$. In a security context, this means that while a single attacker's success is unpredictable, the overall penetration *rate* against a massive cluster of servers is virtually guaranteed to match the baseline vulnerability probability. The variance of this average goes to zero.
+If you increase $n$ up to 1000, you are witnessing the Law of Large Numbers (LLN). Look at the X-axis for the *Average Score*: the spread collapses into an incredibly tight cluster exactly at $p$. The variance of this average goes to zero. In a security context, this means that while a single attacker's success is unpredictable, the overall penetration *rate* against a massive cluster of servers is virtually guaranteed to match the baseline vulnerability probability. 
 
 **2. The Central Limit Theorem ($S_n / \sqrt{n}$)**  
-While the average score stabilizes, the absolute number of hacked systems $S_n$ does not. The variance of the total score grows linearly with $n$. If we apply the specific normalization factor of $1/\sqrt{n}$, we prevent the variance from blowing up to infinity or shrinking to zero. 
-This is where the Rademacher model shines. Because it has a mean of zero and a variance of 1, plotting the *Normalized Score* ($S_n / \sqrt{n}$) visually proves the Central Limit Theorem (CLT). No matter what the individual discrete steps look like, the aggregate distribution converges precisely to the continuous Standard Normal Distribution $N(0,1)$. The bell curve emerges perfectly from the binary randomness.
+While the average score stabilizes, the absolute number of hacked systems $S_n$ does not (its X-axis expands infinitely). If we apply the specific normalization factor of $1/\sqrt{n}$, we prevent the variance from blowing up to infinity or shrinking to zero. 
+This is where the Rademacher model shines. Because it has a mean of zero and a variance of 1, plotting the *Normalized Score* ($S_n / \sqrt{n}$) visually proves the Central Limit Theorem (CLT). As you increase $n$, the X-axis of the normalized chart remains perfectly stable between -3 and +3, and the bell curve emerges perfectly from the binary randomness.
 
 <!-- Scripts for interactive tools -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {% raw %}
 <script>
 let trajChartInstance = null;
-let histChartInstance = null;
-let currentFinalScores = { total: [], average: [], normalized: [] };
+let histTotalInstance = null;
+let histAvgInstance = null;
+let histNormInstance = null;
 
 function updateProbSlider() {
     let model = document.getElementById("simModel").value;
@@ -119,7 +120,7 @@ function runSimulation() {
     let model = document.getElementById('simModel').value;
 
     let datasets = [];
-    currentFinalScores = { total: [], average: [], normalized: [] };
+    let finalScores = { total: [], average: [], normalized: [] };
 
     // Generate random walks
     for (let a = 0; a < m; a++) {
@@ -137,12 +138,10 @@ function runSimulation() {
             path.push(currentScore);
         }
         
-        // Save final states
-        currentFinalScores.total.push(currentScore);
-        currentFinalScores.average.push(currentScore / n);
-        currentFinalScores.normalized.push(currentScore / Math.sqrt(n));
+        finalScores.total.push(currentScore);
+        finalScores.average.push(currentScore / n);
+        finalScores.normalized.push(currentScore / Math.sqrt(n));
 
-        // Downsample lines slightly if rendering gets too heavy (visual optimization)
         datasets.push({
             data: path,
             borderColor: `hsla(${Math.random() * 360}, 70%, 50%, 0.3)`,
@@ -154,7 +153,7 @@ function runSimulation() {
     }
 
     renderTrajectories(n, datasets);
-    updateHistogram();
+    renderHistograms(finalScores);
 }
 
 function renderTrajectories(n, datasets) {
@@ -175,7 +174,7 @@ function renderTrajectories(n, datasets) {
                 x: { title: { display: true, text: 'Systems / Steps (n)' } },
                 y: { title: { display: true, text: 'Cumulative Penetration Score' } }
             },
-            animation: false // Disable animation for performance with many lines
+            animation: false 
         }
     });
 }
@@ -202,33 +201,21 @@ function createBins(data, numBins) {
     return { labels, counts };
 }
 
-function updateHistogram() {
-    if(currentFinalScores.total.length === 0) return; // Not run yet
-
-    let type = document.getElementById('distType').value;
-    let dataToBin = currentFinalScores[type];
-    
-    // Choose dynamic bin count based on sample size, clamp between 10 and 40
+function renderSingleHistogram(ctx, chartInstance, dataToBin, titleLabel, color) {
     let binCount = Math.max(10, Math.min(40, Math.floor(dataToBin.length / 5)));
     let histData = createBins(dataToBin, binCount);
 
-    const ctx = document.getElementById('histogramChart').getContext('2d');
+    if (chartInstance) chartInstance.destroy();
 
-    if (histChartInstance) histChartInstance.destroy();
-
-    let xLabel = type === 'total' ? 'Total Score ($S_n$)' : 
-                 type === 'average' ? 'Average Score ($S_n / n$)' : 
-                 'Normalized Score ($S_n / \\sqrt{n}$)';
-
-    histChartInstance = new Chart(ctx, {
+    return new Chart(ctx, {
         type: 'bar',
         data: {
             labels: histData.labels,
             datasets: [{
-                label: 'Frequency of Attackers',
+                label: 'Frequency',
                 data: histData.counts,
-                backgroundColor: 'rgba(46, 204, 113, 0.7)',
-                borderColor: 'rgba(46, 204, 113, 1)',
+                backgroundColor: color,
+                borderColor: color,
                 borderWidth: 1,
                 borderRadius: 2
             }]
@@ -237,15 +224,41 @@ function updateHistogram() {
             responsive: true,
             plugins: { legend: { display: false } },
             scales: {
-                x: { title: { display: true, text: xLabel } },
-                y: { title: { display: true, text: 'Count' }, beginAtZero: true }
+                x: { title: { display: true, text: titleLabel } },
+                y: { title: { display: false }, beginAtZero: true }
             },
-            animation: { duration: 400 }
+            animation: { duration: 200 }
         }
     });
 }
 
-// Inizializza slider ed esegue la simulazione automaticamente al caricamento
+function renderHistograms(scores) {
+    histTotalInstance = renderSingleHistogram(
+        document.getElementById('histTotal').getContext('2d'),
+        histTotalInstance,
+        scores.total,
+        'Value',
+        'rgba(231, 76, 60, 0.7)' // Red
+    );
+
+    histAvgInstance = renderSingleHistogram(
+        document.getElementById('histAverage').getContext('2d'),
+        histAvgInstance,
+        scores.average,
+        'Value',
+        'rgba(46, 204, 113, 0.7)' // Green
+    );
+
+    histNormInstance = renderSingleHistogram(
+        document.getElementById('histNormalized').getContext('2d'),
+        histNormInstance,
+        scores.normalized,
+        'Value',
+        'rgba(155, 89, 182, 0.7)' // Purple
+    );
+}
+
+// Esegui la simulazione automaticamente al caricamento
 document.addEventListener("DOMContentLoaded", function() {
     updateProbSlider();
     runSimulation();

@@ -2,7 +2,7 @@
 layout: page
 title: Stochastic Penetration Models
 description: Simulating network breaches using Bernoulli and Rademacher stochastic processes.
-img: assets/img/12.jpg
+img: assets/img/hmw4.jpg
 importance: 4
 category: Statistics
 ---
@@ -20,11 +20,12 @@ To simulate the trajectory of an attacker, we use a stochastic process with inde
 
 ### Interactive Simulation Dashboard
 
-I built the engine below to simulate these random walks in real-time. You can adjust the number of systems $n$ (time steps), the number of attackers $m$ (sample trajectories), and switch between the raw score, the average score, and the normalized score to see how the distributions behave.
+I built the engine below to simulate these random walks in real-time. The charts are generated automatically based on default parameters, but you can adjust the number of systems $n$ (time steps), the number of attackers $m$ (sample trajectories), and the model type to see how the distributions behave dynamically.
 
 <div class="card py-4 my-4 z-depth-1" style="background-color: transparent; border: 1px solid rgba(150,150,150,0.3);">
     <h5 class="text-center mb-4">Stochastic Trajectory Generator</h5>
     
+    <!-- Controls Section -->
     <div class="d-flex flex-column align-items-center mb-3">
         <label class="font-weight-bold mb-1" style="width: 65%; text-align: left;">Simulation Model:</label>
         <select id="simModel" class="form-control" style="width: 65%; background-color: rgba(128,128,128,0.05); color: inherit; border: 1px solid rgba(150,150,150,0.5);" onchange="updateProbSlider()">
@@ -54,26 +55,29 @@ I built the engine below to simulate these random walks in real-time. You can ad
         </button>
     </div>
     
-    <hr class="w-75 mx-auto" style="border-color: rgba(150,150,150,0.2);">
+    <hr class="w-75 mx-auto mb-4" style="border-color: rgba(150,150,150,0.2);">
     
-    <h6 class="text-center mt-3 font-weight-bold">Attacker Trajectories over Time</h6>
-    <div class="mx-auto mt-2 mb-4" style="width: 90%;">
-        <canvas id="trajectoryChart" height="120"></canvas>
-    </div>
+    <!-- Charts Column Section -->
+    <div class="d-flex flex-column align-items-center w-100">
+        
+        <h6 class="font-weight-bold mb-3">Attacker Trajectories over Time</h6>
+        <div class="w-100 mb-4 px-3">
+            <canvas id="trajectoryChart" height="120"></canvas>
+        </div>
 
-    <hr class="w-75 mx-auto" style="border-color: rgba(150,150,150,0.2);">
+        <div class="d-flex flex-column align-items-center w-100 mt-4 mb-3">
+            <label class="font-weight-bold mb-1" style="width: 65%; text-align: left;">Analyze Final Distribution:</label>
+            <select id="distType" class="form-control" style="width: 65%; background-color: rgba(128,128,128,0.05); color: inherit; border: 1px solid rgba(150,150,150,0.5);" onchange="updateHistogram()">
+                <option value="total">Total Score ($S_n$)</option>
+                <option value="average">Average Score ($S_n / n$)</option>
+                <option value="normalized">Normalized Score ($S_n / \sqrt{n}$)</option>
+            </select>
+        </div>
 
-    <div class="d-flex flex-column align-items-center mb-3 mt-4">
-        <label class="font-weight-bold mb-1" style="width: 65%; text-align: left;">Analyze Final Distribution:</label>
-        <select id="distType" class="form-control" style="width: 65%; background-color: rgba(128,128,128,0.05); color: inherit; border: 1px solid rgba(150,150,150,0.5);" onchange="updateHistogram()">
-            <option value="total">Total Score ($S_n$)</option>
-            <option value="average">Average Score ($S_n / n$)</option>
-            <option value="normalized">Normalized Score ($S_n / \sqrt{n}$)</option>
-        </select>
-    </div>
-
-    <div class="mx-auto mt-2" style="width: 80%;">
-        <canvas id="histogramChart" height="120"></canvas>
+        <div class="w-100 px-3 mb-2">
+            <canvas id="histogramChart" height="120"></canvas>
+        </div>
+        
     </div>
 </div>
 
@@ -212,9 +216,9 @@ function updateHistogram() {
 
     if (histChartInstance) histChartInstance.destroy();
 
-    let xLabel = type === 'total' ? 'Total Score (S_n)' : 
-                 type === 'average' ? 'Average Score (S_n / n)' : 
-                 'Normalized Score (S_n / √n)';
+    let xLabel = type === 'total' ? 'Total Score ($S_n$)' : 
+                 type === 'average' ? 'Average Score ($S_n / n$)' : 
+                 'Normalized Score ($S_n / \\sqrt{n}$)';
 
     histChartInstance = new Chart(ctx, {
         type: 'bar',
@@ -241,9 +245,10 @@ function updateHistogram() {
     });
 }
 
-// Init slider UI state on load
+// Inizializza slider ed esegue la simulazione automaticamente al caricamento
 document.addEventListener("DOMContentLoaded", function() {
     updateProbSlider();
+    runSimulation();
 });
 </script>
 {% endraw %}

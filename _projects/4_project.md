@@ -2,7 +2,7 @@
 layout: page
 title: Stochastic Penetration Models
 description: Simulating network breaches using Bernoulli and Rademacher stochastic processes.
-img: assets/img/hmw3.jpg
+img: assets/img/hmw4.jpg
 importance: 4
 category: Statistics
 permalink: /projects/homework3/

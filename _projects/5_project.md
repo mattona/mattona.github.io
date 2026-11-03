@@ -8,70 +8,71 @@ category: Statistics
 permalink: /projects/homework4/
 ---
 
-In the previous simulation, each penetration attempt was modeled as a simple binary outcome. However, real-world vulnerability assessments—such as **CVSS (Common Vulnerability Scoring System)** metrics—score compromises on a continuous or discrete scale from $0$ to $10$. 
+In this assignment, we extend the penetration testing simulation by assigning each attempt a score between $0$ and $10$, mirroring vulnerability scoring systems such as CVSS (Common Vulnerability Scoring System).
 
-Furthermore, computing statistical moments across massive telemetry streams exposes a classic numerical analysis problem: standard two-pass variance formulas fail at scale, and naive one-pass formulas suffer from floating-point instability. This assignment addresses both the algorithmic computation of streaming moments via **Welford's recurrence** and the inferential properties of **sample mean and sample variance** across $m$ attackers probing $n$ systems.
+From a computational perspective, evaluating variance online across streaming data presents numerical challenges. Standard single-pass algebraic formulas are susceptible to catastrophic cancellation due to floating-point rounding errors. To address this, we derive Welford's algorithm to update the sample mean and sum of squared deviations incrementally in $O(1)$ memory. Additionally, we conduct a Monte Carlo simulation across $m$ attackers probing $n$ systems to analyze the sampling distributions of the mean and variance, verifying their unbiasedness and consistency.
 
 ### 1. Exercise 1: Welford's Recurrence Formulas
 
-If we want to compute the variance of a stream of scores $x_1, x_2, \dots, x_n$ in a single pass, the textbook algebraic expansion $\sigma^2 = \frac{1}{n}\sum_{i=1}^n x_i^2 - \bar{x}_n^2$ is a trap. In IEEE 754 floating-point arithmetic, when the variance is small relative to the square of the mean, $\frac{1}{n}\sum x_i^2$ and $\bar{x}_n^2$ become two large, nearly identical numbers. Subtracting them wipes out the least significant mantissa bits—a phenomenon known as **catastrophic cancellation**—which can even yield negative variance estimates.
+Computing the variance of a sequence $x\_1, x\_2, \dots, x\_n$ using the naive computational formula $\sigma^2 = \frac{1}{n}\sum_{i=1}^n x\_i^2 - \bar{x}\_n^2$ in a single pass introduces severe numerical instability. In IEEE 754 floating-point arithmetic, when the variance is small relative to the square of the mean, subtracting two large and nearly equal numbers results in a catastrophic loss of precision (catastrophic cancellation), which can even produce negative variance estimates.
 
-To compute moments stably in $O(1)$ memory, we update the mean and the **Sum of Squares of differences from the mean** ($SS_k$, often denoted $M_{2,k}$) incrementally at each step $k$.
+Welford's algorithm avoids this issue by updating the running mean $\bar{x}\_k$ and the sum of squared differences $SS\_k = \sum_{i=1}^k (x\_i - \bar{x}\_k)^2$ incrementally as each new value $x\_k$ is observed.
 
 #### Step 1: Knuth's Recurrence for the Mean
 
-Let $\bar{x}_k = \frac{1}{k}\sum_{i=1}^k x_i$. Isolating the $k$-th observation from the previous $k-1$ terms gives:
+Let $\bar{x}\_k$ be the sample mean of the first $k$ observations. Isolating the $k$-th observation from the sum gives:
 
 $$\bar{x}_k = \frac{(k-1)\bar{x}_{k-1} + x_k}{k} = \bar{x}_{k-1} + \frac{x_k - \bar{x}_{k-1}}{k}$$
 
-Defining the pre-update residual $\delta_k = x_k - \bar{x}_{k-1}$, the mean shift is simply $\bar{x}_k - \bar{x}_{k-1} = \frac{\delta_k}{k}$.
+Defining the residual relative to the previous mean as $\delta\_k = x\_k - \bar{x}\_{k-1}$, the update equation simplifies to:
 
-#### Step 2: Deriving Welford's Recurrence for the Sum of Squares ($SS_k$)
+$$\bar{x}_k = \bar{x}_{k-1} + \frac{\delta_k}{k}$$
 
-Define the running sum of squared deviations at step $k$ as:
+#### Step 2: Deriving Welford's Recurrence for the Sum of Squares ($SS\_k$)
+
+The sum of squared deviations at step $k$ is defined as:
 
 $$SS_k = \sum_{i=1}^k (x_i - \bar{x}_k)^2$$
 
-Splitting the sum at the $k$-th element and adding/subtracting $\bar{x}_{k-1}$ inside the first summation yields:
+Splitting the sum into the first $k-1$ terms and the $k$-th term, and introducing $\bar{x}_{k-1}$ inside the summation:
 
 $$SS_k = \sum_{i=1}^{k-1} \left[ (x_i - \bar{x}_{k-1}) - (\bar{x}_k - \bar{x}_{k-1}) \right]^2 + (x_k - \bar{x}_k)^2$$
 
-Expanding the square inside the sum over $i = 1, \dots, k-1$:
+Expanding the square inside the summation:
 
 $$SS_k = \sum_{i=1}^{k-1} (x_i - \bar{x}_{k-1})^2 - 2(\bar{x}_k - \bar{x}_{k-1})\sum_{i=1}^{k-1}(x_i - \bar{x}_{k-1}) + (k-1)(\bar{x}_k - \bar{x}_{k-1})^2 + (x_k - \bar{x}_k)^2$$
 
-Notice two critical simplifications:
+We can simplify this expression using two structural identities:
+1. The first summation is by definition $SS_{k-1} = \sum_{i=1}^{k-1} (x_i - \bar{x}_{k-1})^2$.
+2. The sum of deviations around the mean is identically zero, $\sum_{i=1}^{k-1}(x_i - \bar{x}_{k-1}) = 0$, causing the cross-term to vanish completely.
 
-1. The first term $\sum_{i=1}^{k-1} (x_i - \bar{x}_{k-1})^2$ is by definition $SS_{k-1}$.
-2. The cross-term vanishes completely because the sum of deviations from the mean is identically zero: $\sum_{i=1}^{k-1}(x_i - \bar{x}_{k-1}) = 0$.
-
-This leaves us with:
+Substituting these into the equation yields:
 
 $$SS_k = SS_{k-1} + (k-1)(\bar{x}_k - \bar{x}_{k-1})^2 + (x_k - \bar{x}_k)^2$$
 
-Now, substitute $\bar{x}_k - \bar{x}_{k-1} = \frac{x_k - \bar{x}_{k-1}}{k}$ and factor out one power of that difference. Notice that the remaining deviation from the *new* mean can be written as:
+Next, we substitute $\bar{x}_k - \bar{x}_{k-1} = \frac{x_k - \bar{x}_{k-1}}{k}$. We can also rewrite the deviation from the new mean in terms of $x_k - \bar{x}_{k-1}$:
 
 $$x_k - \bar{x}_k = (x_k - \bar{x}_{k-1}) - (\bar{x}_k - \bar{x}_{k-1}) = \left(1 - \frac{1}{k}\right)(x_k - \bar{x}_{k-1}) = \frac{k-1}{k}(x_k - \bar{x}_{k-1})$$
 
-Using this relation, let's simplify the two remaining terms:
+Substituting both expressions back into the remaining terms:
 
-$$(k-1)(\bar{x}_k - \bar{x}_{k-1})^2 + (x_k - \bar{x}_k)^2 = \frac{k-1}{k^2}(x_k - \bar{x}_{k-1})^2 + \frac{(k-1)^2}{k^2}(x_k - \bar{x}_{k-1})^2$$
+$$(k-1)\left(\frac{x_k - \bar{x}_{k-1}}{k}\right)^2 + \left(\frac{k-1}{k}(x_k - \bar{x}_{k-1})\right)^2 = \frac{k-1}{k^2}(x_k - \bar{x}_{k-1})^2 + \frac{(k-1)^2}{k^2}(x_k - \bar{x}_{k-1})^2$$
 
 Factoring out $\frac{k-1}{k^2}(x_k - \bar{x}_{k-1})^2$:
 
-$$= \frac{k-1}{k^2}(x_k - \bar{x}_{k-1})^2 \left[ 1 + (k - 1) \right] = \frac{k-1}{k}(x_k - \bar{x}_{k-1})^2 = (x_k - \bar{x}_{k-1})(x_k - \bar{x}_k)$$
+$$= \frac{k-1}{k^2}(x_k - \bar{x}_{k-1})^2 [1 + (k - 1)] = \frac{k-1}{k}(x_k - \bar{x}_{k-1})^2 = (x_k - \bar{x}_{k-1})(x_k - \bar{x}_k)$$
 
-This produces **Welford's recurrence formula for the Sum of Squares**:
+This yields Welford's recurrence formula for $SS_k$:
 
 $$SS_k = SS_{k-1} + (x_k - \bar{x}_{k-1})(x_k - \bar{x}_k)$$
 
-From $SS_k$, the **unbiased sample variance** $s_k^2$ (with Bessel's correction, for $k > 1$) and the **population/ML variance** $\hat{\sigma}_k^2$ follow immediately:
+From $SS_k$, we compute both the unbiased sample variance $s_k^2$ (with Bessel's correction for $k > 1$) and the population variance $\hat{\sigma}_k^2$:
 
 $$s_k^2 = \frac{SS_k}{k - 1}, \qquad \hat{\sigma}_k^2 = \frac{SS_k}{k}$$
 
-#### The 3-Line Core Implementation
+#### 3-Line Core Implementation
 
-What makes this identity so clean in code is that we compute the residual before updating the mean ($\delta_1 = x_k - \bar{x}_{k-1}$), update the mean in place, and then multiply $\delta_1$ by the post-update residual ($\delta_2 = x_k - \bar{x}_k$):
+In implementation, the update requires computing the residual using the mean prior to update ($\delta_1 = x_k - \bar{x}_{k-1}$), updating the mean in place, and multiplying $\delta_1$ by the residual relative to the updated mean ($\delta_2 = x_k - \bar{x}_k$):
 
 ```javascript
 // Core Welford update for observation x at step k (1-indexed)
@@ -82,7 +83,7 @@ ss += delta * (x - mean);      // 3. Welford SS update using new mean (x_k - mea
 
 ### 2. Interactive Simulation Dashboard (Exercise 2)
 
-In this experiment, $m$ independent hackers attempt to penetrate $n$ systems. Each attempt yields a severity score $X_{j,i} \in [0, 10]$ drawn from a chosen probability distribution with theoretical mean $\mu$ and variance $\sigma^2$. For every hacker $j \in \{1, \dots, m\}$, Welford's algorithm tracks the running mean and variance across their trajectory of $n$ systems.
+In this experiment, $m$ independent attackers attempt to penetrate $n$ systems each. Each attempt yields a score $X_{j,i} \in [0, 10]$ drawn from a chosen probability distribution with theoretical mean $\mu$ and variance $\sigma^2$. For every attacker $j \in \{1, \dots, m\}$, Welford's algorithm tracks the running sample mean and sample variance across their trajectory of $n$ systems online.
 
 <div class="card py-4 my-4 z-depth-1" style="background-color: transparent; border: 1px solid rgba(150,150,150,0.3);">
     <h5 class="text-center mb-4">Welford Streaming & Sampling Distribution Engine</h5>
@@ -186,49 +187,48 @@ In this experiment, $m$ independent hackers attempt to penetrate $n$ systems. Ea
     </div>
 </div>
 
-### 3. Statistical Analysis & Conclusions
+### 3. Statistical Analysis
 
-Running the experiment across different configurations of $m$ and $n$ highlights three foundational pillars of inferential statistics:
+The empirical results from varying $m$ and $n$ illustrate key theoretical properties of sampling distributions.
 
-#### 1. Unbiasedness of the Estimators (Comparing Empirical Averages to $\mu$ and $\sigma^2$)
+#### 1. Unbiasedness of Estimators
 
-For each hacker $j$, let $\bar{X}_j = \frac{1}{n}\sum_{i=1}^n X_{j,i}$ and $S_j^2 = \frac{1}{n-1}\sum_{i=1}^n (X_{j,i} - \bar{X}_j)^2$ be their final Welford statistics after $n$ systems. Averaging across all $m$ hackers gives the grand averages:
+For each attacker trajectory $j$, let $\bar{X}\_j = \frac{1}{n}\sum_{i=1}^n X_{j,i}$ and $S\_j^2 = \frac{1}{n-1}\sum_{i=1}^n (X_{j,i} - \bar{X}\_j)^2$. Averaging these sample values across all $m$ attackers gives:
 
 $$\overline{\bar{X}} = \frac{1}{m}\sum_{j=1}^m \bar{X}_j \approx \mu, \qquad \overline{S^2} = \frac{1}{m}\sum_{j=1}^m S_j^2 \approx \sigma^2$$
 
-Even when $n$ is very small (try setting $n = 5$ or $n = 10$ in the slider above and $m = 1000$), the average of the sampling means and the average of the unbiased sampling variances match the theoretical parameters $\mu$ and $\sigma^2$ remarkably well. This empirically confirms that $\bar{X}$ and $S^2$ are **unbiased estimators**:
+Even for small sample sizes per trajectory (such as $n = 5$ or $n = 10$), the overall average sample mean and average unbiased variance match the theoretical parameters $\mu$ and $\sigma^2$ as $m$ increases. This confirms empirically that $\bar{X}$ and $S^2$ are unbiased estimators:
 
 $$E[\bar{X}] = \mu, \qquad E[S^2] = \sigma^2$$
 
-Notice the third row in the live table above: if we divide Welford's $SS_n$ by $n$ instead of $n-1$, the estimator $\hat{\sigma}^2 = SS_n / n$ systematically underestimates $\sigma^2$ because $E[\hat{\sigma}^2] = \frac{n-1}{n}\sigma^2$. At $n=5$, dividing by $n$ introduces a massive $20\%$ downward bias! Dividing by $n-1$ (**Bessel's correction**) compensates for the single degree of freedom lost by estimating $\mu$ with $\bar{X}$ from the same trajectory.
+In contrast, dividing $SS\_n$ by $n$ produces the population estimator $\hat{\sigma}^2 = SS\_n / n$, which has expected value $E[\hat{\sigma}^2] = \frac{n-1}{n}\sigma^2$. For small trajectory lengths such as $n = 5$, this introduces a $20\%$ downward bias. Bessel's correction (dividing by $n-1$) accounts for the loss of one degree of freedom when estimating $\mu$ using the sample mean $\bar{X}$.
 
-#### 2. Why This Matters in Inferential Statistics
+#### 2. Significance in Inferential Statistics
 
-In real cybersecurity telemetry or scientific sampling, we almost never observe the entire population of all possible attack trajectories ($m \to \infty$), nor do we know the true underlying data-generating parameters $\mu$ and $\sigma^2$. Often, we only have a finite log of $n$ observations from a single campaign.
+In security telemetry and scientific sampling, population parameters $\mu$ and $\sigma^2$ are typically unknown, and analysis is limited to finite observed samples.
 
-* **Unbiasedness** guarantees that our estimation procedure has **zero systematic error**: on average, our estimates neither overshoot nor undershoot the true threat level.
-* Knowing the exact relationship between sample statistics and population parameters allows us to construct **confidence intervals**, quantify uncertainty via the **Standard Error** ($SE = s / \sqrt{n}$), and perform hypothesis testing (such as a $t$-test or $\chi^2$-test) to detect whether an attacker's behavior has statistically shifted.
+Unbiasedness guarantees that the estimation procedure introduces no systematic bias. Furthermore, establishing the theoretical sampling distribution enables constructing confidence intervals, evaluating estimation uncertainty via the standard error ($SE = s / \sqrt{n}$), and performing hypothesis testing (such as $t$-tests) to determine whether changes in observed scores reflect true changes in system security or attacker behavior.
 
-#### 3. The Effect of Increasing $n$ (Consistency & Variance Reduction)
+#### 3. Effect of Increasing Sample Size $n$ (Consistency and Variance Reduction)
 
-If you drag the $n$ slider from $n = 10$ up to $n = 1000$, two distinct phenomena appear immediately in the histograms and the trajectory plots:
+Increasing $n$ reduces the variance of both sample estimators:
 
-* **Contraction of Sampling Means:** The variance of the sampling mean across hackers is governed by:
+- **Variance of the Sample Mean:** The sampling variance of $\bar{X}\_n$ decreases inversely with $n$:
 
 $$Var(\bar{X}_n) = \frac{\sigma^2}{n} \implies SD(\bar{X}_n) = \frac{\sigma}{\sqrt{n}}$$
 
-As $n$ increases, the spread of the green histogram shrinks at a rate of $1/\sqrt{n}$, and by the **Central Limit Theorem**, its shape converges to a tight Gaussian bell curve centered at $\mu$.
+As $n$ increases, the distribution of sample means concentrates tightly around $\mu$. By the Central Limit Theorem, $\bar{X}\_n$ converges toward a normal distribution regardless of the underlying distribution of individual scores.
 
-* **Contraction of Sampling Variances:** Similarly, the variance of the sample variance scales inversely with $n$:
+- **Variance of the Sample Variance:** The variance of $S\_n^2$ similarly scales inversely with $n$:
 
 $$Var(S_n^2) = \frac{1}{n}\left(\mu_4 - \frac{n-3}{n-1}\sigma^4\right) = \mathcal{O}\left(\frac{1}{n}\right)$$
 
-where $\mu_4 = E[(X - \mu)^4]$ is the fourth central moment. For small $n$, the purple histogram of $S_n^2$ is noticeably right-skewed and wide; as $n$ grows, its variance tends to $0$ and it concentrates tightly around $\sigma^2$.
+where $\mu\_4 = E[(X - \mu)^4]$ is the fourth central moment. For small values of $n$, the empirical distribution of $S\_n^2$ shows right skewness; as $n \to \infty$, its variance approaches zero and values concentrate around $\sigma^2$.
 
-In inferential terms, because both estimators are unbiased *and* their variances converge to zero as $n \to \infty$, both $\bar{X}_n$ and $S_n^2$ are **consistent estimators** ($\bar{X}_n \xrightarrow{P} \mu$ and $S_n^2 \xrightarrow{P} \sigma^2$). Monitoring more systems per hacker directly translates into higher precision and lower estimation uncertainty.
+Because both estimators are unbiased and their sampling variances converge to zero as $n \to \infty$, both $\bar{X}\_n$ and $S\_n^2$ are consistent estimators ($\bar{X}\_n \xrightarrow{P} \mu$ and $S\_n^2 \xrightarrow{P} \sigma^2$).
 
 <!-- Scripts for interactive tools -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="[https://cdn.jsdelivr.net/npm/chart.js](https://cdn.jsdelivr.net/npm/chart.js)"></script>
 {% raw %}
 <script>
 let meanTrajChartInstance = null;

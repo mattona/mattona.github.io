@@ -5,7 +5,7 @@ description: Online variance computation and empirical verification of estimator
 img: assets/img/welford.jpg
 importance: 4
 category: Statistics
-permalink: /projects/homework3/
+permalink: /projects/homework4/
 ---
 
 In the previous simulation, each penetration attempt was modeled as a simple binary outcome. However, real-world vulnerability assessments—such as **CVSS (Common Vulnerability Scoring System)** metrics—score compromises on a continuous or discrete scale from $0$ to $10$. 

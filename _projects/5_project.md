@@ -2,7 +2,7 @@
 layout: page
 title: Welford's Algorithm & Sampling Distributions
 description: Online variance computation and empirical verification of estimator unbiasedness and consistency across multi-system penetration trajectories.
-img: assets/img/hmw4.jpg
+img: assets/img/welford.jpg
 importance: 4
 category: Statistics
 permalink: /projects/homework3/

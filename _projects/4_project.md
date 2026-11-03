@@ -1,4 +1,4 @@
- ---
+---
 layout: page
 title: Stochastic Penetration Models
 description: Simulating network breaches using Bernoulli and Rademacher stochastic processes.
@@ -25,23 +25,52 @@ The engine below simulates these random walks in real-time. By tweaking $n$ (tim
 
 <div class="card py-4 my-4 z-depth-1" style="background-color: transparent; border: 1px solid rgba(150,150,150,0.3);">
     <h5 class="text-center mb-4">Stochastic Trajectory Generator</h5>
-@@ -61,207 +61,218 @@
+
+    <!-- Controls Section -->
+    <div class="d-flex flex-column align-items-center mb-3">
+        <label class="font-weight-bold mb-1" style="width: 65%; text-align: left;">Simulation Model:</label>
+        <select id="simModel" class="form-control" style="width: 65%; background-color: rgba(128,128,128,0.05); color: inherit; border: 1px solid rgba(150,150,150,0.5);" onchange="updateProbSlider(); runSimulation();">
+            <option value="bernoulli">Bernoulli (0 or 1)</option>
+            <option value="rademacher">Rademacher (-1 or +1)</option>
+        </select>
+    </div>
+
+    <div class="d-flex flex-column align-items-center mb-3 mt-3">
+        <label class="font-weight-bold mb-1" style="width: 65%; text-align: left;">Number of Attackers (m): <span id="mVal" style="color: #3498db;">100</span></label>
+        <input type="range" id="mAttackers" class="custom-range" min="10" max="500" step="10" value="100" style="width: 65%;" oninput="document.getElementById('mVal').innerText = this.value; runSimulation();">
+    </div>
+
+    <div class="d-flex flex-column align-items-center mb-3 mt-3">
+        <label class="font-weight-bold mb-1" style="width: 65%; text-align: left;">Number of Systems (n): <span id="nVal" style="color: #e74c3c;">200</span></label>
+        <input type="range" id="nSystems" class="custom-range" min="10" max="1000" step="10" value="200" style="width: 65%;" oninput="document.getElementById('nVal').innerText = this.value; runSimulation();">
+    </div>
+
+    <div class="d-flex flex-column align-items-center mb-4 mt-3" id="probContainer">
+        <label class="font-weight-bold mb-1" style="width: 65%; text-align: left;">Success Probability (p): <span id="pVal" style="color: #f1c40f;">0.30</span></label>
+        <input type="range" id="pProb" class="custom-range" min="0.05" max="0.95" step="0.05" value="0.30" style="width: 65%;" oninput="document.getElementById('pVal').innerText = parseFloat(this.value).toFixed(2); runSimulation();">
+    </div>
+
+    <hr class="w-75 mx-auto mb-4" style="border-color: rgba(150,150,150,0.2);">
+
+    <!-- Charts Column Section -->
+    <div class="d-flex flex-column align-items-center w-100">
+        
+        <h6 class="font-weight-bold mb-3">Attacker Trajectories over Time</h6>
+        <div class="w-100 mb-5 px-3">
+            <canvas id="trajectoryChart" height="120"></canvas>
         </div>
 
         <h6 class="font-weight-bold mb-2 text-center">Total Score ($S_n$)</h6>
-
         <div class="w-100 px-3 mb-5">
             <canvas id="histTotal" height="100"></canvas>
         </div>
 
         <h6 class="font-weight-bold mb-2 text-center">Average Score ($S_n / n$)</h6>
-
         <div class="w-100 px-3 mb-5">
             <canvas id="histAverage" height="100"></canvas>
         </div>
 
         <h6 class="font-weight-bold mb-2 text-center">Normalized Score ($S_n / \sqrt{n}$)</h6>
-
         <div class="w-100 px-3 mb-2">
             <canvas id="histNormalized" height="100"></canvas>
         </div>

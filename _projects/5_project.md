@@ -8,7 +8,7 @@ category: Statistics
 permalink: /projects/homework4/
 ---
 
-In this assignment, we extend the penetration testing simulation by assigning each attempt a score between $0$ and $10$, mirroring vulnerability scoring systems such as CVSS (Common Vulnerability Scoring System).
+In this assignment, I extend the penetration testing simulation by assigning each attempt a score between $0$ and $10$, mirroring vulnerability scoring systems such as CVSS (Common Vulnerability Scoring System).
 
 From a computational perspective, evaluating variance online across streaming data presents numerical challenges. Standard single-pass algebraic formulas are susceptible to catastrophic cancellation due to floating-point rounding errors. To address this, we derive Welford's algorithm to update the sample mean and sum of squared deviations incrementally in $O(1)$ memory. Additionally, we conduct a Monte Carlo simulation across $m$ attackers probing $n$ systems to analyze the sampling distributions of the mean and variance, verifying their unbiasedness and consistency.
 
@@ -215,11 +215,13 @@ Increasing $n$ reduces the variance of both sample estimators:
 
 - **Variance of the Sample Mean:** The sampling variance of $\bar{X}_n$ decreases inversely with $n$:
 
+
 $$Var(\bar{X}_n) = \frac{\sigma^2}{n} \implies SD(\bar{X}_n) = \frac{\sigma}{\sqrt{n}}$$
 
 As $n$ increases, the distribution of sample means concentrates tightly around $\mu$. By the Central Limit Theorem, $\bar{X}_n$ converges toward a normal distribution regardless of the underlying distribution of individual scores.
 
 - **Variance of the Sample Variance:** The variance of $S_n^2$ similarly scales inversely with $n$:
+
 
 $$Var(S_n^2) = \frac{1}{n}\left(\mu_4 - \frac{n-3}{n-1}\sigma^4\right) = \mathcal{O}\left(\frac{1}{n}\right)$$
 
@@ -246,12 +248,11 @@ function updateControls() {
     }
 }
 
-// Draw a random score between 0 and 10 from the selected distribution
 function drawScore(dist, p) {
     if (dist === "uniform_cont") {
         return Math.random() * 10.0;
     } else if (dist === "uniform_disc") {
-        return Math.floor(Math.random() * 11); // 0, 1, ..., 10
+        return Math.floor(Math.random() * 11);
     } else if (dist === "binomial") {
         let successes = 0;
         for (let i = 0; i < 10; i++) {
@@ -262,7 +263,6 @@ function drawScore(dist, p) {
     return 0;
 }
 
-// Return theoretical mean (mu) and variance (sigma^2)
 function getTheoreticalMoments(dist, p) {
     if (dist === "uniform_cont") {
         return { mu: 5.0, sigma2: 100.0 / 12.0 };
@@ -301,7 +301,6 @@ function runWelfordSimulation() {
     let finalVarsUnbiased = [];
     let finalVarsBiased = [];
 
-    // Cap plotted trajectories to 60 for smooth rendering
     let maxPlottedTrajectories = Math.min(m, 60);
 
     for (let h = 0; h < m; h++) {
@@ -484,16 +483,16 @@ function renderHistogram(ctx, chartInstance, dataToBin, xTitle, color) {
     });
 }
 
-// Inizializzazione sicura: aspetta che Chart.js sia fisicamente scaricato e aggira i conflitti del tema
-function tryInitDashboard() {
-    if (typeof Chart === 'undefined') {
-        setTimeout(tryInitDashboard, 50); 
-        return;
+document.addEventListener("DOMContentLoaded", function() {
+    function tryInitDashboard() {
+        if (typeof Chart === 'undefined') {
+            setTimeout(tryInitDashboard, 50); 
+            return;
+        }
+        updateControls();
+        runWelfordSimulation();
     }
-    updateControls();
-    runWelfordSimulation();
-}
-
-tryInitDashboard();
+    tryInitDashboard();
+});
 </script>
 {% endraw %}

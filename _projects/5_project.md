@@ -8,7 +8,7 @@ category: Statistics
 permalink: /projects/homework4/
 ---
 
-In this assignment, I extend the penetration testing simulation by assigning each attempt a score between $0$ and $10$, mirroring vulnerability scoring systems such as CVSS (Common Vulnerability Scoring System).
+In this assignment, we extend the penetration testing simulation by assigning each attempt a score between $0$ and $10$, mirroring vulnerability scoring systems such as CVSS (Common Vulnerability Scoring System).
 
 From a computational perspective, evaluating variance online across streaming data presents numerical challenges. Standard single-pass algebraic formulas are susceptible to catastrophic cancellation due to floating-point rounding errors. To address this, we derive Welford's algorithm to update the sample mean and sum of squared deviations incrementally in $O(1)$ memory. Additionally, we conduct a Monte Carlo simulation across $m$ attackers probing $n$ systems to analyze the sampling distributions of the mean and variance, verifying their unbiasedness and consistency.
 
@@ -164,24 +164,24 @@ In this experiment, $m$ independent attackers attempt to penetrate $n$ systems e
         
         <h6 class="font-weight-bold mb-1 text-center">Welford Running Mean Trajectories (Mean vs. System Step k)</h6>
         <p class="small text-muted mb-3 text-center">Dashed red line indicates theoretical μ. Watch the funnel narrow as k &rarr; n.</p>
-        <div class="w-100 mb-5 px-3">
-            <canvas id="meanTrajChart" height="110"></canvas>
+        <div style="position: relative; width: 100%; height: 260px;" class="mb-5 px-3">
+            <canvas id="meanTrajChart"></canvas>
         </div>
 
         <h6 class="font-weight-bold mb-1 text-center">Welford Running Variance Trajectories (s² vs. System Step k)</h6>
         <p class="small text-muted mb-3 text-center">Computed online via SS / (k - 1) without storing past scores.</p>
-        <div class="w-100 mb-5 px-3">
-            <canvas id="varTrajChart" height="110"></canvas>
+        <div style="position: relative; width: 100%; height: 260px;" class="mb-5 px-3">
+            <canvas id="varTrajChart"></canvas>
         </div>
 
         <h6 class="font-weight-bold mb-2 text-center">Distribution of Final Sampling Means Across m Hackers</h6>
-        <div class="w-100 px-3 mb-5">
-            <canvas id="histSampleMeans" height="95"></canvas>
+        <div style="position: relative; width: 100%; height: 220px;" class="mb-5 px-3">
+            <canvas id="histSampleMeans"></canvas>
         </div>
 
         <h6 class="font-weight-bold mb-2 text-center">Distribution of Final Sampling Variances (s²) Across m Hackers</h6>
-        <div class="w-100 px-3 mb-2">
-            <canvas id="histSampleVars" height="95"></canvas>
+        <div style="position: relative; width: 100%; height: 220px;" class="mb-5 px-3">
+            <canvas id="histSampleVars"></canvas>
         </div>
         
     </div>
@@ -265,13 +265,10 @@ function drawScore(dist, p) {
 // Return theoretical mean (mu) and variance (sigma^2)
 function getTheoreticalMoments(dist, p) {
     if (dist === "uniform_cont") {
-        // U(0, 10) -> mean = 5, var = (10 - 0)^2 / 12 = 100 / 12 = 8.3333
         return { mu: 5.0, sigma2: 100.0 / 12.0 };
     } else if (dist === "uniform_disc") {
-        // Discrete uniform on {0, ..., 10} (N = 11 outcomes) -> var = (N^2 - 1) / 12 = 120 / 12 = 10
         return { mu: 5.0, sigma2: 10.0 };
     } else if (dist === "binomial") {
-        // Bin(10, p) -> mean = 10p, var = 10p(1-p)
         return { mu: 10.0 * p, sigma2: 10.0 * p * (1.0 - p) };
     }
     return { mu: 0, sigma2: 0 };
@@ -304,25 +301,21 @@ function runWelfordSimulation() {
     let finalVarsUnbiased = [];
     let finalVarsBiased = [];
 
-    // Cap plotted trajectories to 60 for smooth rendering while computing full m for statistics
+    // Cap plotted trajectories to 60 for smooth rendering
     let maxPlottedTrajectories = Math.min(m, 60);
 
     for (let h = 0; h < m; h++) {
         let mean = 0.0;
         let ss = 0.0;
-
         let recordPath = h < maxPlottedTrajectories;
         let meanPath = recordPath ? [] : null;
         let varPath = recordPath ? [] : null;
 
         for (let k = 1; k <= n; k++) {
             let x = drawScore(dist, p);
-
-            // --- EX. 1: CORE 3-LINE WELFORD ALGORITHM ---
             let delta = x - mean;
             mean += delta / k;
             ss += delta * (x - mean);
-            // --------------------------------------------
 
             if (recordPath) {
                 meanPath.push(mean);
@@ -355,7 +348,6 @@ function runWelfordSimulation() {
         }
     }
 
-    // Add theoretical reference line to both trajectory charts
     meanTrajectories.unshift({
         data: Array(n).fill(theo.mu),
         borderColor: "rgba(231, 76, 60, 0.95)",
@@ -374,12 +366,10 @@ function runWelfordSimulation() {
         fill: false
     });
 
-    // Compute averages across the m hackers
     let statsMean = computeArrayStats(finalMeans);
     let statsVarUnbiased = computeArrayStats(finalVarsUnbiased);
     let statsVarBiased = computeArrayStats(finalVarsBiased);
 
-    // Update Summary Table
     document.getElementById("theoMean").innerText = theo.mu.toFixed(4);
     document.getElementById("empMean").innerText = statsMean.mean.toFixed(4);
     document.getElementById("errMean").innerText = Math.abs(statsMean.mean - theo.mu).toFixed(4);
@@ -428,6 +418,7 @@ function renderLineChart(canvasId, chartInstance, n, datasets, yLabel, setInstan
         data: { labels: labels, datasets: datasets },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             scales: {
                 x: { title: { display: true, text: "Systems Attempted (k)" } },
@@ -482,6 +473,7 @@ function renderHistogram(ctx, chartInstance, dataToBin, xTitle, color) {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             scales: {
                 x: { title: { display: true, text: xTitle } },
@@ -492,9 +484,16 @@ function renderHistogram(ctx, chartInstance, dataToBin, xTitle, color) {
     });
 }
 
-document.addEventListener("DOMContentLoaded", function() {
+// Inizializzazione sicura: aspetta che Chart.js sia fisicamente scaricato e aggira i conflitti del tema
+function tryInitDashboard() {
+    if (typeof Chart === 'undefined') {
+        setTimeout(tryInitDashboard, 50); 
+        return;
+    }
     updateControls();
     runWelfordSimulation();
-});
+}
+
+tryInitDashboard();
 </script>
 {% endraw %}

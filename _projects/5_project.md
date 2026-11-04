@@ -229,8 +229,8 @@ where $\mu_4 = E[(X - \mu)^4]$ is the fourth central moment. For small values of
 
 Because both estimators are unbiased and their sampling variances converge to zero as $n \to \infty$, both $\bar{X}_n$ and $S_n^2$ are consistent estimators ($\bar{X}_n \xrightarrow{P} \mu$ and $S_n^2 \xrightarrow{P} \sigma^2$).
 
-<!-- Scripts for interactive tools -->
-<script src="[https://cdn.jsdelivr.net/npm/chart.js](https://cdn.jsdelivr.net/npm/chart.js)"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 {% raw %}
 <script>
 let meanTrajChartInstance = null;
@@ -242,12 +242,13 @@ function updateControls() {
     let dist = document.getElementById("distModel").value;
     let probContainer = document.getElementById("probContainer");
     if (dist === "binomial") {
-        probContainer.style.setProperty("display", "flex", "important");
+        probContainer.style.display = "flex";
     } else {
-        probContainer.style.setProperty("display", "none", "important");
+        probContainer.style.display = "none";
     }
 }
 
+// Draw a random score between 0 and 10 from the selected distribution
 function drawScore(dist, p) {
     if (dist === "uniform_cont") {
         return Math.random() * 10.0;
@@ -483,16 +484,15 @@ function renderHistogram(ctx, chartInstance, dataToBin, xTitle, color) {
     });
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    function tryInitDashboard() {
-        if (typeof Chart === 'undefined') {
-            setTimeout(tryInitDashboard, 50); 
-            return;
-        }
-        updateControls();
-        runWelfordSimulation();
+function tryInitDashboard() {
+    if (typeof Chart === 'undefined') {
+        setTimeout(tryInitDashboard, 50); 
+        return;
     }
-    tryInitDashboard();
-});
+    updateControls();
+    runWelfordSimulation();
+}
+
+document.addEventListener("DOMContentLoaded", tryInitDashboard);
 </script>
 {% endraw %}

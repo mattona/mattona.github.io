@@ -12,11 +12,11 @@ In this assignment, I extend the penetration testing simulation by assigning eac
 
 From a computational perspective, evaluating variance online across streaming data presents numerical challenges. Standard single-pass algebraic formulas are susceptible to catastrophic cancellation due to floating-point rounding errors. To address this, we derive Welford's algorithm to update the sample mean and sum of squared deviations incrementally in $O(1)$ memory. Additionally, we conduct a Monte Carlo simulation across $m$ attackers probing $n$ systems to analyze the sampling distributions of the mean and variance, verifying their unbiasedness and consistency.
 
-### 1. Exercise 1: Welford's Recurrence Formulas
+### 1. Welford's Recurrence Formulas
 
 Computing the variance of a sequence $x_1, x_2, \dots, x_n$ using the naive computational formula $\sigma^2 = \frac{1}{n}\sum_{i=1}^n x_i^2 - \bar{x}_n^2$ in a single pass introduces severe numerical instability. In IEEE 754 floating-point arithmetic, when the variance is small relative to the square of the mean, subtracting two large and nearly equal numbers results in a catastrophic loss of precision (catastrophic cancellation), which can even produce negative variance estimates.
 
-Welford's algorithm avoids this issue by updating the running mean $\bar{x}_k$ and the sum of squared differences $SS_k = \sum_{i=1}^k (x_i - \bar{x}_k)^2$ incrementally as each new value $x_k$ is observed.
+Welford's algorithm avoids this issue by updating the running mean $\bar{x}\_k$ and the sum of squared differences $SS\_k = \sum_{i=1}^k (x_i - \bar{x}\_k)^2$ incrementally as each new value $x\_k$ is observed.
 
 #### Step 1: Knuth's Recurrence for the Mean
 
@@ -70,7 +70,7 @@ From $SS_k$, we compute both the unbiased sample variance $s_k^2$ (with Bessel's
 
 $$s_k^2 = \frac{SS_k}{k - 1}, \qquad \hat{\sigma}_k^2 = \frac{SS_k}{k}$$
 
-#### 3-Line Core Implementation
+#### Step 3: Line Core Implementation
 
 In implementation, the update requires computing the residual using the mean prior to update ($\delta_1 = x_k - \bar{x}_{k-1}$), updating the mean in place, and multiplying $\delta_1$ by the residual relative to the updated mean ($\delta_2 = x_k - \bar{x}_k$):
 
@@ -81,7 +81,7 @@ mean += delta / k;             // 2. Knuth mean update (mean_k)
 ss += delta * (x - mean);      // 3. Welford SS update using new mean (x_k - mean_k)
 ```
 
-### 2. Interactive Simulation Dashboard (Exercise 2)
+### 2. Interactive Simulation Dashboard
 
 In this experiment, $m$ independent attackers attempt to penetrate $n$ systems each. Each attempt yields a score $X_{j,i} \in [0, 10]$ drawn from a chosen probability distribution with theoretical mean $\mu$ and variance $\sigma^2$. For every attacker $j \in \{1, \dots, m\}$, Welford's algorithm tracks the running sample mean and sample variance across their trajectory of $n$ systems online.
 
@@ -191,9 +191,9 @@ In this experiment, $m$ independent attackers attempt to penetrate $n$ systems e
 
 The empirical results from varying $m$ and $n$ illustrate key theoretical properties of sampling distributions.
 
-#### 1. Unbiasedness of Estimators
+#### 3.1 Unbiasedness of Estimators
 
-For each attacker trajectory $j$, let $\bar{X}_j = \frac{1}{n}\sum_{i=1}^n X_{j,i}$ and $S_j^2 = \frac{1}{n-1}\sum_{i=1}^n (X_{j,i} - \bar{X}_j)^2$. Averaging these sample values across all $m$ attackers gives:
+For each attacker trajectory $j$, let $\bar{X}\_j = \frac{1}{n}\sum_{i=1}^n X_{j,i}$ and $S\_j^2 = \frac{1}{n-1}\sum_{i=1}^n (X_{j,i} - \bar{X}\_j)^2$. Averaging these sample values across all $m$ attackers gives:
 
 $$\overline{\bar{X}} = \frac{1}{m}\sum_{j=1}^m \bar{X}_j \approx \mu, \qquad \overline{S^2} = \frac{1}{m}\sum_{j=1}^m S_j^2 \approx \sigma^2$$
 
@@ -201,33 +201,31 @@ Even for small sample sizes per trajectory (such as $n = 5$ or $n = 10$), the ov
 
 $$E[\bar{X}] = \mu, \qquad E[S^2] = \sigma^2$$
 
-In contrast, dividing $SS_n$ by $n$ produces the population estimator $\hat{\sigma}^2 = SS_n / n$, which has expected value $E[\hat{\sigma}^2] = \frac{n-1}{n}\sigma^2$. For small trajectory lengths such as $n = 5$, this introduces a $20\%$ downward bias. Bessel's correction (dividing by $n-1$) accounts for the loss of one degree of freedom when estimating $\mu$ using the sample mean $\bar{X}$.
+In contrast, dividing $SS\_n$ by $n$ produces the population estimator $\hat{\sigma}^2 = SS\_n / n$, which has expected value $E[\hat{\sigma}^2] = \frac{n-1}{n}\sigma^2$. For small trajectory lengths such as $n = 5$, this introduces a $20\%$ downward bias. Bessel's correction (dividing by $n-1$) accounts for the loss of one degree of freedom when estimating $\mu$ using the sample mean $\bar{X}$.
 
-#### 2. Significance in Inferential Statistics
+#### 3.2 Significance in Inferential Statistics
 
 In security telemetry and scientific sampling, population parameters $\mu$ and $\sigma^2$ are typically unknown, and analysis is limited to finite observed samples.
 
 Unbiasedness guarantees that the estimation procedure introduces no systematic bias. Furthermore, establishing the theoretical sampling distribution enables constructing confidence intervals, evaluating estimation uncertainty via the standard error ($SE = s / \sqrt{n}$), and performing hypothesis testing (such as $t$-tests) to determine whether changes in observed scores reflect true changes in system security or attacker behavior.
 
-#### 3. Effect of Increasing Sample Size $n$ (Consistency and Variance Reduction)
+#### 3.3 Effect of Increasing Sample Size $n$ (Consistency and Variance Reduction)
 
 Increasing $n$ reduces the variance of both sample estimators:
 
-- **Variance of the Sample Mean:** The sampling variance of $\bar{X}_n$ decreases inversely with $n$:
-
+- **Variance of the Sample Mean:** The sampling variance of $\bar{X}\_n$ decreases inversely with $n$:
 
 $$Var(\bar{X}_n) = \frac{\sigma^2}{n} \implies SD(\bar{X}_n) = \frac{\sigma}{\sqrt{n}}$$
 
-As $n$ increases, the distribution of sample means concentrates tightly around $\mu$. By the Central Limit Theorem, $\bar{X}_n$ converges toward a normal distribution regardless of the underlying distribution of individual scores.
+As $n$ increases, the distribution of sample means concentrates tightly around $\mu$. By the Central Limit Theorem, $\bar{X}\_n$ converges toward a normal distribution regardless of the underlying distribution of individual scores.
 
-- **Variance of the Sample Variance:** The variance of $S_n^2$ similarly scales inversely with $n$:
-
+- **Variance of the Sample Variance:** The variance of $S\_n^2$ similarly scales inversely with $n$:
 
 $$Var(S_n^2) = \frac{1}{n}\left(\mu_4 - \frac{n-3}{n-1}\sigma^4\right) = \mathcal{O}\left(\frac{1}{n}\right)$$
 
-where $\mu_4 = E[(X - \mu)^4]$ is the fourth central moment. For small values of $n$, the empirical distribution of $S_n^2$ shows right skewness; as $n \to \infty$, its variance approaches zero and values concentrate around $\sigma^2$.
+where $\mu_4 = E[(X - \mu)^4]$ is the fourth central moment. For small values of $n$, the empirical distribution of $S\_n^2$ shows right skewness; as $n \to \infty$, its variance approaches zero and values concentrate around $\sigma^2$.
 
-Because both estimators are unbiased and their sampling variances converge to zero as $n \to \infty$, both $\bar{X}_n$ and $S_n^2$ are consistent estimators ($\bar{X}_n \xrightarrow{P} \mu$ and $S_n^2 \xrightarrow{P} \sigma^2$).
+Because both estimators are unbiased and their sampling variances converge to zero as $n \to \infty$, both $\bar{X}\_n$ and $S\_n^2$ are consistent estimators ($\bar{X}\_n \xrightarrow{P} \mu$ and $S\_n^2 \xrightarrow{P} \sigma^2$).
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 

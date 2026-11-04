@@ -8,7 +8,7 @@ category: Statistics
 permalink: /projects/homework4/
 ---
 
-In this assignment, we extend the penetration testing simulation by assigning each attempt a score between $0$ and $10$, mirroring vulnerability scoring systems such as CVSS (Common Vulnerability Scoring System).
+In this assignment, I extend the penetration testing simulation by assigning each attempt a score between $0$ and $10$, mirroring vulnerability scoring systems such as CVSS (Common Vulnerability Scoring System).
 
 From a computational perspective, evaluating variance online across streaming data presents numerical challenges. Standard single-pass algebraic formulas are susceptible to catastrophic cancellation due to floating-point rounding errors. To address this, we derive Welford's algorithm to update the sample mean and sum of squared deviations incrementally in $O(1)$ memory. Additionally, we conduct a Monte Carlo simulation across $m$ attackers probing $n$ systems to analyze the sampling distributions of the mean and variance, verifying their unbiasedness and consistency.
 

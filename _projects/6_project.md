@@ -14,7 +14,7 @@ This assignment explores two fundamental topics in analysis and computational st
 
 ---
 
-### 1. Exercise 1: Riemann and Lebesgue Integration
+### 1. Riemann and Lebesgue Integration
 
 #### Theoretical Foundations
 
@@ -30,18 +30,81 @@ $$L_M = \sum_{j=0}^{M-1} y_j^* \, \mu(E_j)$$
 
 where $y_j^* \in [y_j, y_{j+1})$ (typically the lower bound $y_j$ or midpoint) and $\mu(E_j)$ denotes the 1D Lebesgue measure (length) of the subset $E_j \subset [a, b]$.
 
-```
-      RIEMANN INTEGRATION                      LEBESGUE INTEGRATION
-   (Partitioning the Domain)                 (Partitioning the Range)
-
-  y ^                                       y ^
-    |       +---+                             |--------------+ y_j+1
-    |   +---|   |---+                         |==============| y_j  <-- Measure preimage μ(E_j)
-    |---+---|---|---|---+                     |--------------+
-    +---+-|-|---|---+-|-+--> x                +-----+--------+-----> x
-       x_0 x_1 x_2 ... x_N                          E_j = {x : y_j <= f(x) < y_j+1}
-```
-
+<div class="my-4 p-4 rounded z-depth-1" style="background-color: rgba(128,128,128,0.03); border: 1px solid rgba(150,150,150,0.25);" markdown="0">
+    <div class="row align-items-center">
+        <!-- SCHEDA RIEMANN -->
+        <div class="col-md-6 mb-4 mb-md-0 border-right-md" style="border-color: rgba(150,150,150,0.2);">
+            <div class="text-center mb-3">
+                <span class="badge badge-primary px-3 py-2 font-weight-bold" style="background-color: #3498db; font-size: 0.9rem;">
+                    RIEMANN INTEGRATION
+                </span>
+                <p class="small text-muted mt-2 mb-0">Partizionamento del Dominio (Asse $x$)</p>
+            </div>  
+            <svg viewBox="0 0 360 210" width="100%" height="100%" style="overflow: visible;">
+                <!-- Griglia e Assi -->
+                <line x1="40" y1="170" x2="340" y2="170" stroke="currentColor" stroke-opacity="0.4" stroke-width="2" />
+                <line x1="40" y1="170" x2="40" y2="20" stroke="currentColor" stroke-opacity="0.4" stroke-width="2" />
+                <text x="345" y="174" fill="currentColor" font-size="12" font-weight="bold">x</text>
+                <text x="38" y="12" fill="currentColor" font-size="12" font-weight="bold">y</text>
+                <!-- Rettangoli di Riemann (Barre Verticali) -->
+                <rect x="70" y="110" width="40" height="60" fill="#3498db" fill-opacity="0.25" stroke="#3498db" stroke-width="1.5"/>
+                <rect x="110" y="70" width="40" height="100" fill="#3498db" fill-opacity="0.35" stroke="#3498db" stroke-width="1.5"/>
+                <rect x="150" y="45" width="40" height="125" fill="#3498db" fill-opacity="0.45" stroke="#3498db" stroke-width="1.5"/>
+                <rect x="190" y="55" width="40" height="115" fill="#3498db" fill-opacity="0.35" stroke="#3498db" stroke-width="1.5"/>
+                <rect x="230" y="90" width="40" height="80" fill="#3498db" fill-opacity="0.25" stroke="#3498db" stroke-width="1.5"/>
+                <rect x="270" y="130" width="40" height="40" fill="#3498db" fill-opacity="0.15" stroke="#3498db" stroke-width="1.5"/>
+                <!-- Curva f(x) -->
+                <path d="M 40 150 Q 150 10, 230 80 T 320 150" fill="none" stroke="#2c3e50" stroke-width="3"/>
+                <!-- Indicazioni intervalli x_i -->
+                <line x1="150" y1="170" x2="150" y2="176" stroke="currentColor" stroke-width="2"/>
+                <line x1="190" y1="170" x2="190" y2="176" stroke="currentColor" stroke-width="2"/>
+                <text x="142" y="192" fill="currentColor" font-size="11">x<tspan dy="3" font-size="9">i-1</tspan></text>
+                <text x="187" y="192" fill="currentColor" font-size="11">x<tspan dy="3" font-size="9">i</tspan></text>
+                <!-- Indicatore Delta x -->
+                <line x1="150" y1="140" x2="190" y2="140" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="3,3"/>
+                <text x="162" y="135" fill="#e74c3c" font-size="10" font-weight="bold">Δx<tspan dy="2" font-size="8">i</tspan></text>
+            </svg>
+        </div>
+        <!-- SCHEDA LEBESGUE -->
+        <div class="col-md-6 pl-md-4">
+            <div class="text-center mb-3">
+                <span class="badge badge-primary px-3 py-2 font-weight-bold" style="background-color: #9b59b6; font-size: 0.9rem;">
+                    LEBESGUE INTEGRATION
+                </span>
+                <p class="small text-muted mt-2 mb-0">Partizionamento del Codominio (Asse $y$)</p>
+            </div>
+            <svg viewBox="0 0 360 210" width="100%" height="100%" style="overflow: visible;">
+                <!-- Griglia e Assi -->
+                <line x1="40" y1="170" x2="340" y2="170" stroke="currentColor" stroke-opacity="0.4" stroke-width="2" />
+                <line x1="40" y1="170" x2="40" y2="20" stroke="currentColor" stroke-opacity="0.4" stroke-width="2" />
+                <text x="345" y="174" fill="currentColor" font-size="12" font-weight="bold">x</text>
+                <text x="38" y="12" fill="currentColor" font-size="12" font-weight="bold">y</text>
+                <!-- Banda Orizzontale del Codominio [y_j, y_j+1] -->
+                <rect x="40" y="70" width="280" height="25" fill="#9b59b6" fill-opacity="0.12" stroke="none" />
+                <line x1="35" y1="95" x2="320" y2="95" stroke="#9b59b6" stroke-width="1.5" stroke-dasharray="4,3"/>
+                <line x1="35" y1="70" x2="320" y2="70" stroke="#9b59b6" stroke-width="1.5" stroke-dasharray="4,3"/>
+                <!-- Proiezioni sulle preimmagini nel Dominio E_j -->
+                <!-- Preimmagine 1 -->
+                <rect x="90" y="170" width="45" height="4" fill="#9b59b6"/>
+                <line x1="90" y1="95" x2="90" y2="170" stroke="#9b59b6" stroke-width="1" stroke-dasharray="2,2"/>
+                <line x1="135" y1="70" x2="135" y2="170" stroke="#9b59b6" stroke-width="1" stroke-dasharray="2,2"/>
+                <!-- Preimmagine 2 -->
+                <rect x="205" y="170" width="50" height="4" fill="#9b59b6"/>
+                <line x1="205" y1="70" x2="205" y2="170" stroke="#9b59b6" stroke-width="1" stroke-dasharray="2,2"/>
+                <line x1="255" y1="95" x2="255" y2="170" stroke="#9b59b6" stroke-width="1" stroke-dasharray="2,2"/>
+                <!-- Curva f(x) -->
+                <path d="M 40 150 Q 150 10, 230 80 T 320 150" fill="none" stroke="#2c3e50" stroke-width="3"/>
+                <!-- Etichette Asse Y -->
+                <text x="12" y="100" fill="#9b59b6" font-size="11" font-weight="bold">y<tspan dy="2" font-size="8">j</tspan></text>
+                <text x="2" y="74" fill="#9b59b6" font-size="11" font-weight="bold">y<tspan dy="2" font-size="8">j+1</tspan></text>
+                <!-- Evidenziazione Misura Preimmagine mu(E_j) sull'asse X -->
+                <text x="135" y="194" fill="#9b59b6" font-size="11" font-weight="bold" text-anchor="middle">
+                    Misura Preimmagine μ(E<tspan dy="2" font-size="8">j</tspan>)
+                </text>
+            </svg>
+        </div>
+    </div>
+</div>
 #### Comparison of Numerical Behavior
 
 | Feature / Metric | Riemann Approach | Lebesgue Approach |
@@ -66,7 +129,7 @@ where $y_j^* \in [y_j, y_{j+1})$ (typically the lower bound $y_j$ or midpoint) a
 
 ---
 
-### 2. Exercise 2: Numerical Computation of the Normal CDF ($\Phi(z)$)
+### 2. Numerical Computation of the Normal CDF ($\Phi(z)$)
 
 #### Non-Elementary Integrals and Liouville's Theorem
 

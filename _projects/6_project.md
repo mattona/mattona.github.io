@@ -14,19 +14,23 @@ This assignment explores two fundamental topics in analysis and computational st
 
 ---
 
-### 1. Riemann and Lebesgue Integration
+### 1. Exercise 1: Riemann and Lebesgue Integration
 
 #### Theoretical Foundations
 
 The classical **Riemann integral** partitions the domain interval $[a, b]$ into $N$ subintervals $\Delta x_i = x_i - x_{i-1}$. Using sample points $x_i^* \in [x_{i-1}, x_i]$, the Riemann sum is defined as:
 
-$$R_N = \sum_{i=1}^N f(x_i^*) \Delta x_i$$
+$$
+R_N = \sum_{i=1}^N f(x_i^*) \Delta x_i
+$$
 
 A function $f$ is Riemann-integrable on $[a, b]$ if and only if $f$ is bounded and its set of discontinuities has Lebesgue measure zero (**Lebesgue's criterion for Riemann integrability**).
 
 Conversely, the **Lebesgue integral** partitions the range $[y_{\min}, y_{\max}]$ into $M$ subintervals $[y_j, y_{j+1})$. For each level-set interval, we evaluate the domain measure of its preimage $E_j = \{x \in [a, b] : y_j \le f(x) < y_{j+1}\}$. The Lebesgue simple-function approximation sum is given by:
 
-$$L_M = \sum_{j=0}^{M-1} y_j^* \, \mu(E_j)$$
+$$
+L_M = \sum_{j=0}^{M-1} y_j^* \, \mu(E_j)
+$$
 
 where $y_j^* \in [y_j, y_{j+1})$ (typically the lower bound $y_j$ or midpoint) and $\mu(E_j)$ denotes the 1D Lebesgue measure (length) of the subset $E_j \subset [a, b]$.
 
@@ -91,7 +95,7 @@ where $y_j^* \in [y_j, y_{j+1})$ (typically the lower bound $y_j$ or midpoint) a
                 <!-- Preimage 2 -->
                 <rect x="205" y="170" width="50" height="4" fill="#9b59b6"/>
                 <line x1="205" y1="70" x2="205" y2="170" stroke="#9b59b6" stroke-width="1" stroke-dasharray="2,2"/>
-                <line x1="255" y1="95" x2="255" y2="170" stroke="#9b59b6" stroke-width="1" stroke-dasharray="2,2"/>
+                <line x1="255" y1="95" x2="255" y2="170" stroke="#9b59b6" stroke-width="1" stroke-dasharray="2,2"/
                 <!-- Curve f(x) -->
                 <path d="M 40 150 Q 150 10, 230 80 T 320 150" fill="none" stroke="#2c3e50" stroke-width="3"/>
                 <!-- Y-Axis Labels -->
@@ -105,6 +109,7 @@ where $y_j^* \in [y_j, y_{j+1})$ (typically the lower bound $y_j$ or midpoint) a
         </div>
     </div>
 </div>
+
 #### Comparison of Numerical Behavior
 
 | Feature / Metric | Riemann Approach | Lebesgue Approach |
@@ -112,7 +117,7 @@ where $y_j^* \in [y_j, y_{j+1})$ (typically the lower bound $y_j$ or midpoint) a
 | **Partition Axis** | Horizontal axis (Domain $[a, b]$) | Vertical axis (Range $[y_{\min}, y_{\max}]$) |
 | **Sum Construction** | Regular or adaptive grid spacing $\Delta x_i$ | Weighted sum of preimage domain measures $\mu(E_j)$ |
 | **Discontinuities** | Fails if discontinuities are dense (non-zero measure) | Handles dense discontinuities effortlessly |
-| **Unbounded Functions** | Requires improper limit processes | Integrates unbounded functions if $\int \vert{}f\vert{} d\mu < \infty$ |
+| **Unbounded Functions** | Requires improper limit processes | Integrates unbounded functions if $\int |f| d\mu < \infty$ |
 | **Computational Complexity** | $O(N)$ grid evaluations | $O(N \cdot M)$ grid scans or $O(N)$ via range histogram binning |
 | **Pathological Sets** | Fails on $\mathbf{1}_{\mathbb{Q}}(x)$ (Upper sum $= 1$, Lower $= 0$) | Correctly evaluates $\mathbf{1}_{\mathbb{Q}}(x) = 0$ since $\mu(\mathbb{Q} \cap [0,1]) = 0$ |
 
@@ -121,7 +126,7 @@ where $y_j^* \in [y_j, y_{j+1})$ (typically the lower bound $y_j$ or midpoint) a
 1. **$f_1(x) = \sin(x)$ on $[0, \pi]$:** Smooth, continuous. Both methods converge rapidly to the exact value $2.0$.
 2. **$f_2(x) = x^2$ on $[0, 1]$:** Monotonic, continuous. Converges to $1/3 \approx 0.333333$.
 3. **$f_3(x) = \mathbf{1}_{\{x \ge 0.5\}} \cdot 3 + \mathbf{1}_{\{x < 0.5\}}$ on $[0, 1]$:** Step discontinuity at $x=0.5$. Exact integral $= 2.0$.
-4. **$f_4(x) = \vert{}x - 0.5\vert{}$ on $[0, 1]$:** Non-differentiable peak at $x=0.5$. Exact integral $= 0.25$.
+4. **$f_4(x) = |x - 0.5|$ on $[0, 1]$:** Non-differentiable peak at $x=0.5$. Exact integral $= 0.25$.
 5. **$f_5(x) = 1 / \sqrt{x}$ on $(0, 1]$:** Unbounded singularity at $x=0$. Improper Riemann integral $= 2.0$.
 6. **$f_6(x) = \sin(x)/x$ on $(0, \pi]$:** Non-trivial function (Sine integral $\text{Si}(\pi) \approx 1.851937$).
 7. **$f_7(x) = \mathbf{1}_{\mathbb{Q}}(x)$ on $[0, 1]$ (Dirichlet Function):** Everywhere discontinuous. Riemann upper sum is $1.0$, lower sum is $0.0$ (fails to converge). Lebesgue integral correctly yields $0.0$ because rational numbers have measure zero.
@@ -129,27 +134,35 @@ where $y_j^* \in [y_j, y_{j+1})$ (typically the lower bound $y_j$ or midpoint) a
 
 ---
 
-### 2. Numerical Computation of the Normal CDF ($\Phi(z)$)
+### 2. Exercise 2: Numerical Computation of the Normal CDF ($\Phi(z)$)
 
 #### Non-Elementary Integrals and Liouville's Theorem
 
 The Probability Density Function (PDF) of a Standard Normal random variable $Z \sim \mathcal{N}(0,1)$ is given by:
 
-$$\phi(z) = \frac{1}{\sqrt{2\pi}} e^{-z^2/2}$$
+$$
+\phi(z) = \frac{1}{\sqrt{2\pi}} e^{-z^2/2}
+$$
 
 The Cumulative Distribution Function (CDF) $\Phi(z) = P(Z \le z)$ requires computing:
 
-$$\Phi(z) = \int_{-\infty}^z \frac{1}{\sqrt{2\pi}} e^{-t^2/2} \, dt = \frac{1}{2} + \frac{1}{\sqrt{2\pi}} \int_0^z e^{-t^2/2} \, dt$$
+$$
+\Phi(z) = \int_{-\infty}^z \frac{1}{\sqrt{2\pi}} e^{-t^2/2} \, dt = \frac{1}{2} + \frac{1}{\sqrt{2\pi}} \int_0^z e^{-t^2/2} \, dt
+$$
 
 In introductory statistics, $\Phi(z)$ is always provided via pre-computed lookup tables or software routines. This is not merely a convenience, but a mathematical necessity governed by **Liouville's Theorem on Integration in Finite Terms** (1835).
 
 > **Liouville's Theorem:** Let $f(x)$ and $g(x)$ be rational functions with $g(x)$ non-constant. The indefinite integral $\int f(x) e^{g(x)} dx$ can be expressed in terms of elementary functions (polynomials, exponentials, logarithms, trigonometric functions, and their compositions) **if and only if** there exists a rational function $r(x)$ satisfying the differential equation:
 > 
-> $$ > f(x) = r'(x) + r(x)g'(x) > $$
+> $$
+> f(x) = r'(x) + r(x)g'(x)
+> $$
 
 For the standard normal integrand, $f(x) = 1$ and $g(x) = -x^2/2$, so $g'(x) = -x$. The Liouville condition becomes:
 
-$$1 = r'(x) - x \cdot r(x)$$
+$$
+1 = r'(x) - x \cdot r(x)
+$$
 
 If $r(x) = \frac{P(x)}{Q(x)}$ is a rational function in lowest terms, analyzing degrees reveals that no polynomial combination can satisfy this identity. Consequently, **$\int e^{-x^2/2} dx$ has no elementary antiderivative**.
 
@@ -157,214 +170,208 @@ If $r(x) = \frac{P(x)}{Q(x)}$ is a rational function in lowest terms, analyzing 
 
 To bypass this barrier, mathematics defines the **Error Function** $\operatorname{erf}(x)$ as a standardized special function:
 
-$$\operatorname{erf}(x) = \frac{2}{\sqrt{\pi}} \int_0^x e^{-t^2} dt$$
+$$
+\operatorname{erf}(x) = \frac{2}{\sqrt{\pi}} \int_0^x e^{-t^2} dt
+$$
 
 By substituting $t = u / \sqrt{2}$, the standard normal CDF $\Phi(z)$ is exactly related to $\operatorname{erf}(z)$ by:
 
-$$\Phi(z) = \frac{1}{2} \left[ 1 + \operatorname{erf}\left(\frac{z}{\sqrt{2}}\right) \right]$$
+$$
+\Phi(z) = \frac{1}{2} \left[ 1 + \operatorname{erf}\left(\frac{z}{\sqrt{2}}\right) \right]
+$$
 
 As highlighted in the *Hogg-McKean-Craig Section 3.4 Notes*, an explicit power series representation can be derived by expanding the Maclaurin series of $e^{-x^2/2}$ and integrating term-by-term (justified by uniform convergence):
 
-$$e^{-t^2/2} = \sum_{k=0}^{\infty} \frac{(-1)^k t^{2k}}{2^k k!} \implies \int_0^z e^{-t^2/2} dt = \sum_{k=0}^{\infty} \frac{(-1)^k z^{2k+1}}{2^k (2k+1) k!}$$
+$$
+e^{-t^2/2} = \sum_{k=0}^{\infty} \frac{(-1)^k t^{2k}}{2^k k!} \implies \int_0^z e^{-t^2/2} dt = \sum_{k=0}^{\infty} \frac{(-1)^k z^{2k+1}}{2^k (2k+1) k!}
+$$
 
 Thus, the exact analytical series for $\Phi(z)$ is:
 
-$$\Phi(z) = \frac{1}{2} + \frac{1}{\sqrt{2\pi}} \sum_{k=0}^{\infty} \frac{(-1)^k z^{2k+1}}{2^k (2k+1) k!}$$
+$$
+\Phi(z) = \frac{1}{2} + \frac{1}{\sqrt{2\pi}} \sum_{k=0}^{\infty} \frac{(-1)^k z^{2k+1}}{2^k (2k+1) k!}
+$$
 
 Because this is an alternating series with monotonically decreasing terms for small to moderate $z$, the **Alternating Series Estimation Theorem** bounds the truncation error after $K$ terms by the first omitted term:
 
-$$\left\vert{} R_K(z) \right\vert{} \le \frac{\vert{}z\vert{}^{2K+3}}{\sqrt{2\pi} \, 2^{K+1} (2K+3) (K+1)!}$$
+$$
+\left| R_K(z) \right| \le \frac{|z|^{2K+3}}{\sqrt{2\pi} \, 2^{K+1} (2K+3) (K+1)!}
+$$
 
 #### Numerical Methods Implemented
 
-1. **Power Series Expansion:** Truncated sum up to $K$ terms. Highly accurate for $\vert{}z\vert{} \le 3.0$, but subject to floating-point loss of significance for large $\vert{}z\vert{}$.
+1. **Power Series Expansion:** Truncated sum up to $K$ terms. Highly accurate for $|z| \le 3.0$, but subject to floating-point loss of significance for large $|z|$.
 2. **Numerical Quadrature (Trapezoidal & Simpson's Rule):** Numerically integrates $\phi(t)$ from a finite lower bound $-K_{\text{bound}} = -8.0$ up to $z$ across $N$ panels.
 3. **Abramowitz & Stegun Rational Approximation:** A high-precision polynomial-rational formula ($O(1)$ complexity) widely used in production libraries:
-   $$t = \frac{1}{1 + p\vert{}z\vert{}}, \quad \Phi(z) \approx 1 - \phi(z) \left( a_1 t + a_2 t^2 + a_3 t^3 + a_4 t^4 + a_5 t^5 \right) \quad \text{for } z \ge 0$$
-   with absolute error $\vert{}\epsilon(z)\vert{} < 7.5 \times 10^{-8}$.
+   $$
+   t = \frac{1}{1 + p|z|}, \quad \Phi(z) \approx 1 - \phi(z) \left( a_1 t + a_2 t^2 + a_3 t^3 + a_4 t^4 + a_5 t^5 \right) \quad \text{for } z \ge 0
+   $$
+   with absolute error $|\epsilon(z)| < 7.5 \times 10^{-8}$.
 
 ---
 
 ### 3. Interactive Simulation & Integration Engine
 
-The interactive suite below allows real-time execution and visualization of both exercises.
-
 <div class="card py-4 my-4 z-depth-1" style="background-color: transparent; border: 1px solid rgba(150,150,150,0.3);" markdown="0">
-    <h5 class="text-center mb-4">Interactive Numerical Analysis Suite</h5>
-
-    <!-- Navigation Tabs -->
-    <ul class="nav nav-tabs justify-content-center mb-4" id="simTabs" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active font-weight-bold" id="ex1-tab" data-toggle="tab" href="#ex1-panel" role="tab">Ex 1: Riemann vs. Lebesgue Integration</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link font-weight-bold" id="ex2-tab" data-toggle="tab" href="#ex2-panel" role="tab">Ex 2: Normal CDF $\Phi(z)$ Approximations</a>
-        </li>
-    </ul>
-
-    <div class="tab-content px-3" id="simTabContent">
-        
-        <!-- EXERCISE 1 PANEL -->
-        <div class="tab-pane fade show active" id="ex1-panel" role="tabpanel">
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="font-weight-bold">Select Target Function $f(x)$:</label>
-                    <select id="ex1FuncSelect" class="form-control" style="background-color: rgba(128,128,128,0.05); color: inherit;" onchange="runEx1Simulation()">
-                        <option value="sin">f1(x) = sin(x) on [0, π]</option>
-                        <option value="x2">f2(x) = x^2 on [0, 1]</option>
-                        <option value="step">f3(x) = Step Function (1 if x<0.5 else 3) on [0, 1]</option>
-                        <option value="abs">f4(x) = |x - 0.5| on [0, 1]</option>
-                        <option value="inv_sqrt">f5(x) = 1 / sqrt(x) on (0, 1] (Unbounded)</option>
-                        <option value="sinc">f6(x) = sin(x) / x on (0, π]</option>
-                        <option value="dirichlet">f7(x) = Dirichlet Function (1 if x ∈ Q else 0)</option>
-                        <option value="thomae">f8(x) = Thomae Popcorn Function on [0, 1]</option>
-                    </select>
-                </div>
-                <div class="col-md-3 mb-3">
-                    <label class="font-weight-bold">Domain Subdivisions (N): <span id="ex1NVal" style="color: #3498db;">200</span></label>
-                    <input type="range" id="ex1NRange" class="custom-range" min="10" max="2000" step="10" value="200" oninput="document.getElementById('ex1NVal').innerText = this.value; runEx1Simulation();">
-                </div>
-                <div class="col-md-3 mb-3">
-                    <label class="font-weight-bold">Range Bins (M): <span id="ex1MVal" style="color: #9b59b6;">100</span></label>
-                    <input type="range" id="ex1MRange" class="custom-range" min="10" max="500" step="10" value="100" oninput="document.getElementById('ex1MVal').innerText = this.value; runEx1Simulation();">
+    <h5 class="text-center mb-4 font-weight-bold">Interactive Numerical Analysis Suite</h5>
+    <!-- SUBSECTION 1: EXERCISE 1 -->
+    <div class="px-4 mb-5">
+        <h5 class="font-weight-bold mb-3" style="color: #3498db;">1. Riemann vs. Lebesgue Integration</h5>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="font-weight-bold">Select Target Function $f(x)$:</label>
+                <select id="ex1FuncSelect" class="form-control" style="background-color: rgba(128,128,128,0.05); color: inherit;" onchange="runEx1Simulation()">
+                    <option value="sin">f1(x) = sin(x) on [0, π]</option>
+                    <option value="x2">f2(x) = x^2 on [0, 1]</option>
+                    <option value="step">f3(x) = Step Function (1 if x<0.5 else 3) on [0, 1]</option>
+                    <option value="abs">f4(x) = |x - 0.5| on [0, 1]</option>
+                    <option value="inv_sqrt">f5(x) = 1 / sqrt(x) on (0, 1] (Unbounded)</option>
+                    <option value="sinc">f6(x) = sin(x) / x on (0, π]</option>
+                    <option value="dirichlet">f7(x) = Dirichlet Function (1 if x ∈ Q else 0)</option>
+                    <option value="thomae">f8(x) = Thomae Popcorn Function on [0, 1]</option>
+                </select>
+            </div>
+            <div class="col-md-3 mb-3">
+                <label class="font-weight-bold">Domain Subdivisions (N): <span id="ex1NVal" style="color: #3498db;">200</span></label>
+                <input type="range" id="ex1NRange" class="custom-range" min="10" max="2000" step="10" value="200" oninput="document.getElementById('ex1NVal').innerText = this.value; runEx1Simulation();">
+            </div>
+            <div class="col-md-3 mb-3">
+                <label class="font-weight-bold">Range Bins (M): <span id="ex1MVal" style="color: #9b59b6;">100</span></label>
+                <input type="range" id="ex1MRange" class="custom-range" min="10" max="500" step="10" value="100" oninput="document.getElementById('ex1MVal').innerText = this.value; runEx1Simulation();">
+            </div>
+        </div>
+        <!-- Ex 1 Results Table -->
+        <div class="table-responsive my-3">
+            <table class="table table-sm table-bordered text-center mb-0" style="color: inherit; border-color: rgba(150,150,150,0.3);">
+                <thead style="background-color: rgba(128,128,128,0.1);">
+                    <tr>
+                        <th>Integration Method</th>
+                        <th>Numerical Estimate</th>
+                        <th>Analytic / Theoretical Exact</th>
+                        <th>Absolute Error</th>
+                        <th>Execution Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="font-weight-bold text-left">Riemann Midpoint Sum ($R_N$)</td>
+                        <td id="ex1RVal" style="color: #3498db; font-weight: bold;">-</td>
+                        <td class="ex1ExactCell">-</td>
+                        <td id="ex1RErr">-</td>
+                        <td id="ex1RTime">-</td>
+                    </tr>
+                    <tr>
+                        <td class="font-weight-bold text-left">Riemann Trapezoidal Rule</td>
+                        <td id="ex1TrapVal" style="color: #2ecc71; font-weight: bold;">-</td>
+                        <td class="ex1ExactCell">-</td>
+                        <td id="ex1TrapErr">-</td>
+                        <td id="ex1TrapTime">-</td>
+                    </tr>
+                    <tr>
+                        <td class="font-weight-bold text-left">Lebesgue Preimage Sum ($L_M$)</td>
+                        <td id="ex1LVal" style="color: #9b59b6; font-weight: bold;">-</td>
+                        <td class="ex1ExactCell">-</td>
+                        <td id="ex1LErr">-</td>
+                        <td id="ex1LTime">-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- Ex 1 Charts -->
+        <div class="row mt-4">
+            <div class="col-md-6 mb-4">
+                <h6 class="font-weight-bold text-center">Function Shape & Level Sets</h6>
+                <div style="position: relative; width: 100%; height: 250px;">
+                    <canvas id="ex1FuncChart"></canvas>
                 </div>
             </div>
-
-            <!-- Ex 1 Results Table -->
-            <div class="table-responsive my-3">
-                <table class="table table-sm table-bordered text-center mb-0" style="color: inherit; border-color: rgba(150,150,150,0.3);">
-                    <thead style="background-color: rgba(128,128,128,0.1);">
-                        <tr>
-                            <th>Integration Method</th>
-                            <th>Numerical Estimate</th>
-                            <th>Analytic / Theoretical Exact</th>
-                            <th>Absolute Error</th>
-                            <th>Execution Time</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="font-weight-bold text-left">Riemann Midpoint Sum ($R_N$)</td>
-                            <td id="ex1RVal" style="color: #3498db; font-weight: bold;">-</td>
-                            <td class="ex1ExactCell">-</td>
-                            <td id="ex1RErr">-</td>
-                            <td id="ex1RTime">-</td>
-                        </tr>
-                        <tr>
-                            <td class="font-weight-bold text-left">Riemann Trapezoidal Rule</td>
-                            <td id="ex1TrapVal" style="color: #2ecc71; font-weight: bold;">-</td>
-                            <td class="ex1ExactCell">-</td>
-                            <td id="ex1TrapErr">-</td>
-                            <td id="ex1TrapTime">-</td>
-                        </tr>
-                        <tr>
-                            <td class="font-weight-bold text-left">Lebesgue Preimage Sum ($L_M$)</td>
-                            <td id="ex1LVal" style="color: #9b59b6; font-weight: bold;">-</td>
-                            <td class="ex1ExactCell">-</td>
-                            <td id="ex1LErr">-</td>
-                            <td id="ex1LTime">-</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Ex 1 Charts -->
-            <div class="row mt-4">
-                <div class="col-md-6 mb-4">
-                    <h6 class="font-weight-bold text-center">Function Shape & Level Sets</h6>
-                    <div style="position: relative; width: 100%; height: 250px;">
-                        <canvas id="ex1FuncChart"></canvas>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <h6 class="font-weight-bold text-center">Convergence Error vs. Subdivisions ($N$)</h6>
-                    <div style="position: relative; width: 100%; height: 250px;">
-                        <canvas id="ex1ConvChart"></canvas>
-                    </div>
+            <div class="col-md-6 mb-4">
+                <h6 class="font-weight-bold text-center">Convergence Error vs. Subdivisions ($N$)</h6>
+                <div style="position: relative; width: 100%; height: 250px;">
+                    <canvas id="ex1ConvChart"></canvas>
                 </div>
             </div>
         </div>
-
-        <!-- EXERCISE 2 PANEL -->
-        <div class="tab-pane fade" id="ex2-panel" role="tabpanel">
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <label class="font-weight-bold">Evaluation Point ($z$): <span id="ex2ZVal" style="color: #e74c3c;">1.00</span></label>
-                    <input type="range" id="ex2ZRange" class="custom-range" min="-4.0" max="4.0" step="0.05" value="1.0" oninput="document.getElementById('ex2ZVal').innerText = parseFloat(this.value).toFixed(2); runEx2Simulation();">
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label class="font-weight-bold">Power Series Terms ($K$): <span id="ex2KVal" style="color: #f1c40f;">15</span></label>
-                    <input type="range" id="ex2KRange" class="custom-range" min="1" max="40" step="1" value="15" oninput="document.getElementById('ex2KVal').innerText = this.value; runEx2Simulation();">
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label class="font-weight-bold">Quadrature Panels ($N$): <span id="ex2NVal" style="color: #1abc9c;">100</span></label>
-                    <input type="range" id="ex2NRange" class="custom-range" min="10" max="1000" step="10" value="100" oninput="document.getElementById('ex2NVal').innerText = this.value; runEx2Simulation();">
-                </div>
-            </div>
-
-            <!-- Ex 2 Results Table -->
-            <div class="table-responsive my-3">
-                <table class="table table-sm table-bordered text-center mb-0" style="color: inherit; border-color: rgba(150,150,150,0.3);">
-                    <thead style="background-color: rgba(128,128,128,0.1);">
-                        <tr>
-                            <th>Numerical Algorithm</th>
-                            <th>Computed $\Phi(z)$</th>
-                            <th>Reference $\Phi(z)$ (`erf` standard)</th>
-                            <th>Absolute Error</th>
-                            <th>Theoretical Error Bound</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="font-weight-bold text-left">Power Series Expansion (Hogg Sec 3.4)</td>
-                            <td id="ex2SeriesVal" style="color: #f1c40f; font-weight: bold;">-</td>
-                            <td class="ex2RefCell">-</td>
-                            <td id="ex2SeriesErr">-</td>
-                            <td id="ex2SeriesBound">-</td>
-                        </tr>
-                        <tr>
-                            <td class="font-weight-bold text-left">Trapezoidal Quadrature over $[-8, z]$</td>
-                            <td id="ex2TrapVal" style="color: #3498db; font-weight: bold;">-</td>
-                            <td class="ex2RefCell">-</td>
-                            <td id="ex2TrapErr">-</td>
-                            <td>$\mathcal{O}(h^2)$</td>
-                        </tr>
-                        <tr>
-                            <td class="font-weight-bold text-left">Simpson's 1/3 Quadrature over $[-8, z]$</td>
-                            <td id="ex2SimpVal" style="color: #2ecc71; font-weight: bold;">-</td>
-                            <td class="ex2RefCell">-</td>
-                            <td id="ex2SimpErr">-</td>
-                            <td>$\mathcal{O}(h^4)$</td>
-                        </tr>
-                        <tr>
-                            <td class="font-weight-bold text-left">Abramowitz & Stegun Polynomial Approx</td>
-                            <td id="ex2ASVal" style="color: #e67e22; font-weight: bold;">-</td>
-                            <td class="ex2RefCell">-</td>
-                            <td id="ex2ASErr">-</td>
-                            <td>$< 7.5 \times 10^{-8}$</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Ex 2 Charts -->
-            <div class="row mt-4">
-                <div class="col-md-6 mb-4">
-                    <h6 class="font-weight-bold text-center">Standard Normal PDF & Area under $\Phi(z)$</h6>
-                    <div style="position: relative; width: 100%; height: 250px;">
-                        <canvas id="ex2PdfChart"></canvas>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <h6 class="font-weight-bold text-center">Absolute Error across $z \in [-4, 4]$</h6>
-                    <div style="position: relative; width: 100%; height: 250px;">
-                        <canvas id="ex2ErrorChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
+    <hr class="w-75 mx-auto mb-5" style="border-color: rgba(150,150,150,0.25);">
+    <!-- SUBSECTION 2: EXERCISE 2 -->
+    <div class="px-4 mb-3">
+        <h5 class="font-weight-bold mb-3" style="color: #e74c3c;">2. Normal CDF $\Phi(z)$ Approximations</h5>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label class="font-weight-bold">Evaluation Point ($z$): <span id="ex2ZVal" style="color: #e74c3c;">1.00</span></label>
+                <input type="range" id="ex2ZRange" class="custom-range" min="-4.0" max="4.0" step="0.05" value="1.0" oninput="document.getElementById('ex2ZVal').innerText = parseFloat(this.value).toFixed(2); runEx2Simulation();">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="font-weight-bold">Power Series Terms ($K$): <span id="ex2KVal" style="color: #f1c40f;">15</span></label>
+                <input type="range" id="ex2KRange" class="custom-range" min="1" max="40" step="1" value="15" oninput="document.getElementById('ex2KVal').innerText = this.value; runEx2Simulation();">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="font-weight-bold">Quadrature Panels ($N$): <span id="ex2NVal" style="color: #1abc9c;">100</span></label>
+                <input type="range" id="ex2NRange" class="custom-range" min="10" max="1000" step="10" value="100" oninput="document.getElementById('ex2NVal').innerText = this.value; runEx2Simulation();">
+            </div>
+        </div>
+        <!-- Ex 2 Results Table -->
+        <div class="table-responsive my-3">
+            <table class="table table-sm table-bordered text-center mb-0" style="color: inherit; border-color: rgba(150,150,150,0.3);">
+                <thead style="background-color: rgba(128,128,128,0.1);">
+                    <tr>
+                        <th>Numerical Algorithm</th>
+                        <th>Computed $\Phi(z)$</th>
+                        <th>Reference $\Phi(z)$ (`erf` standard)</th>
+                        <th>Absolute Error</th>
+                        <th>Theoretical Error Bound</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="font-weight-bold text-left">Power Series Expansion (Hogg Sec 3.4)</td>
+                        <td id="ex2SeriesVal" style="color: #f1c40f; font-weight: bold;">-</td>
+                        <td class="ex2RefCell">-</td>
+                        <td id="ex2SeriesErr">-</td>
+                        <td id="ex2SeriesBound">-</td>
+                    </tr>
+                    <tr>
+                        <td class="font-weight-bold text-left">Trapezoidal Quadrature over $[-8, z]$</td>
+                        <td id="ex2TrapVal" style="color: #3498db; font-weight: bold;">-</td>
+                        <td class="ex2RefCell">-</td>
+                        <td id="ex2TrapErr">-</td>
+                        <td>$\mathcal{O}(h^2)$</td>
+                    </tr>
+                    <tr>
+                        <td class="font-weight-bold text-left">Simpson's 1/3 Quadrature over $[-8, z]$</td>
+                        <td id="ex2SimpVal" style="color: #2ecc71; font-weight: bold;">-</td>
+                        <td class="ex2RefCell">-</td>
+                        <td id="ex2SimpErr">-</td>
+                        <td>$\mathcal{O}(h^4)$</td>
+                    </tr>
+                    <tr>
+                        <td class="font-weight-bold text-left">Abramowitz & Stegun Polynomial Approx</td>
+                        <td id="ex2ASVal" style="color: #e67e22; font-weight: bold;">-</td>
+                        <td class="ex2RefCell">-</td>
+                        <td id="ex2ASErr">-</td>
+                        <td>$< 7.5 \times 10^{-8}$</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- Ex 2 Charts -->
+        <div class="row mt-4">
+            <div class="col-md-6 mb-4">
+                <h6 class="font-weight-bold text-center">Standard Normal PDF & Area under $\Phi(z)$</h6>
+                <div style="position: relative; width: 100%; height: 250px;">
+                    <canvas id="ex2PdfChart"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <h6 class="font-weight-bold text-center">Absolute Error across $z \in [-4, 4]$</h6>
+                <div style="position: relative; width: 100%; height: 250px;">
+                    <canvas id="ex2ErrorChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 ---
@@ -378,7 +385,7 @@ The interactive suite below allows real-time execution and visualization of both
    * Numerical Lebesgue integration requires mapping range level-sets back to domain preimage lengths $\mu(E_j)$. On standard CPU hardware, this requires $O(N)$ histogram binning operations. While numerically slightly more expensive than a simple midpoint Riemann sum, it provides immunity against localized jump singularities and dense non-differentiable points.
 3. **The Necessity of Numerical CDF Routines:**
    * Liouville's theorem proves that the lack of a closed-form elementary antiderivative for $e^{-z^2/2}$ is an intrinsic algebraic property of differential fields, not a limitation of calculus.
-   * For production statistical computing, the **Power Series expansion** (derived in Hogg-McKean-Craig Section 3.4)[cite: 6, 7] provides arbitrary-precision capabilities for small to moderate values of $\vert{}z\vert{}$ ($\vert{}z\vert{} \le 3.5$), while **Abramowitz & Stegun rational approximations** or asymptotic series provide constant-time $O(1)$ precision near tail boundaries ($\vert{}z\vert{} > 3.5$).
+   * For production statistical computing, the **Power Series expansion** (derived in Hogg-McKean-Craig Section 3.4) provides arbitrary-precision capabilities for small to moderate values of $|z|$ ($|z| \le 3.5$), while **Abramowitz & Stegun rational approximations** or asymptotic series provide constant-time $O(1)$ precision near tail boundaries ($|z| > 3.5$).
 
 <!-- Scripts for interactive tools -->
 <script src="[https://cdn.jsdelivr.net/npm/chart.js](https://cdn.jsdelivr.net/npm/chart.js)"></script>
@@ -391,7 +398,6 @@ let ex2ErrorChartInstance = null;
 
 // Helper: Standard error function erf(x) implementation
 function mathErf(x) {
-    // High-precision approximation of erf(x)
     let sign = x >= 0 ? 1 : -1;
     x = Math.abs(x);
     let a1 =  0.254829592, a2 = -0.284496736, a3 =  1.421413741;
@@ -422,8 +428,7 @@ function getEx1Func(type) {
         case 'sinc':
             return { f: x => x === 0 ? 1.0 : Math.sin(x) / x, a: 0.0001, b: Math.PI, exact: 1.85193705, ymin: 0, ymax: 1.0 };
         case 'dirichlet':
-            // Numerical representation: sampled rationals vs irrationals
-            return { f: x => (Number.isInteger(x * 1000000) ? 1.0 : 0.0), a: 0, b: 1.0, exact: 0.0, ymin: 0, ymax: 1.0, isPathological: true };
+            return { f: x => (Number.isInteger(x * 1000000) ? 1.0 : 0.0), a: 0, b: 1.0, exact: 0.0, ymin: 0, ymax: 1.0 };
         case 'thomae':
             return { 
                 f: x => {
@@ -469,13 +474,12 @@ function runEx1Simulation() {
     trapSum *= dx;
     let trapTime = (performance.now() - t0).toFixed(2);
 
-    // 3. Lebesgue Numerical Integration (Range Partition & Preimage Measure)
+    // 3. Lebesgue Numerical Integration
     t0 = performance.now();
     let ymin = target.ymin, ymax = target.ymax;
     let dy = (ymax - ymin) / M;
     let measureCounts = new Array(M).fill(0);
     
-    // Scan domain with high resolution to measure preimage set lengths
     let Nsub = Math.max(N * 4, 2000);
     let subDx = (b - a) / Nsub;
     for (let k = 0; k < Nsub; k++) {
@@ -488,7 +492,7 @@ function runEx1Simulation() {
 
     let lSum = 0;
     for (let j = 0; j < M; j++) {
-        let yStar = ymin + (j + 0.5) * dy; // Level set midpoint
+        let yStar = ymin + (j + 0.5) * dy;
         let domainMeasure = (measureCounts[j] / Nsub) * (b - a);
         lSum += yStar * domainMeasure;
     }
@@ -515,7 +519,6 @@ function runEx1Simulation() {
 function renderEx1Charts(target, N, M) {
     let f = target.f, a = target.a, b = target.b;
 
-    // Chart 1: Function Shape
     let plotPoints = 120;
     let xLabels = [], yData = [];
     let step = (b - a) / plotPoints;
@@ -552,7 +555,6 @@ function renderEx1Charts(target, N, M) {
         }
     });
 
-    // Chart 2: Convergence Comparison across varying N
     let nVals = [10, 20, 50, 100, 200, 500, 1000];
     let rErrors = [], lErrors = [];
 
@@ -565,7 +567,6 @@ function renderEx1Charts(target, N, M) {
         rS *= dxSub;
         rErrors.push(Math.abs(rS - target.exact) + 1e-12);
 
-        // Lebesgue for fixed range binning
         let dy = (target.ymax - target.ymin) / M;
         let counts = new Array(M).fill(0);
         let subDx = (b - a) / nSub;
@@ -621,22 +622,18 @@ function renderEx1Charts(target, N, M) {
 
 // --- EXERCISE 2 LOGIC ---
 
-// Power Series expansion derived in Hogg Section 3.4
 function normalCdfSeries(z, K) {
     let sum = 0;
-    let term = z; // k=0 term: z / (1 * 1)
+    let term = z;
     sum += term;
 
     for (let k = 1; k < K; k++) {
-        // Recurrence ratio for term k relative to k-1:
-        // term_k = term_{k-1} * (-z^2 / 2) * (2k - 1) / ((2k + 1) * k)
         term *= (-z * z / 2.0) * (2 * k - 1) / ((2 * k + 1) * k);
         sum += term;
     }
     return 0.5 + (1.0 / Math.sqrt(2.0 * Math.PI)) * sum;
 }
 
-// Abramowitz & Stegun Approximation (Formula 26.2.17)
 function normalCdfAbramowitzStegun(z) {
     let absZ = Math.abs(z);
     let p = 0.2316419;
@@ -650,9 +647,8 @@ function normalCdfAbramowitzStegun(z) {
     return z >= 0 ? cdf : 1.0 - cdf;
 }
 
-// Numerical Trapezoidal rule over [-8, z]
 function normalCdfTrapezoidal(z, N) {
-    let a = -8.0; // Finite lower bound approximation for -infinity
+    let a = -8.0;
     if (z <= a) return 0.0;
     let h = (z - a) / N;
 
@@ -664,11 +660,10 @@ function normalCdfTrapezoidal(z, N) {
     return sum * h;
 }
 
-// Simpson's 1/3 Rule
 function normalCdfSimpson(z, N) {
     let a = -8.0;
     if (z <= a) return 0.0;
-    if (N % 2 !== 0) N += 1; // Ensure even panels
+    if (N % 2 !== 0) N += 1;
     let h = (z - a) / N;
 
     let pdf = x => (1.0 / Math.sqrt(2.0 * Math.PI)) * Math.exp(-0.5 * x * x);
@@ -692,7 +687,6 @@ function runEx2Simulation() {
     let simpVal = normalCdfSimpson(z, N);
     let asVal = normalCdfAbramowitzStegun(z);
 
-    // Theoretical error bound for alternating series (Hogg notes Sec 3.4)
     let bound = Math.pow(Math.abs(z), 2*K + 3) / (Math.sqrt(2 * Math.PI) * Math.pow(2, K + 1) * (2*K + 3) * factorial(K + 1));
 
     document.querySelectorAll(".ex2RefCell").forEach(el => el.innerText = refVal.toFixed(8));
@@ -721,7 +715,6 @@ function factorial(n) {
 }
 
 function renderEx2Charts(evalZ, K, N) {
-    // Chart 1: PDF Curve with Area Highlighted
     let zPoints = [], pdfPoints = [], areaPoints = [];
     for (let x = -4.0; x <= 4.0; x += 0.08) {
         zPoints.push(x.toFixed(2));
@@ -767,7 +760,6 @@ function renderEx2Charts(evalZ, K, N) {
         }
     });
 
-    // Chart 2: Absolute Error across z in [-4, 4]
     let zGrid = [], seriesErrs = [], trapErrs = [], asErrs = [];
     for (let zVal = -3.5; zVal <= 3.5; zVal += 0.25) {
         zGrid.push(zVal.toFixed(2));
@@ -820,7 +812,6 @@ function renderEx2Charts(evalZ, K, N) {
     });
 }
 
-// Defensive Initialization
 function tryInitHomework5() {
     if (typeof Chart === 'undefined') {
         setTimeout(tryInitHomework5, 50);

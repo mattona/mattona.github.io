@@ -14,7 +14,7 @@ This assignment explores two fundamental topics in analysis and computational st
 
 ---
 
-### 1. Exercise 1: Riemann and Lebesgue Integration
+### 1. Riemann and Lebesgue Integration
 
 #### Theoretical Foundations
 
@@ -95,7 +95,7 @@ where $y_j^* \in [y_j, y_{j+1})$ (typically the lower bound $y_j$ or midpoint) a
                 <!-- Preimage 2 -->
                 <rect x="205" y="170" width="50" height="4" fill="#9b59b6"/>
                 <line x1="205" y1="70" x2="205" y2="170" stroke="#9b59b6" stroke-width="1" stroke-dasharray="2,2"/>
-                <line x1="255" y1="95" x2="255" y2="170" stroke="#9b59b6" stroke-width="1" stroke-dasharray="2,2"/
+                <line x1="255" y1="95" x2="255" y2="170" stroke="#9b59b6" stroke-width="1" stroke-dasharray="2,2"/>
                 <!-- Curve f(x) -->
                 <path d="M 40 150 Q 150 10, 230 80 T 320 150" fill="none" stroke="#2c3e50" stroke-width="3"/>
                 <!-- Y-Axis Labels -->
@@ -134,7 +134,7 @@ where $y_j^* \in [y_j, y_{j+1})$ (typically the lower bound $y_j$ or midpoint) a
 
 ---
 
-### 2. Exercise 2: Numerical Computation of the Normal CDF ($\Phi(z)$)
+### 2. Numerical Computation of the Normal CDF ($\Phi(z)$)
 
 #### Non-Elementary Integrals and Liouville's Theorem
 
@@ -216,7 +216,7 @@ $$
     <h5 class="text-center mb-4 font-weight-bold">Interactive Numerical Analysis Suite</h5>
     <!-- SUBSECTION 1: EXERCISE 1 -->
     <div class="px-4 mb-5">
-        <h5 class="font-weight-bold mb-3" style="color: #3498db;">1. Riemann vs. Lebesgue Integration</h5>
+        <h5 class="font-weight-bold mb-3" style="color: #3498db;">1. Riemann vs. Lebesgue Integration</h5> 
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label class="font-weight-bold">Select Target Function $f(x)$:</label>
@@ -371,7 +371,6 @@ $$
             </div>
         </div>
     </div>
-
 </div>
 
 ---

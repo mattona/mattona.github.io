@@ -8,9 +8,11 @@ category: Statistics
 permalink: /projects/homework5/
 ---
 
-This assignment explores two fundamental topics in analysis and computational statistics:
-1. **Riemann vs. Lebesgue Numerical Integration:** Investigating how partitioning the domain versus partitioning the range alters convergence, computational efficiency, and applicability across continuous, discontinuous, unbounded, and pathological functions (such as Dirichlet's and Thomae's functions).
-2. **Numerical Computation of the Standard Normal CDF ($\Phi(z)$):** Examining the mathematical barrier imposed by **Liouville's theorem** on non-elementary antiderivatives, deriving series expansions from probability density functions, and evaluating quadrature versus rational approximations for statistical computing.
+In this homework, I explored two core topics bridging mathematical analysis and practical computing:
+
+1. **Riemann vs. Lebesgue Numerical Integration:** Comparing how splitting the domain ($x$-axis) versus splitting the range ($y$-axis) affects numerical convergence, runtime, and the handling of edge cases, from smooth functions to discontinuous or "pathological" examples like Dirichlet's and Thomae's functions.
+
+2. **Numerical Computation of the Standard Normal CDF ($\Phi(z)$):** Investigating why we cannot write $\Phi(z)$ using basic calculus functions (thanks to **Liouville's theorem**), deriving series expansions, and putting quadrature and rational approximations to the test.
 
 ---
 
@@ -18,21 +20,21 @@ This assignment explores two fundamental topics in analysis and computational st
 
 #### Theoretical Foundations
 
-The classical **Riemann integral** partitions the domain interval $[a, b]$ into $N$ subintervals $\Delta x_i = x_i - x_{i-1}$. Using sample points $x_i^* \in [x_{i-1}, x_i]$, the Riemann sum is defined as:
+When we learn calculus, we start with the **Riemann integral**. The idea is straight to the point: break the domain $[a, b]$ into $N$ small pieces $\Delta x_i = x_i - x_{i-1}$, pick a sample point $x_i^*$ inside each piece, and sum up the rectangular areas:
 
 $$
 R_N = \sum_{i=1}^N f(x_i^*) \Delta x_i
 $$
 
-A function $f$ is Riemann-integrable on $[a, b]$ if and only if $f$ is bounded and its set of discontinuities has Lebesgue measure zero (**Lebesgue's criterion for Riemann integrability**). Equivalently, the upper and lower Darboux sums must converge to the same value.
+Under **Lebesgue's criterion**, a bounded function is Riemann-integrable on $[a, b]$ if its points of discontinuity make up a set of Lebesgue measure zero (or, equivalently, if its upper and lower Darboux sums converge to the exact same value).
 
-Conversely, the **Lebesgue integral** partitions the range $[y_{\min}, y_{\max}]$ into $M$ subintervals $[y_j, y_{j+1})$. For each level-set interval, we evaluate the domain measure of its preimage $E_j = \{x \in [a, b] : y_j \le f(x) < y_{j+1}\}$. The Lebesgue simple-function approximation sum is given by:
+The **Lebesgue integral** takes the opposite angle: instead of slicing the $x$-axis, it partitions the function's range $[y_{\min}, y_{\max}]$ into $M$ subintervals $[y_j, y_{j+1})$. For each slice on the vertical axis, we figure out how much "space" in the domain maps into it by finding the 1D Lebesgue measure $\mu(E_j)$ of the preimage set $E_j = \{x \in [a, b] : y_j \le f(x) < y_{j+1}\}$. We then build the simple-function approximation sum:
 
 $$
 L_M = \sum_{j=0}^{M-1} y_j^* \, \mu(E_j)
 $$
 
-where $y_j^* \in [y_j, y_{j+1})$ (in the implementation below, the lower bound $y_j$) and $\mu(E_j)$ denotes the 1D Lebesgue measure (length) of the subset $E_j \subset [a, b]$. For a bounded measurable $f$, the error of this sum is at most $(y_{\max}-y_{\min})(b-a)/M$.
+Here, $y_j^*$ is a point chosen inside $[y_j, y_{j+1})$ (in my implementation below, I just take the lower bound $y_j$). For a bounded measurable function $f$, the approximation error of this sum stays bounded by $(y_{\max}-y_{\min})(b-a)/M$.
 
 <div class="my-4 p-4 rounded z-depth-1" style="background-color: rgba(128,128,128,0.03); border: 1px solid rgba(150,150,150,0.25);" markdown="0">
     <div class="row align-items-center">
@@ -123,14 +125,23 @@ where $y_j^* \in [y_j, y_{j+1})$ (in the implementation below, the lower bound $
 
 #### Evaluated Functions Suite
 
-1. **$f_1(x) = \sin(x)$ on $[0, \pi]$:** Smooth, continuous. Both methods converge to the exact value $2.0$.
-2. **$f_2(x) = x^2$ on $[0, 1]$:** Monotonic, continuous. Converges to $1/3 \approx 0.333333$.
-3. **$$f_3(x) = 3 \cdot \mathbf{1}_{\{x \ge 0.5\}} + \mathbf{1}_{\{x < 0.5\}}$$ on $[0, 1]$:** Step discontinuity at $x=0.5$. Exact integral $= 2.0$.
-4. **$f_4(x) = \lvert x - 0.5\rvert$ on $[0, 1]$:** Non-differentiable peak at $x=0.5$. Exact integral $= 0.25$.
-5. **$f_5(x) = 1 / \sqrt{x}$ on $(0, 1]$:** Unbounded singularity at $x=0$. Improper Riemann (and Lebesgue) integral $= 2.0$. *Numerically*, the interval is truncated to $[\varepsilon, 1]$ with $\varepsilon = 10^{-4}$, whose exact integral is $2 - 2\sqrt{\varepsilon} = 1.98$; this is the reference used in the simulation, and $f_5 \le 100$ there.
-6. **$f_6(x) = \sin(x)/x$ on $(0, \pi]$:** Non-trivial function (Sine integral $\text{Si}(\pi) \approx 1.851937$). Numerically truncated to $[10^{-4}, \pi]$, so the reference is $\text{Si}(\pi) - \text{Si}(10^{-4}) \approx 1.851837$.
-7. **$f_7(x) = \mathbf{1}_{\mathbb{Q}}(x)$ on $[0, 1]$ (Dirichlet Function):** Everywhere discontinuous. The Darboux upper sum is $1.0$ and the lower sum is $0.0$ for every partition, so $f_7$ is not Riemann integrable (a Riemann sum equals $1$ with rational tags and $0$ with irrational tags). The Lebesgue integral is $0.0$ because $\mu(\mathbb{Q}\cap[0,1]) = 0$. Since a computer can only sample rational points, $\mu(E_j)$ is supplied analytically in the simulation.
-8. **$f_8(x) = 1/q$ if $x=p/q \in \mathbb{Q}$ (lowest terms) else $0$ (Thomae's / Popcorn Function):** Discontinuous at rationals, continuous at irrationals. Both Riemann and Lebesgue integrals evaluate to $0.0$ (each level set $\{f = 1/q\}$ is finite, hence has measure zero).
+To test both approaches across different scenarios, I set up eight representative functions:
+
+1. **$f_1(x) = \sin(x)$ on $[0, \pi]$:** Standard smooth function. Both methods hit the exact benchmark of $2.0$.
+
+2. **$f_2(x) = x^2$ on $[0, 1]$:** Smooth monotonic curve, converging nicely to $1/3 \approx 0.333333$.
+
+3. **$$f_3(x) = 3 \cdot \mathbf{1}_{\{x \ge 0.5\}} + \mathbf{1}_{\{x < 0.5\}}$$ on $[0, 1]$:** Simple step discontinuity at $x=0.5$. Exact integral $= 2.0$.
+
+4. **$f_4(x) = \lvert x - 0.5\rvert$ on $[0, 1]$:** Continuous everywhere, but has a sharp "V" corner at $x=0.5$. Exact integral $= 0.25$.
+
+5. **$f_5(x) = 1 / \sqrt{x}$ on $(0, 1]$:** Unbounded near $x=0$. While the improper integral equals $2.0$, for practical computation I clipped the domain to $[\varepsilon, 1]$ with $\varepsilon = 10^{-4}$ (capping values at $f_5 \le 100$). The target reference value becomes $2 - 2\sqrt{\varepsilon} = 1.98$.
+
+6. **$f_6(x) = \sin(x)/x$ on $(0, \pi]$:** The classic sinc function. I handled the singularity near zero by truncating to $[10^{-4}, \pi]$, making the target $\text{Si}(\pi) - \text{Si}(10^{-4}) \approx 1.851837$.
+
+7. **$f_7(x) = \mathbf{1}_{\mathbb{Q}}(x)$ on $[0, 1]$ (Dirichlet Function):** Discontinuous at every single point. Riemann integration breaks completely (Darboux upper sum is $1.0$ and lower sum is $0.0$). Lebesgue integration gives $0.0$ because the rationals $\mathbb{Q}\cap[0,1]$ have measure zero. Since grid sampling on a computer can only pick rational floats, I provided $\mu(E_j)$ analytically in the simulation to show the real difference.
+
+8. **$f_8(x) = 1/q$ if $x=p/q \in \mathbb{Q}$ (lowest terms) else $0$ (Thomae's / Popcorn Function):** Discontinuous at rational numbers, but continuous at irrationals. Both methods yield $0.0$, since each level set $\{f = 1/q\}$ contains only finitely many points and carries measure zero.
 
 ---
 
@@ -138,19 +149,19 @@ where $y_j^* \in [y_j, y_{j+1})$ (in the implementation below, the lower bound $
 
 #### Non-Elementary Integrals and Liouville's Theorem
 
-The Probability Density Function (PDF) of a Standard Normal random variable $Z \sim \mathcal{N}(0,1)$ is given by:
+The Standard Normal PDF $Z \sim \mathcal{N}(0,1)$ is defined by:
 
 $$
 \phi(z) = \frac{1}{\sqrt{2\pi}} e^{-z^2/2}
 $$
 
-The Cumulative Distribution Function (CDF) $\Phi(z) = P(Z \le z)$ requires computing:
+To get its cumulative distribution function $\Phi(z) = P(Z \le z)$, we evaluate:
 
 $$
 \Phi(z) = \int_{-\infty}^z \frac{1}{\sqrt{2\pi}} e^{-t^2/2} \, dt = \frac{1}{2} + \frac{1}{\sqrt{2\pi}} \int_0^z e^{-t^2/2} \, dt
 $$
 
-In introductory statistics, $\Phi(z)$ is always provided via pre-computed lookup tables or software routines. This is not merely a convenience, but a consequence of **Liouville's Theorem on Integration in Finite Terms** (1835).
+In introductory probability courses, we rely on standard normal tables or built-in software functions. This isn't just to save time—it's forced by **Liouville's Theorem on Integration in Finite Terms** (1835).
 
 > **Liouville's Theorem:** Let $f(x)$ and $g(x)$ be rational functions with $g(x)$ non-constant. The indefinite integral $\int f(x) e^{g(x)} dx$ can be expressed in terms of elementary functions (polynomials, exponentials, logarithms, trigonometric functions, and their compositions) **if and only if** there exists a rational function $r(x)$ satisfying the differential equation:
 >
@@ -158,49 +169,49 @@ In introductory statistics, $\Phi(z)$ is always provided via pre-computed lookup
 > f(x) = r'(x) + r(x)g'(x)
 > $$
 
-For the standard normal integrand, $f(x) = 1$ and $g(x) = -x^2/2$, so $g'(x) = -x$. The Liouville condition becomes:
+Plugging in our standard normal integrand ($f(x) = 1$ and $g(x) = -x^2/2$, so $g'(x) = -x$), Liouville's condition simplifies to:
 
 $$
 1 = r'(x) - x \cdot r(x)
 $$
 
-If $r(x) = \frac{P(x)}{Q(x)}$ is a rational function in lowest terms, analyzing degrees (and poles) shows that no rational function can satisfy this identity. Consequently, **$\int e^{-x^2/2} dx$ has no elementary antiderivative**.
+If we try to write $r(x) = \frac{P(x)}{Q(x)}$ as a rational function in lowest terms and check the polynomial degrees, we find that no such $r(x)$ can ever solve this equation. That's the proof: **$\int e^{-x^2/2} dx$ has no elementary antiderivative**.
 
-*Remark.* The obstruction concerns the **antiderivative** only. The definite integral over the whole line is elementary: $\int_{-\infty}^{\infty} e^{-t^2/2}\,dt = \sqrt{2\pi}$ (via the polar-coordinates trick). What cannot be written in finite terms is $\Phi(z)$ for a generic finite $z$.
+*Note:* This limitation applies only to the **indefinite** integral. The integral across the entire real line is simple: $\int_{-\infty}^{\infty} e^{-t^2/2}\,dt = \sqrt{2\pi}$ (using standard polar coordinates). The issue is writing down a finite formula for $\Phi(z)$ at an arbitrary point $z$.
 
 #### Analytical Representation via Special Functions & Power Series
 
-To bypass this barrier, mathematics defines the **Error Function** $\operatorname{erf}(x)$ as a standardized special function:
+To handle this, we define a standard special function called the **Error Function** $\operatorname{erf}(x)$:
 
 $$
 \operatorname{erf}(x) = \frac{2}{\sqrt{\pi}} \int_0^x e^{-t^2} dt
 $$
 
-By substituting $t = u / \sqrt{2}$, the standard normal CDF $\Phi(z)$ is exactly related to $\operatorname{erf}(z)$ by:
+Setting $t = u / \sqrt{2}$ connects $\Phi(z)$ directly to $\operatorname{erf}(z)$:
 
 $$
 \Phi(z) = \frac{1}{2} \left[ 1 + \operatorname{erf}\left(\frac{z}{\sqrt{2}}\right) \right]
 $$
 
-As highlighted in the *Hogg-McKean-Craig Section 3.4 Notes*, an explicit power series representation can be derived by expanding the Maclaurin series of $e^{-t^2/2}$ and integrating term-by-term (justified by uniform convergence on compact sets):
+Following the approach in the *Hogg-McKean-Craig Section 3.4 Notes*, we can expand the Maclaurin series of $e^{-t^2/2}$ and integrate term by term (which works thanks to uniform convergence on compact intervals):
 
 $$
 e^{-t^2/2} = \sum_{k=0}^{\infty} \frac{(-1)^k t^{2k}}{2^k k!} \implies \int_0^z e^{-t^2/2} dt = \sum_{k=0}^{\infty} \frac{(-1)^k z^{2k+1}}{2^k (2k+1) k!}
 $$
 
-Thus, the exact analytical series for $\Phi(z)$ is:
+This gives us the exact power series for $\Phi(z)$:
 
 $$
 \Phi(z) = \frac{1}{2} + \frac{1}{\sqrt{2\pi}} \sum_{k=0}^{\infty} \frac{(-1)^k z^{2k+1}}{2^k (2k+1) k!}
 $$
 
-The series is alternating, and the ratio of consecutive terms is
+Because the series alternates, looking at the ratio between consecutive terms:
 
 $$
 \left|\frac{T_{k+1}}{T_k}\right| = \frac{z^2 (2k+1)}{2(2k+3)(k+1)},
 $$
 
-which is smaller than $1$ only for $k \gtrsim z^2/2$. Hence the terms are **not** monotonically decreasing from the start: for $z = 4$ they grow until $k \approx 8$ (peak magnitude $\approx 10^2$) and only then decay, which causes cancellation and a loss of about two digits in double precision. Once the terms are decreasing ($K \gtrsim z^2/2$), the **Alternating Series Estimation Theorem** bounds the truncation error of the sum of the first $K$ terms ($k = 0,\dots,K-1$) by the first omitted term:
+we notice that terms only start shrinking when $k \gtrsim z^2/2$. For larger values like $z = 4$, the terms actually grow initially (peaking around $k \approx 8$ near $\approx 10^2$) before decaying. In double-precision floating-point arithmetic, this causes catastrophic cancellation, wiping out about two decimal digits. Once terms start decreasing ($K \gtrsim z^2/2$), we can use the **Alternating Series Estimation Theorem** to bound the truncation error of a $K$-term sum ($k = 0,\dots,K-1$) by the magnitude of the next term:
 
 $$
 \left| R_K(z) \right| \le \frac{|z|^{2K+1}}{\sqrt{2\pi} \, 2^{K} (2K+1) \, K!}
@@ -208,13 +219,17 @@ $$
 
 #### Numerical Methods Implemented
 
-1. **Power Series Expansion:** Truncated sum of $K$ terms. Accurate to near machine precision for $\lvert z\rvert \le 3$ with roughly 30 terms; up to $\lvert z\rvert = 4$ it still gives about $10^{-13}$ absolute accuracy but needs more terms and suffers cancellation (see above). It is also used (with 200 terms) as the reference value in the simulation.
-2. **Numerical Quadrature (Trapezoidal & Simpson's Rule):** Numerically integrates $\phi(t)$ from a finite lower bound $-8.0$ (where $\Phi(-8)\approx 6\times10^{-16}$) up to $z$ across $N$ panels. The composite trapezoidal rule is $\mathcal{O}(h^2)$; its leading error comes from the finite endpoint $z$ (about $h^2 \phi'(z)/12$), because on the whole real line the trapezoidal rule applied to a Gaussian converges exponentially fast. Simpson's rule is $\mathcal{O}(h^4)$.
-3. **Abramowitz & Stegun Rational Approximation (formula 26.2.17):** A polynomial-rational formula ($O(1)$ complexity) widely used in production libraries:
+In the code below, I implemented three main computational routes:
+
+1. **Power Series Expansion:** Truncated sum up to $K$ terms. It reaches double-precision accuracy around $\lvert z\rvert \le 3$ with 30 terms. Beyond that (e.g. up to $\lvert z\rvert = 4$), it still manages $\approx 10^{-13}$ accuracy, but requires more terms and suffers from cancellation. I also use a 200-term version as a high-precision reference benchmark.
+
+2. **Numerical Quadrature (Trapezoidal & Simpson's Rule):** Direct numerical integration of $\phi(t)$ from a low cutoff point $-8.0$ (where $\Phi(-8)\approx 6\times10^{-16}$) up to $z$ using $N$ subdivisions. The composite trapezoidal rule scales as $\mathcal{O}(h^2)$ (its main error comes from clipping at $z$, since trapezoidal integration on Gaussians across all of $\mathbb{R}$ converges exponentially fast). Simpson's rule scales as $\mathcal{O}(h^4)$.
+
+3. **Abramowitz & Stegun Rational Approximation (formula 26.2.17):** A fast polynomial-rational approximation ($O(1)$ complexity) used heavily in statistical software:
    $$
    t = \frac{1}{1 + p\lvert z\rvert}, \quad \Phi(z) \approx 1 - \phi(z) \left( b_1 t + b_2 t^2 + b_3 t^3 + b_4 t^4 + b_5 t^5 \right) \quad \text{for } z \ge 0
    $$
-   with $p = 0.2316419$, $b_1 = 0.319381530$, $b_2 = -0.356563782$, $b_3 = 1.781477937$, $b_4 = -1.821255978$, $b_5 = 1.330274429$, and absolute error $\lvert\epsilon(z)\rvert < 7.5 \times 10^{-8}$. For $z < 0$ use $\Phi(z) = 1 - \Phi(-z)$, computed directly as $\phi(z)(\cdots)$ to avoid cancellation. (Do not confuse it with A&S 7.1.26 for $\operatorname{erf}$, which has different coefficients and a maximum error of about $1.5\times10^{-7}$.)
+   with parameters $p = 0.2316419$, $b_1 = 0.319381530$, $b_2 = -0.356563782$, $b_3 = 1.781477937$, $b_4 = -1.821255978$, $b_5 = 1.330274429$, and maximum absolute error $\lvert\epsilon(z)\rvert < 7.5 \times 10^{-8}$. For negative values $z < 0$, we use symmetry $\Phi(z) = 1 - \Phi(-z)$, evaluating the tail product directly as $\phi(z)(\cdots)$ to prevent loss of precision.
 
 ---
 
@@ -385,17 +400,19 @@ $$
 
 ---
 
-### 4. Key Analytical Insights & Conclusions
+### 4. Key Takeaways & Conclusions
 
-1. **Riemann vs. Lebesgue Divergence:**
-   * For continuous and piecewise continuous functions ($f_1$ through $f_4$), both Riemann and Lebesgue numerical integration converge. Lebesgue's sum with lower endpoints converges at rate $O(1/M)$ in the number of range bins.
-   * For Dirichlet's function ($f_7$), the Darboux upper and lower sums are $1$ and $0$ for every partition, so the Riemann integral does not exist (a Riemann sum equals $1$ or $0$ depending on whether the sample points are rational or irrational). Lebesgue integration isolates the preimage of $1.0$ as $\mathbb{Q} \cap [0,1]$, which has Lebesgue measure $0$, yielding the integral $0.0$.
-2. **Computational Footprint of Range Partitioning:**
-   * Numerical Lebesgue integration requires mapping range level-sets back to domain preimage measures $\mu(E_j)$. When $\mu(E_j)$ is *estimated* by counting equispaced samples (as in this simulation) the method is in practice a regrouped Riemann sum and does **not** inherit the theoretical immunity to jumps or dense discontinuities: that advantage holds only when the measures $\mu(E_j)$ are known exactly, as for $f_7$ and $f_8$.
-3. **The Necessity of Numerical CDF Routines:**
-   * Liouville's theorem shows that the lack of an elementary antiderivative for $e^{-z^2/2}$ is an intrinsic algebraic property of the differential field of elementary functions, not a limitation of calculus (while $\int_{\mathbb{R}} e^{-t^2/2}dt = \sqrt{2\pi}$ is elementary).
-   * The **power series** (Hogg-McKean-Craig Sec. 3.4) gives arbitrary accuracy for small to moderate $\lvert z\rvert$ ($\lvert z\rvert \le 3$ in double precision with about 30 terms), but suffers cancellation for larger $\lvert z\rvert$.
-   * The **Abramowitz & Stegun** approximation costs $O(1)$ and has a uniform *absolute* error below $7.5\times10^{-8}$. In the tails this is not enough in relative terms: e.g. $\Phi(-4) \approx 3.17\times10^{-5}$ gives a relative error up to about $0.2\%$. For tail probabilities, use $\operatorname{erfc}$-based algorithms or continued fractions.
+1. **Practical Differences Between Riemann and Lebesgue Integration:**
+   * For standard continuous functions ($f_1$ to $f_4$), both techniques converge nicely. The simple Lebesgue implementation (using lower bin endpoints) scales as $O(1/M)$ relative to the number of range bins.
+   * On the Dirichlet function ($f_7$), Riemann integration gets stuck: Darboux upper and lower sums remain stuck at $1$ and $0$, meaning no single integral value exists. Lebesgue integration isolates the set of rational preimages $\mathbb{Q} \cap [0,1]$, recognizes its measure as $0$, and yields the exact answer $0.0$.
+
+2. **The Reality of Slicing the Range Numerically:**
+   * Computing Lebesgue sums in code requires calculating the measure of preimage sets $\mu(E_j)$. When estimating $\mu(E_j)$ by sampling points across a grid (like in my numerical simulator), the algorithm effectively acts as a regrouped Riemann sum and loses its theoretical advantage over dense discontinuities. The theoretical benefits of Lebesgue integration only show up when $\mu(E_j)$ is computed analytically, as done here for $f_7$ and $f_8$.
+
+3. **Computing the Normal CDF in Practice:**
+   * Liouville's theorem proves that the missing elementary antiderivative for $e^{-z^2/2}$ is an inherent property of elementary function fields, not a shortcoming of calculus.
+   * The **power series expansion** works well for small to moderate values of $\lvert z\rvert$ ($\lvert z\rvert \le 3$), reaching double precision with around 30 terms. However, numerical cancellation degrades precision for larger $\lvert z\rvert$.
+   * The **Abramowitz & Stegun** rational formula runs in $O(1)$ time and guarantees absolute error below $7.5\times10^{-8}$. For tail distributions (e.g. $\Phi(-4) \approx 3.17\times10^{-5}$), relative errors can grow up to $\approx 0.2\%$, making $\operatorname{erfc}$-based routines or continued fractions necessary for extreme values.
 
 <!-- Scripts for interactive tools -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>

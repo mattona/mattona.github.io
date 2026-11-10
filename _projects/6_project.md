@@ -36,7 +36,6 @@ where $y_j^* \in [y_j, y_{j+1})$ (in the implementation below, the lower bound $
 
 <div class="my-4 p-4 rounded z-depth-1" style="background-color: rgba(128,128,128,0.03); border: 1px solid rgba(150,150,150,0.25);" markdown="0">
     <div class="row align-items-center">
-        
         <!-- RIEMANN CARD -->
         <div class="col-md-6 mb-4 mb-md-0 border-right-md" style="border-color: rgba(150,150,150,0.2);">
             <div class="text-center mb-3">
@@ -45,14 +44,12 @@ where $y_j^* \in [y_j, y_{j+1})$ (in the implementation below, the lower bound $
                 </span>
                 <p class="small text-muted mt-2 mb-0">Domain Partitioning ($x$-axis)</p>
             </div>
-            
             <svg viewBox="0 0 360 210" width="100%" height="100%" style="overflow: visible;">
                 <!-- Axes and Grid -->
                 <line x1="40" y1="170" x2="340" y2="170" stroke="currentColor" stroke-opacity="0.4" stroke-width="2" />
                 <line x1="40" y1="170" x2="40" y2="20" stroke="currentColor" stroke-opacity="0.4" stroke-width="2" />
                 <text x="345" y="174" fill="currentColor" font-size="12" font-weight="bold">x</text>
                 <text x="38" y="12" fill="currentColor" font-size="12" font-weight="bold">y</text>
-
                 <!-- Riemann Rectangles (Vertical Bars) -->
                 <rect x="70" y="110" width="40" height="60" fill="#3498db" fill-opacity="0.25" stroke="#3498db" stroke-width="1.5"/>
                 <rect x="110" y="70" width="40" height="100" fill="#3498db" fill-opacity="0.35" stroke="#3498db" stroke-width="1.5"/>
@@ -60,22 +57,18 @@ where $y_j^* \in [y_j, y_{j+1})$ (in the implementation below, the lower bound $
                 <rect x="190" y="55" width="40" height="115" fill="#3498db" fill-opacity="0.35" stroke="#3498db" stroke-width="1.5"/>
                 <rect x="230" y="90" width="40" height="80" fill="#3498db" fill-opacity="0.25" stroke="#3498db" stroke-width="1.5"/>
                 <rect x="270" y="130" width="40" height="40" fill="#3498db" fill-opacity="0.15" stroke="#3498db" stroke-width="1.5"/>
-
                 <!-- Curve f(x) -->
                 <path d="M 40 150 Q 150 10, 230 80 T 320 150" fill="none" stroke="#2c3e50" stroke-width="3"/>
-
                 <!-- Interval x_i Labels -->
                 <line x1="150" y1="170" x2="150" y2="176" stroke="currentColor" stroke-width="2"/>
                 <line x1="190" y1="170" x2="190" y2="176" stroke="currentColor" stroke-width="2"/>
                 <text x="142" y="192" fill="currentColor" font-size="11">x<tspan dy="3" font-size="9">i-1</tspan></text>
                 <text x="187" y="192" fill="currentColor" font-size="11">x<tspan dy="3" font-size="9">i</tspan></text>
-                
                 <!-- Delta x Indicator -->
                 <line x1="150" y1="140" x2="190" y2="140" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="3,3"/>
                 <text x="162" y="135" fill="#e74c3c" font-size="10" font-weight="bold">Δx<tspan dy="2" font-size="8">i</tspan></text>
             </svg>
         </div>
-
         <!-- LEBESGUE CARD -->
         <div class="col-md-6 pl-md-4">
             <div class="text-center mb-3">
@@ -84,44 +77,36 @@ where $y_j^* \in [y_j, y_{j+1})$ (in the implementation below, the lower bound $
                 </span>
                 <p class="small text-muted mt-2 mb-0">Range Partitioning ($y$-axis)</p>
             </div>
-            
             <svg viewBox="0 0 360 210" width="100%" height="100%" style="overflow: visible;">
                 <!-- Axes and Grid -->
                 <line x1="40" y1="170" x2="340" y2="170" stroke="currentColor" stroke-opacity="0.4" stroke-width="2" />
                 <line x1="40" y1="170" x2="40" y2="20" stroke="currentColor" stroke-opacity="0.4" stroke-width="2" />
                 <text x="345" y="174" fill="currentColor" font-size="12" font-weight="bold">x</text>
                 <text x="38" y="12" fill="currentColor" font-size="12" font-weight="bold">y</text>
-
                 <!-- Horizontal Range Band [y_j, y_j+1] -->
                 <rect x="40" y="70" width="280" height="25" fill="#9b59b6" fill-opacity="0.12" stroke="none" />
                 <line x1="35" y1="95" x2="320" y2="95" stroke="#9b59b6" stroke-width="1.5" stroke-dasharray="4,3"/>
                 <line x1="35" y1="70" x2="320" y2="70" stroke="#9b59b6" stroke-width="1.5" stroke-dasharray="4,3"/>
-
                 <!-- Projections onto Preimage Sets in Domain E_j -->
                 <!-- Preimage 1 -->
                 <rect x="90" y="170" width="45" height="4" fill="#9b59b6"/>
                 <line x1="90" y1="95" x2="90" y2="170" stroke="#9b59b6" stroke-width="1" stroke-dasharray="2,2"/>
                 <line x1="135" y1="70" x2="135" y2="170" stroke="#9b59b6" stroke-width="1" stroke-dasharray="2,2"/>
-                
                 <!-- Preimage 2 -->
                 <rect x="205" y="170" width="50" height="4" fill="#9b59b6"/>
                 <line x1="205" y1="70" x2="205" y2="170" stroke="#9b59b6" stroke-width="1" stroke-dasharray="2,2"/>
                 <line x1="255" y1="95" x2="255" y2="170" stroke="#9b59b6" stroke-width="1" stroke-dasharray="2,2"/>
-
                 <!-- Curve f(x) -->
                 <path d="M 40 150 Q 150 10, 230 80 T 320 150" fill="none" stroke="#2c3e50" stroke-width="3"/>
-
                 <!-- Y-Axis Labels -->
                 <text x="12" y="100" fill="#9b59b6" font-size="11" font-weight="bold">y<tspan dy="2" font-size="8">j</tspan></text>
                 <text x="2" y="74" fill="#9b59b6" font-size="11" font-weight="bold">y<tspan dy="2" font-size="8">j+1</tspan></text>
-
                 <!-- Preimage Measure Label μ(E_j) on X-Axis -->
                 <text x="135" y="194" fill="#9b59b6" font-size="11" font-weight="bold" text-anchor="middle">
                     Preimage Measure μ(E<tspan dy="2" font-size="8">j</tspan>)
                 </text>
             </svg>
         </div>
-        
     </div>
 </div>
 
@@ -132,7 +117,7 @@ where $y_j^* \in [y_j, y_{j+1})$ (in the implementation below, the lower bound $
 | **Partition Axis** | Horizontal axis (Domain $[a, b]$) | Vertical axis (Range $[y_{\min}, y_{\max}]$) |
 | **Sum Construction** | Regular or adaptive grid spacing $\Delta x_i$ | Weighted sum of preimage domain measures $\mu(E_j)$ |
 | **Discontinuities** | Fails if discontinuities have positive measure | Theoretically unaffected (needs only measurability); a *sampled* estimate of $\mu(E_j)$ does not inherit this immunity |
-| **Unbounded Functions** | Requires improper limit processes | Integrates unbounded functions if $\int |f| d\mu < \infty$ |
+| **Unbounded Functions** | Requires improper limit processes | Integrates unbounded functions if $\int \lvert f\rvert \, d\mu < \infty$ |
 | **Computational Complexity** | $O(N)$ grid evaluations | $O(N)$ evaluations plus $O(M)$ bins when $\mu(E_j)$ is estimated by histogram binning; closed-form $\mu(E_j)$ must be known analytically for pathological sets |
 | **Pathological Sets** | Fails on $\mathbf{1}_{\mathbb{Q}}(x)$ (Darboux upper sum $= 1$, lower sum $= 0$) | Correctly evaluates $\mathbf{1}_{\mathbb{Q}}(x) = 0$ since $\mu(\mathbb{Q} \cap [0,1]) = 0$ |
 
@@ -140,8 +125,8 @@ where $y_j^* \in [y_j, y_{j+1})$ (in the implementation below, the lower bound $
 
 1. **$f_1(x) = \sin(x)$ on $[0, \pi]$:** Smooth, continuous. Both methods converge to the exact value $2.0$.
 2. **$f_2(x) = x^2$ on $[0, 1]$:** Monotonic, continuous. Converges to $1/3 \approx 0.333333$.
-3. **$f_3(x) = 3 \cdot \mathbf{1}_{\{x \ge 0.5\}} + \mathbf{1}_{\{x < 0.5\}}$ on $[0, 1]$:** Step discontinuity at $x=0.5$. Exact integral $= 2.0$.
-4. **$f_4(x) = |x - 0.5|$ on $[0, 1]$:** Non-differentiable peak at $x=0.5$. Exact integral $= 0.25$.
+3. **$$f_3(x) = 3 \cdot \mathbf{1}_{\{x \ge 0.5\}} + \mathbf{1}_{\{x < 0.5\}}$$ on $[0, 1]$:** Step discontinuity at $x=0.5$. Exact integral $= 2.0$.
+4. **$f_4(x) = \lvert x - 0.5\rvert$ on $[0, 1]$:** Non-differentiable peak at $x=0.5$. Exact integral $= 0.25$.
 5. **$f_5(x) = 1 / \sqrt{x}$ on $(0, 1]$:** Unbounded singularity at $x=0$. Improper Riemann (and Lebesgue) integral $= 2.0$. *Numerically*, the interval is truncated to $[\varepsilon, 1]$ with $\varepsilon = 10^{-4}$, whose exact integral is $2 - 2\sqrt{\varepsilon} = 1.98$; this is the reference used in the simulation, and $f_5 \le 100$ there.
 6. **$f_6(x) = \sin(x)/x$ on $(0, \pi]$:** Non-trivial function (Sine integral $\text{Si}(\pi) \approx 1.851937$). Numerically truncated to $[10^{-4}, \pi]$, so the reference is $\text{Si}(\pi) - \text{Si}(10^{-4}) \approx 1.851837$.
 7. **$f_7(x) = \mathbf{1}_{\mathbb{Q}}(x)$ on $[0, 1]$ (Dirichlet Function):** Everywhere discontinuous. The Darboux upper sum is $1.0$ and the lower sum is $0.0$ for every partition, so $f_7$ is not Riemann integrable (a Riemann sum equals $1$ with rational tags and $0$ with irrational tags). The Lebesgue integral is $0.0$ because $\mu(\mathbb{Q}\cap[0,1]) = 0$. Since a computer can only sample rational points, $\mu(E_j)$ is supplied analytically in the simulation.
@@ -168,7 +153,7 @@ $$
 In introductory statistics, $\Phi(z)$ is always provided via pre-computed lookup tables or software routines. This is not merely a convenience, but a consequence of **Liouville's Theorem on Integration in Finite Terms** (1835).
 
 > **Liouville's Theorem:** Let $f(x)$ and $g(x)$ be rational functions with $g(x)$ non-constant. The indefinite integral $\int f(x) e^{g(x)} dx$ can be expressed in terms of elementary functions (polynomials, exponentials, logarithms, trigonometric functions, and their compositions) **if and only if** there exists a rational function $r(x)$ satisfying the differential equation:
-> 
+>
 > $$
 > f(x) = r'(x) + r(x)g'(x)
 > $$
@@ -223,13 +208,13 @@ $$
 
 #### Numerical Methods Implemented
 
-1. **Power Series Expansion:** Truncated sum of $K$ terms. Accurate to near machine precision for $|z| \le 3$ with roughly 30 terms; up to $|z| = 4$ it still gives about $10^{-13}$ absolute accuracy but needs more terms and suffers cancellation (see above). It is also used (with 200 terms) as the reference value in the simulation.
+1. **Power Series Expansion:** Truncated sum of $K$ terms. Accurate to near machine precision for $\lvert z\rvert \le 3$ with roughly 30 terms; up to $\lvert z\rvert = 4$ it still gives about $10^{-13}$ absolute accuracy but needs more terms and suffers cancellation (see above). It is also used (with 200 terms) as the reference value in the simulation.
 2. **Numerical Quadrature (Trapezoidal & Simpson's Rule):** Numerically integrates $\phi(t)$ from a finite lower bound $-8.0$ (where $\Phi(-8)\approx 6\times10^{-16}$) up to $z$ across $N$ panels. The composite trapezoidal rule is $\mathcal{O}(h^2)$; its leading error comes from the finite endpoint $z$ (about $h^2 \phi'(z)/12$), because on the whole real line the trapezoidal rule applied to a Gaussian converges exponentially fast. Simpson's rule is $\mathcal{O}(h^4)$.
 3. **Abramowitz & Stegun Rational Approximation (formula 26.2.17):** A polynomial-rational formula ($O(1)$ complexity) widely used in production libraries:
    $$
-   t = \frac{1}{1 + p|z|}, \quad \Phi(z) \approx 1 - \phi(z) \left( b_1 t + b_2 t^2 + b_3 t^3 + b_4 t^4 + b_5 t^5 \right) \quad \text{for } z \ge 0
+   t = \frac{1}{1 + p\lvert z\rvert}, \quad \Phi(z) \approx 1 - \phi(z) \left( b_1 t + b_2 t^2 + b_3 t^3 + b_4 t^4 + b_5 t^5 \right) \quad \text{for } z \ge 0
    $$
-   with $p = 0.2316419$, $b_1 = 0.319381530$, $b_2 = -0.356563782$, $b_3 = 1.781477937$, $b_4 = -1.821255978$, $b_5 = 1.330274429$, and absolute error $|\epsilon(z)| < 7.5 \times 10^{-8}$. For $z < 0$ use $\Phi(z) = 1 - \Phi(-z)$, computed directly as $\phi(z)(\cdots)$ to avoid cancellation. (Do not confuse it with A&S 7.1.26 for $\operatorname{erf}$, which has different coefficients and a maximum error of about $1.5\times10^{-7}$.)
+   with $p = 0.2316419$, $b_1 = 0.319381530$, $b_2 = -0.356563782$, $b_3 = 1.781477937$, $b_4 = -1.821255978$, $b_5 = 1.330274429$, and absolute error $\lvert\epsilon(z)\rvert < 7.5 \times 10^{-8}$. For $z < 0$ use $\Phi(z) = 1 - \Phi(-z)$, computed directly as $\phi(z)(\cdots)$ to avoid cancellation. (Do not confuse it with A&S 7.1.26 for $\operatorname{erf}$, which has different coefficients and a maximum error of about $1.5\times10^{-7}$.)
 
 ---
 
@@ -246,7 +231,7 @@ $$
                 <select id="ex1FuncSelect" class="form-control" style="background-color: rgba(128,128,128,0.05); color: inherit;" onchange="runEx1Simulation()">
                     <option value="sin">f1(x) = sin(x) on [0, π]</option>
                     <option value="x2">f2(x) = x^2 on [0, 1]</option>
-                    <option value="step">f3(x) = Step Function (1 if x<0.5 else 3) on [0, 1]</option>
+                    <option value="step">f3(x) = Step Function (1 if x&lt;0.5 else 3) on [0, 1]</option>
                     <option value="abs">f4(x) = |x - 0.5| on [0, 1]</option>
                     <option value="inv_sqrt">f5(x) = 1 / sqrt(x) on [1e-4, 1] (Unbounded, truncated)</option>
                     <option value="sinc">f6(x) = sin(x) / x on [1e-4, π]</option>
@@ -370,11 +355,11 @@ $$
                         <td>$\mathcal{O}(h^4)$</td>
                     </tr>
                     <tr>
-                        <td class="font-weight-bold text-left">Abramowitz & Stegun 26.2.17</td>
+                        <td class="font-weight-bold text-left">Abramowitz &amp; Stegun 26.2.17</td>
                         <td id="ex2ASVal" style="color: #e67e22; font-weight: bold;">-</td>
                         <td class="ex2RefCell">-</td>
                         <td id="ex2ASErr">-</td>
-                        <td>$< 7.5 \times 10^{-8}$</td>
+                        <td>$\lt 7.5 \times 10^{-8}$</td>
                     </tr>
                 </tbody>
             </table>
@@ -383,7 +368,7 @@ $$
         <!-- Ex 2 Charts -->
         <div class="row mt-4">
             <div class="col-md-6 mb-4">
-                <h6 class="font-weight-bold text-center">Standard Normal PDF & Area under $\Phi(z)$</h6>
+                <h6 class="font-weight-bold text-center">Standard Normal PDF &amp; Area under $\Phi(z)$</h6>
                 <div style="position: relative; width: 100%; height: 250px;">
                     <canvas id="ex2PdfChart"></canvas>
                 </div>
@@ -396,7 +381,6 @@ $$
             </div>
         </div>
     </div>
-
 </div>
 
 ---
@@ -410,7 +394,7 @@ $$
    * Numerical Lebesgue integration requires mapping range level-sets back to domain preimage measures $\mu(E_j)$. When $\mu(E_j)$ is *estimated* by counting equispaced samples (as in this simulation) the method is in practice a regrouped Riemann sum and does **not** inherit the theoretical immunity to jumps or dense discontinuities: that advantage holds only when the measures $\mu(E_j)$ are known exactly, as for $f_7$ and $f_8$.
 3. **The Necessity of Numerical CDF Routines:**
    * Liouville's theorem shows that the lack of an elementary antiderivative for $e^{-z^2/2}$ is an intrinsic algebraic property of the differential field of elementary functions, not a limitation of calculus (while $\int_{\mathbb{R}} e^{-t^2/2}dt = \sqrt{2\pi}$ is elementary).
-   * The **power series** (Hogg-McKean-Craig Sec. 3.4) gives arbitrary accuracy for small to moderate $|z|$ ($|z| \le 3$ in double precision with about 30 terms), but suffers cancellation for larger $|z|$.
+   * The **power series** (Hogg-McKean-Craig Sec. 3.4) gives arbitrary accuracy for small to moderate $\lvert z\rvert$ ($\lvert z\rvert \le 3$ in double precision with about 30 terms), but suffers cancellation for larger $\lvert z\rvert$.
    * The **Abramowitz & Stegun** approximation costs $O(1)$ and has a uniform *absolute* error below $7.5\times10^{-8}$. In the tails this is not enough in relative terms: e.g. $\Phi(-4) \approx 3.17\times10^{-5}$ gives a relative error up to about $0.2\%$. For tail probabilities, use $\operatorname{erfc}$-based algorithms or continued fractions.
 
 <!-- Scripts for interactive tools -->
@@ -423,6 +407,15 @@ let ex2PdfChartInstance = null;
 let ex2ErrorChartInstance = null;
 
 // ---------- Shared helpers ----------
+
+// Destroys any chart already attached to the canvas (even one whose instance
+// variable was lost) before creating the new one: avoids "Canvas is already in use".
+function makeChart(canvasId, config) {
+    const canvas = document.getElementById(canvasId);
+    const old = Chart.getChart(canvas);
+    if (old) old.destroy();
+    return new Chart(canvas.getContext("2d"), config);
+}
 
 function factorial(n) {
     if (n <= 1) return 1;
@@ -566,7 +559,11 @@ function runEx1Simulation() {
 
     document.getElementById("ex1Note").innerText = EX1_NOTES[target.note] || EX1_NOTES.default;
 
-    renderEx1Charts(target, M);
+    try {
+        renderEx1Charts(target, M);
+    } catch (e) {
+        console.error("Ex1 chart error:", e);
+    }
 }
 
 function renderEx1Charts(target, M) {
@@ -581,10 +578,7 @@ function renderEx1Charts(target, M) {
         yData.push(f(x));
     }
 
-    const ctxFunc = document.getElementById("ex1FuncChart").getContext("2d");
-    if (ex1FuncChartInstance) ex1FuncChartInstance.destroy();
-
-    ex1FuncChartInstance = new Chart(ctxFunc, {
+    ex1FuncChartInstance = makeChart("ex1FuncChart", {
         type: 'line',
         data: {
             labels: xLabels,
@@ -600,6 +594,7 @@ function renderEx1Charts(target, M) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            animation: false,
             plugins: { legend: { display: false } },
             scales: {
                 x: { title: { display: true, text: 'Domain (x)' } },
@@ -615,10 +610,7 @@ function renderEx1Charts(target, M) {
         lErrors.push(Math.abs(lebesgueSum(target, Math.max(4 * n, 2000), M) - target.exact) + 1e-12);
     });
 
-    const ctxConv = document.getElementById("ex1ConvChart").getContext("2d");
-    if (ex1ConvChartInstance) ex1ConvChartInstance.destroy();
-
-    ex1ConvChartInstance = new Chart(ctxConv, {
+    ex1ConvChartInstance = makeChart("ex1ConvChart", {
         type: 'line',
         data: {
             labels: nVals.map(String),
@@ -643,6 +635,7 @@ function renderEx1Charts(target, M) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            animation: false,
             scales: {
                 x: { title: { display: true, text: 'Domain Subdivisions (N)' } },
                 y: { type: 'logarithmic', title: { display: true, text: 'Absolute Error (Log Scale)' } }
@@ -743,7 +736,11 @@ function runEx2Simulation() {
     document.getElementById("ex2ASVal").innerText = asVal.toFixed(8);
     document.getElementById("ex2ASErr").innerText = Math.abs(asVal - refVal).toExponential(3);
 
-    renderEx2Charts(z, K, N);
+    try {
+        renderEx2Charts(z, K, N);
+    } catch (e) {
+        console.error("Ex2 chart error:", e);
+    }
 }
 
 function renderEx2Charts(evalZ, K, N) {
@@ -756,10 +753,7 @@ function renderEx2Charts(evalZ, K, N) {
         areaPoints.push(x <= evalZ ? pdf : null);
     }
 
-    const ctxPdf = document.getElementById("ex2PdfChart").getContext("2d");
-    if (ex2PdfChartInstance) ex2PdfChartInstance.destroy();
-
-    ex2PdfChartInstance = new Chart(ctxPdf, {
+    ex2PdfChartInstance = makeChart("ex2PdfChart", {
         type: 'line',
         data: {
             labels: zPoints,
@@ -785,6 +779,7 @@ function renderEx2Charts(evalZ, K, N) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            animation: false,
             plugins: { legend: { display: false } },
             scales: {
                 x: { title: { display: true, text: 'z-score' } },
@@ -804,10 +799,7 @@ function renderEx2Charts(evalZ, K, N) {
         asErrs.push(Math.abs(normalCdfAbramowitzStegun(zVal) - ref) + 1e-16);
     }
 
-    const ctxErr = document.getElementById("ex2ErrorChart").getContext("2d");
-    if (ex2ErrorChartInstance) ex2ErrorChartInstance.destroy();
-
-    ex2ErrorChartInstance = new Chart(ctxErr, {
+    ex2ErrorChartInstance = makeChart("ex2ErrorChart", {
         type: 'line',
         data: {
             labels: zGrid,
@@ -821,6 +813,7 @@ function renderEx2Charts(evalZ, K, N) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            animation: false,
             scales: {
                 x: { title: { display: true, text: 'Evaluation Point z' } },
                 y: { type: 'logarithmic', title: { display: true, text: 'Absolute Error (Log Scale)' } }
@@ -838,6 +831,9 @@ function tryInitHomework5() {
     }
     runEx1Simulation();
     runEx2Simulation();
+    // Extra safeguard: also bind the select via addEventListener
+    const sel = document.getElementById("ex1FuncSelect");
+    if (sel) sel.addEventListener("change", runEx1Simulation);
 }
 
 if (document.readyState === "loading") {

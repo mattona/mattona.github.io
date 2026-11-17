@@ -167,8 +167,9 @@ This engine programmatically ingests any bivariate dataset $$(X, F)$$—either g
 
 <div class="card py-4 my-4 mx-auto w-100 text-center z-depth-1" style="background-color: transparent; border: 1px solid rgba(150,150,150,0.3);" markdown="0">
     <h5 class="text-center mb-4 font-weight-bold">Bivariate Contingency Table & Chi-Square Suite</h5>
+
     <!-- Dataset Controls -->
-    <div class="px-4 mb-3 mx-auto" style="max-width: 960px;">
+    <div class="px-4 mb-3 mx-auto w-100" style="max-width: 960px;">
         <div class="row justify-content-center align-items-end">
             <div class="col-md-5 mb-3 text-center">
                 <label class="font-weight-bold d-block text-center">Bivariate Dataset Source (X, F):</label>
@@ -188,8 +189,9 @@ This engine programmatically ingests any bivariate dataset $$(X, F)$$—either g
                 <input type="range" id="indLambdaRange" class="custom-range mx-auto" min="0.00" max="1.00" step="0.05" value="0.80" oninput="document.getElementById('indLambdaVal').innerText = parseFloat(this.value).toFixed(2); runIndependenceEngine();">
             </div>
         </div>
+
         <!-- Custom Dataset Textarea (Visible when 'custom' is selected) -->
-        <div id="indCustomBox" class="mb-3 mx-auto text-center" style="display: none; max-width: 650px;">
+        <div id="indCustomBox" class="mb-3 mx-auto w-100 text-center" style="display: none; max-width: 650px;">
             <label class="font-weight-bold d-block text-center">Enter Bivariate Pairs <code>X, F</code> (one observation per line):</label>
             <textarea id="indCustomInput" rows="5" class="form-control font-monospace text-center mx-auto" style="background-color: rgba(128,128,128,0.05); color: inherit; font-size: 0.85rem;" oninput="runIndependenceEngine()">Phishing, Compromised
 Phishing, Compromised
@@ -211,12 +213,14 @@ Malware, Compromised
 Phishing, Compromised</textarea>
             <small class="text-muted d-block mt-1">Any number of distinct categories for X and F is automatically detected and tabulated.</small>
         </div>
+
         <div class="d-flex justify-content-center mb-3" id="indResampleBtnRow">
             <button type="button" class="btn btn-sm btn-outline-primary px-4 mx-auto" onclick="runIndependenceEngine()">Sample New Bivariate Dataset (X, F)</button>
         </div>
     </div>
+
     <!-- Summary Hypothesis Test Results Table -->
-    <div class="px-4 mb-4 mx-auto" style="max-width: 1000px;">
+    <div class="px-4 mb-4 mx-auto w-100" style="max-width: 1000px;">
         <div class="table-responsive">
             <table class="table table-sm table-bordered text-center mb-0 mx-auto" style="color: inherit; border-color: rgba(150,150,150,0.3);">
                 <thead style="background-color: rgba(128,128,128,0.1);">
@@ -244,9 +248,11 @@ Phishing, Compromised</textarea>
             </table>
         </div>
     </div>
+
     <hr class="w-75 mx-auto mb-4" style="border-color: rgba(150,150,150,0.2);">
+
     <!-- Programmatically Constructed Tables -->
-    <div class="px-4 mb-4 mx-auto" style="max-width: 1050px;">
+    <div class="px-4 mb-4 mx-auto w-100" style="max-width: 1050px;">
         <div class="row justify-content-center">
             <!-- Observed & Marginals -->
             <div class="col-lg-6 mb-4 text-center">
@@ -259,6 +265,7 @@ Phishing, Compromised</textarea>
                 <div class="table-responsive mx-auto" id="expTableContainer"></div>
             </div>
         </div>
+
         <!-- Conditional Frequencies Table -->
         <div class="row justify-content-center mt-2">
             <div class="col-lg-10 text-center">
@@ -267,26 +274,29 @@ Phishing, Compromised</textarea>
             </div>
         </div>
     </div>
+
     <hr class="w-75 mx-auto mb-4" style="border-color: rgba(150,150,150,0.2);">
+
     <!-- Visual Charts -->
-    <div class="px-4 mx-auto" style="max-width: 1050px;">
+    <div class="px-4 mx-auto w-100" style="max-width: 1050px;">
         <div class="row justify-content-center">
             <div class="col-md-6 mb-4 text-center">
-                <h6 class="font-weight-bold text-center">Conditional Distributions P(F | X = xᵢ) vs. Marginal P(F)</h6>
-                <div class="mx-auto" style="position: relative; width: 100%; height: 260px;">
-                    <canvas id="indCondChart"></canvas>
+                <h6 class="font-weight-bold text-center mb-3">Conditional Distributions P(F | X = xᵢ) vs. Marginal P(F)</h6>
+                <div class="w-100" style="position: relative; width: 100%; height: 270px;">
+                    <canvas id="indCondChart" style="display: block; width: 100%; height: 100%;"></canvas>
                 </div>
             </div>
             <div class="col-md-6 mb-4 text-center">
-                <h6 class="font-weight-bold text-center">Sampling Distribution χ²(ν) & Observed Test Statistic</h6>
-                <div class="mx-auto" style="position: relative; width: 100%; height: 260px;">
-                    <canvas id="indChi2Chart"></canvas>
+                <h6 class="font-weight-bold text-center mb-3">Sampling Distribution χ²(ν) & Observed Test Statistic</h6>
+                <div class="w-100" style="position: relative; width: 100%; height: 270px;">
+                    <canvas id="indChi2Chart" style="display: block; width: 100%; height: 100%;"></canvas>
                 </div>
             </div>
         </div>
     </div>
+
     <!-- Dynamic Interpretation Callout -->
-    <div class="px-4 mt-2 mx-auto" style="max-width: 950px;">
+    <div class="px-4 mt-2 mx-auto w-100" style="max-width: 950px;">
         <div id="indInterpretationBox" class="p-3 rounded text-center mx-auto" style="background-color: rgba(128,128,128,0.07); border-top: 3px solid #3498db;">
             Initializing statistical contingency engine...
         </div>
@@ -316,11 +326,12 @@ Establishing $$X \not\perp F$$ is strictly a statement about the **joint observa
 Consequently, while a contingency table and $$\chi^2$$ test rigorously identify **predictive associations** across variables, establishing **causality** requires randomized experimental assignment (which severs incoming arrows into $$X$$) or valid causal identification strategies (such as back-door adjustment over measured confounders).
 
 <!-- Scripts for interactive contingency & independence suite -->
-<script src="[https://cdn.jsdelivr.net/npm/chart.js](https://cdn.jsdelivr.net/npm/chart.js)"></script>
+<script src="[https://cdn.jsdelivr.net/npm/chart.js](https://cdn.jsdelivr.net/npm/chart.js)" onerror="this.onerror=null;this.src='[https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js](https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js)';"></script>
 {% raw %}
 <script>
 let indCondChartInstance = null;
 let indChi2ChartInstance = null;
+let chartRetryTimer = null;
 
 // --- NUMERICAL SPECIAL FUNCTIONS FOR CHI-SQUARE P-VALUE ---
 
@@ -614,20 +625,27 @@ function runIndependenceEngine() {
     renderContingencyTables(xSet, fSet, obs, exp, chiTerms, condFgivenX, rowTotals, colTotals, N);
     updateInterpretationText(r, c, N, chi2Total, df, pVal, cramerV);
 
-    // 7. Render Visual Charts safely
-    try {
-        if (typeof Chart !== "undefined") {
-            renderIndependenceCharts(xSet, fSet, condFgivenX, colTotals, N, chi2Total, df);
-        } else {
-            setTimeout(() => {
-                if (typeof Chart !== "undefined") {
-                    renderIndependenceCharts(xSet, fSet, condFgivenX, colTotals, N, chi2Total, df);
-                }
-            }, 150);
-        }
-    } catch (err) {
-        console.error("Chart rendering error:", err);
+    // 7. Render Visual Charts with continuous polling until Chart.js finishes loading
+    scheduleChartRender(xSet, fSet, condFgivenX, colTotals, N, chi2Total, df);
+}
+
+function scheduleChartRender(xSet, fSet, condFgivenX, colTotals, N, chi2Total, df) {
+    if (chartRetryTimer) {
+        clearTimeout(chartRetryTimer);
+        chartRetryTimer = null;
     }
+
+    function attempt() {
+        const c1 = document.getElementById("indCondChart");
+        const c2 = document.getElementById("indChi2Chart");
+        if (typeof Chart === "undefined" || !c1 || !c2 || c1.parentElement.offsetWidth === 0) {
+            chartRetryTimer = setTimeout(attempt, 60);
+            return;
+        }
+        renderIndependenceCharts(xSet, fSet, condFgivenX, colTotals, N, chi2Total, df);
+    }
+
+    attempt();
 }
 
 function renderContingencyTables(xSet, fSet, obs, exp, chiTerms, condFgivenX, rowTotals, colTotals, N) {

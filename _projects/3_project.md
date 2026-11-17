@@ -2,7 +2,7 @@
 layout: page
 title: Encryption & Cryptanalysis
 description: Comparing ECC and Caesar ciphers, statistical leaks, and key-space attacks.
-img: assets/img/hmw3.jpg
+img: assets/img/hmw3'.jpg
 importance: 3
 category: Statistics
 ---

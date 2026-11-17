@@ -167,35 +167,44 @@ This engine programmatically ingests any bivariate dataset $$(X, F)$$—either g
 
 <div class="card py-4 my-4 z-depth-1" style="background-color: transparent; border: 1px solid rgba(150,150,150,0.3);" markdown="0">
     <h5 class="text-center mb-4 font-weight-bold">Bivariate Contingency Table & Chi-Square Suite</h5>
-    <!-- Dataset Controls (3 Structured Rows) -->
-    <div class="px-4 mb-3">
-        <!-- ROW 1: Label + Dataset Selector on a single row -->
-        <div class="d-flex flex-column flex-md-row align-items-center justify-content-center mb-3">
-            <label for="indDatasetMode" class="font-weight-bold mb-2 mb-md-0 mr-md-3" style="white-space: nowrap;">
-                Bivariate Dataset Source (X, F):
-            </label>
-            <select id="indDatasetMode" class="form-control" style="max-width: 520px; background-color: rgba(128,128,128,0.05); color: inherit;" onchange="onDatasetModeChange()">
-                <option value="cyber_dep">Scenario 1: Attack Vector (X) vs. Breach Outcome (F) [Dependent]</option>
-                <option value="net_indep">Scenario 2: Network Protocol (X) vs. Packet Drop (F) [Independent]</option>
-                <option value="auth_mod">Scenario 3: Auth Mechanism (X) vs. Account Takeover (F) [Moderate]</option>
-                <option value="custom">Custom Bivariate Dataset: Raw (X, F) Pairs Input</option>
-            </select>
+<style>
+    .ind-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.75rem 1.25rem; margin-bottom: 1rem; }
+    .ind-row label { margin: 0; }
+    .ind-select { flex: 1 1 280px; max-width: 520px; min-width: 0; background-color: rgba(128,128,128,0.05); color: inherit; }
+    .ind-slider { flex: 1 1 220px; max-width: 340px; text-align: center; }
+    .ind-slider input[type=range] { width: 100%; }
+    .ind-charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+    .ind-chart-box { position: relative; width: 100%; height: 290px; }
+</style>
+<!-- Dataset Controls (3 structured rows) -->
+<div class="px-4 mb-3">
+    <!-- ROW 1: label + dataset selector -->
+    <div class="ind-row">
+        <label for="indDatasetMode" class="font-weight-bold" style="white-space: nowrap;">Bivariate Dataset Source (X, F):</label>
+        <select id="indDatasetMode" class="form-control ind-select" onchange="onDatasetModeChange()">
+            <option value="cyber_dep">Scenario 1: Attack Vector (X) vs. Breach Outcome (F) [Dependent]</option>
+            <option value="net_indep">Scenario 2: Network Protocol (X) vs. Packet Drop (F) [Independent]</option>
+            <option value="auth_mod">Scenario 3: Auth Mechanism (X) vs. Account Takeover (F) [Moderate]</option>
+            <option value="custom">Custom Bivariate Dataset: Raw (X, F) Pairs Input</option>
+        </select>
+    </div>
+    <!-- ROW 2: Sample Size (N) and Association Strength (λ) on the same row -->
+    <div class="ind-row" id="indSlidersRow">
+        <div class="ind-slider">
+            <label class="font-weight-bold d-block">Sample Size (N): <span id="indNVal" style="color: #3498db;">400</span></label>
+            <input type="range" id="indNRange" class="custom-range" min="50" max="2000" step="50" value="400"
+                   oninput="document.getElementById('indNVal').innerText = this.value; runIndependenceEngine();">
         </div>
-        <!-- ROW 2: Sample Size (N) & Association Strength (λ) on a single row -->
-        <div class="row justify-content-center mb-3" id="indSlidersRow">
-            <div class="col-md-5 mb-2 mb-md-0 text-center">
-                <label class="font-weight-bold d-block text-center">Sample Size (N): <span id="indNVal" style="color: #3498db;">400</span></label>
-                <input type="range" id="indNRange" class="custom-range" min="50" max="2000" step="50" value="400" oninput="document.getElementById('indNVal').innerText = this.value; runIndependenceEngine();">
-            </div>
-            <div class="col-md-5 text-center">
-                <label class="font-weight-bold d-block text-center">Association Strength (λ): <span id="indLambdaVal" style="color: #9b59b6;">0.80</span></label>
-                <input type="range" id="indLambdaRange" class="custom-range" min="0.00" max="1.00" step="0.05" value="0.80" oninput="document.getElementById('indLambdaVal').innerText = parseFloat(this.value).toFixed(2); runIndependenceEngine();">
-            </div>
+        <div class="ind-slider">
+            <label class="font-weight-bold d-block">Association Strength (λ): <span id="indLambdaVal" style="color: #9b59b6;">0.80</span></label>
+            <input type="range" id="indLambdaRange" class="custom-range" min="0.00" max="1.00" step="0.05" value="0.80"
+                   oninput="document.getElementById('indLambdaVal').innerText = parseFloat(this.value).toFixed(2); runIndependenceEngine();">
         </div>
-        <!-- Custom Dataset Textarea (Shown instead of Row 2 & 3 when 'custom' is selected) -->
-        <div id="indCustomBox" class="mb-3 mx-auto text-center" style="display: none; max-width: 650px;">
-            <label class="font-weight-bold d-block text-center">Enter Bivariate Pairs <code>X, F</code> (one observation per line):</label>
-            <textarea id="indCustomInput" rows="5" class="form-control font-monospace text-center" style="background-color: rgba(128,128,128,0.05); color: inherit; font-size: 0.85rem;" oninput="runIndependenceEngine()">Phishing, Compromised
+    </div>
+    <!-- Custom dataset input (shown only when 'custom' is selected) -->
+    <div id="indCustomBox" class="mb-3 mx-auto text-center" style="display: none; max-width: 650px;">
+        <label class="font-weight-bold d-block text-center">Enter Bivariate Pairs <code>X, F</code> (one observation per line):</label>
+        <textarea id="indCustomInput" rows="5" class="form-control font-monospace text-center" style="background-color: rgba(128,128,128,0.05); color: inherit; font-size: 0.85rem;" oninput="runIndependenceEngine()">Phishing, Compromised
 Phishing, Compromised
 Phishing, Blocked
 Malware, Compromised
@@ -213,13 +222,13 @@ Phishing, Blocked
 BruteForce, Blocked
 Malware, Compromised
 Phishing, Compromised</textarea>
-            <small class="text-muted d-block mt-1">Any number of distinct categories for X and F is automatically detected and tabulated.</small>
-        </div>
-        <!-- ROW 3: Resample Button on its own row -->
-        <div class="d-flex justify-content-center mb-2" id="indResampleBtnRow">
-            <button type="button" class="btn btn-sm btn-outline-primary px-4" onclick="runIndependenceEngine()">Sample New Bivariate Dataset (X, F)</button>
-        </div>
+        <small class="text-muted d-block mt-1">Any number of distinct categories for X and F is automatically detected and tabulated.</small>
     </div>
+    <!-- ROW 3: resample button -->
+    <div class="ind-row" id="indResampleBtnRow">
+        <button type="button" class="btn btn-sm btn-outline-primary px-4" onclick="runIndependenceEngine()">Sample New Bivariate Dataset (X, F)</button>
+    </div>
+</div>
     <!-- Summary Hypothesis Test Results Table -->
     <div class="px-4 mb-4">
         <div class="table-responsive">
@@ -274,22 +283,19 @@ Phishing, Compromised</textarea>
     </div>
     <hr class="w-75 mx-auto mb-4" style="border-color: rgba(150,150,150,0.2);">
     <!-- Visual Charts -->
-    <div class="px-4">
-        <div class="row">
-            <div class="col-md-6 mb-4">
-                <h6 class="font-weight-bold text-center mb-3">Conditional Distributions P(F | X = xᵢ) vs. Marginal P(F)</h6>
-                <div style="position: relative; width: 100%; height: 270px;">
-                    <canvas id="indCondChart"></canvas>
-                </div>
-            </div>
-            <div class="col-md-6 mb-4">
-                <h6 class="font-weight-bold text-center mb-3">Sampling Distribution χ²(ν) & Observed Test Statistic</h6>
-                <div style="position: relative; width: 100%; height: 270px;">
-                    <canvas id="indChi2Chart"></canvas>
-                </div>
-            </div>
+    <!-- Visual Charts -->
+<div class="px-4">
+    <div class="ind-charts">
+        <div>
+            <h6 class="font-weight-bold text-center mb-3">Conditional Distributions P(F | X = xᵢ) vs. Marginal P(F)</h6>
+            <div class="ind-chart-box"><canvas id="indCondChart"></canvas></div>
+        </div>
+        <div>
+            <h6 class="font-weight-bold text-center mb-3">Sampling Distribution χ²(ν) & Observed Test Statistic</h6>
+            <div class="ind-chart-box"><canvas id="indChi2Chart"></canvas></div>
         </div>
     </div>
+</div>
     <!-- Dynamic Interpretation Callout -->
     <div class="px-4 mt-2">
         <div id="indInterpretationBox" class="p-3 rounded text-center" style="background-color: rgba(128,128,128,0.07); border-top: 3px solid #3498db;">
@@ -322,7 +328,17 @@ Consequently, while a contingency table and $$\chi^2$$ test rigorously identify 
 
 <!-- Scripts for interactive contingency & independence suite -->
 {% raw %}
-<script src="[https://cdn.jsdelivr.net/npm/chart.js](https://cdn.jsdelivr.net/npm/chart.js)"></script>
+<script>
+// Load Chart.js v4 dynamically and run the callback once it is available
+function loadChartJs(callback) {
+    if (window.Chart && Chart.version && parseInt(Chart.version, 10) >= 3) { callback(); return; }
+    var s = document.createElement("script");
+    s.src = "https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js";
+    s.onload = callback;
+    s.onerror = function () { console.error("Chart.js failed to load"); };
+    document.head.appendChild(s);
+}
+</script>
 <script>
 let indCondChartInstance = null;
 let indChi2ChartInstance = null;
@@ -616,7 +632,99 @@ function runIndependenceEngine() {
 
     // 6. Render HTML Tables, Charts & Interpretation
     renderContingencyTables(xSet, fSet, obs, exp, chiTerms, condFgivenX, rowTotals, colTotals, N);
-    renderIndependenceCharts(xSet, fSet, condFgivenX, colTotals, N, chi2Total, df);
+function renderIndependenceCharts(xSet, fSet, condFgivenX, colTotals, N, chi2Obs, df) {
+    if (typeof Chart === "undefined") return;
+
+    const palette = ["#3498db", "#9b59b6", "#2ecc71", "#e67e22", "#e74c3c", "#1abc9c"];
+
+    // --- Chart 1: conditional distributions P(F | X = x_i) vs. marginal P(F) ---
+    let labelsWithMarginal = [...xSet.map(x => `X = ${x}`), "Marginal P(F)"];
+    let datasets = fSet.map((fName, j) => {
+        let dataArr = xSet.map((_, i) => parseFloat((condFgivenX[i][j] * 100).toFixed(2)));
+        dataArr.push(parseFloat(((colTotals[j] / N) * 100).toFixed(2)));
+        let color = palette[j % palette.length];
+        return { label: `F = ${fName}`, data: dataArr, backgroundColor: color, borderColor: color, borderWidth: 1 };
+    });
+
+    if (indCondChartInstance) indCondChartInstance.destroy();
+    indCondChartInstance = new Chart(document.getElementById("indCondChart"), {
+        type: "bar",
+        data: { labels: labelsWithMarginal, datasets: datasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: false,
+            scales: {
+                x: { title: { display: true, text: "Conditioning Variable (X) vs. Marginal" } },
+                y: { title: { display: true, text: "Conditional Frequency (%)" }, min: 0, max: 100 }
+            }
+        }
+    });
+
+    // --- Chart 2: chi-square density, rejection region, observed statistic ---
+    let critVal = chiSquareCritical(0.05, df);
+    let maxX = Math.max(critVal * 1.6, chi2Obs * 1.25, df + 4 * Math.sqrt(2 * df));
+    let steps = 200;
+    let dx = maxX / steps;
+
+    let pdfData = [];
+    let tailData = [];
+    let peakPdf = 0;
+    for (let k = 1; k <= steps; k++) {
+        let x = k * dx;
+        let y = chiSquarePdf(x, df);
+        if (!isFinite(y)) continue;
+        pdfData.push({ x: x, y: y });
+        if (x >= critVal) tailData.push({ x: x, y: y });
+        if (y > peakPdf) peakPdf = y;
+    }
+    let yTop = peakPdf * 1.1;
+
+    if (indChi2ChartInstance) indChi2ChartInstance.destroy();
+    indChi2ChartInstance = new Chart(document.getElementById("indChi2Chart"), {
+        type: "line",
+        data: {
+            datasets: [
+                {
+                    label: `χ²(ν=${df}) Density`,
+                    data: pdfData,
+                    borderColor: "#3498db",
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    fill: false
+                },
+                {
+                    label: `Rejection Region (α=0.05, crit=${critVal.toFixed(2)})`,
+                    data: tailData,
+                    borderColor: "rgba(231, 76, 60, 0.9)",
+                    backgroundColor: "rgba(231, 76, 60, 0.25)",
+                    borderWidth: 1,
+                    pointRadius: 0,
+                    fill: "origin"
+                },
+                {
+                    label: `Observed χ² = ${chi2Obs.toFixed(2)}`,
+                    data: [{ x: chi2Obs, y: 0 }, { x: chi2Obs, y: yTop }],
+                    borderColor: "#9b59b6",
+                    borderWidth: 3,
+                    borderDash: [6, 4],
+                    pointRadius: 0,
+                    fill: false
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: false,
+            parsing: false,
+            scales: {
+                x: { type: "linear", min: 0, max: maxX, title: { display: true, text: "Chi-Square Value (x)" } },
+                y: { min: 0, max: yTop, title: { display: true, text: "Probability Density f(x)" } }
+            }
+        }
+    });
+}
     updateInterpretationText(r, c, N, chi2Total, df, pVal, cramerV);
 }
 
@@ -828,4 +936,4 @@ if (document.readyState === "loading") {
     tryInitHomework6();
 }
 </script>
-{% endraw %
+{% endraw %}

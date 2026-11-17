@@ -101,7 +101,7 @@ Under exact independence, every row-conditional profile matches the marginal dis
             </div>
             <svg viewBox="0 0 360 205" class="w-100 mt-auto" style="max-height: 205px; display: block; overflow: visible;">
                 <!-- Axes -->
-                <line x1="50" y1="165" x2="330" y2="165" stroke="currentColor" stroke-opacity="0.4" stroke-width="2" />
+                <line x1="50" y1="165" x2="330" y2="165" stroke="currentColor" stroke-opacity="0.4" stroke-width="2" /
                 <line x1="50" y1="165" x2="50" y2="20" stroke="currentColor" stroke-opacity="0.4" stroke-width="2" />
                 <text x="15" y="95" fill="currentColor" font-size="11" font-weight="bold" transform="rotate(-90 15,95)" text-anchor="middle">P(F | X)</text>
                 <!-- Row 1 Stacked Bar (35% / 65%) -->
@@ -165,35 +165,37 @@ $$
 
 This engine programmatically ingests any bivariate dataset $$(X, F)$$—either generated from configurable security/statistical scenarios or entered directly as custom `(x, f)` pairs—constructs the contingency matrix, derives marginal and conditional distributions, and runs the $$\chi^2$$ independence test in real time.
 
-<div class="card py-4 my-4 mx-auto w-100 text-center z-depth-1" style="background-color: transparent; border: 1px solid rgba(150,150,150,0.3);" markdown="0">
+<div class="card py-4 my-4 z-depth-1" style="background-color: transparent; border: 1px solid rgba(150,150,150,0.3);" markdown="0">
     <h5 class="text-center mb-4 font-weight-bold">Bivariate Contingency Table & Chi-Square Suite</h5>
-
-    <!-- Dataset Controls -->
-    <div class="px-4 mb-3 mx-auto w-100" style="max-width: 960px;">
-        <div class="row justify-content-center align-items-end">
-            <div class="col-md-5 mb-3 text-center">
-                <label class="font-weight-bold d-block text-center">Bivariate Dataset Source (X, F):</label>
-                <select id="indDatasetMode" class="form-control text-center mx-auto" style="background-color: rgba(128,128,128,0.05); color: inherit;" onchange="onDatasetModeChange()">
-                    <option value="cyber_dep">Scenario 1: Attack Vector (X) vs. Breach Outcome (F) [Dependent]</option>
-                    <option value="net_indep">Scenario 2: Network Protocol (X) vs. Packet Drop (F) [Independent]</option>
-                    <option value="auth_mod">Scenario 3: Auth Mechanism (X) vs. Account Takeover (F) [Moderate]</option>
-                    <option value="custom">Custom Bivariate Dataset: Raw (X, F) Pairs Input</option>
-                </select>
-            </div>
-            <div class="col-md-3 mb-3 text-center" id="indNContainer">
+    <!-- Dataset Controls (3 Structured Rows) -->
+    <div class="px-4 mb-3">
+        <!-- ROW 1: Label + Dataset Selector on a single row -->
+        <div class="d-flex flex-column flex-md-row align-items-center justify-content-center mb-3">
+            <label for="indDatasetMode" class="font-weight-bold mb-2 mb-md-0 mr-md-3" style="white-space: nowrap;">
+                Bivariate Dataset Source (X, F):
+            </label>
+            <select id="indDatasetMode" class="form-control" style="max-width: 520px; background-color: rgba(128,128,128,0.05); color: inherit;" onchange="onDatasetModeChange()">
+                <option value="cyber_dep">Scenario 1: Attack Vector (X) vs. Breach Outcome (F) [Dependent]</option>
+                <option value="net_indep">Scenario 2: Network Protocol (X) vs. Packet Drop (F) [Independent]</option>
+                <option value="auth_mod">Scenario 3: Auth Mechanism (X) vs. Account Takeover (F) [Moderate]</option>
+                <option value="custom">Custom Bivariate Dataset: Raw (X, F) Pairs Input</option>
+            </select>
+        </div>
+        <!-- ROW 2: Sample Size (N) & Association Strength (λ) on a single row -->
+        <div class="row justify-content-center mb-3" id="indSlidersRow">
+            <div class="col-md-5 mb-2 mb-md-0 text-center">
                 <label class="font-weight-bold d-block text-center">Sample Size (N): <span id="indNVal" style="color: #3498db;">400</span></label>
-                <input type="range" id="indNRange" class="custom-range mx-auto" min="50" max="2000" step="50" value="400" oninput="document.getElementById('indNVal').innerText = this.value; runIndependenceEngine();">
+                <input type="range" id="indNRange" class="custom-range" min="50" max="2000" step="50" value="400" oninput="document.getElementById('indNVal').innerText = this.value; runIndependenceEngine();">
             </div>
-            <div class="col-md-4 mb-3 text-center" id="indAlphaContainer">
+            <div class="col-md-5 text-center">
                 <label class="font-weight-bold d-block text-center">Association Strength (λ): <span id="indLambdaVal" style="color: #9b59b6;">0.80</span></label>
-                <input type="range" id="indLambdaRange" class="custom-range mx-auto" min="0.00" max="1.00" step="0.05" value="0.80" oninput="document.getElementById('indLambdaVal').innerText = parseFloat(this.value).toFixed(2); runIndependenceEngine();">
+                <input type="range" id="indLambdaRange" class="custom-range" min="0.00" max="1.00" step="0.05" value="0.80" oninput="document.getElementById('indLambdaVal').innerText = parseFloat(this.value).toFixed(2); runIndependenceEngine();">
             </div>
         </div>
-
-        <!-- Custom Dataset Textarea (Visible when 'custom' is selected) -->
-        <div id="indCustomBox" class="mb-3 mx-auto w-100 text-center" style="display: none; max-width: 650px;">
+        <!-- Custom Dataset Textarea (Shown instead of Row 2 & 3 when 'custom' is selected) -->
+        <div id="indCustomBox" class="mb-3 mx-auto text-center" style="display: none; max-width: 650px;">
             <label class="font-weight-bold d-block text-center">Enter Bivariate Pairs <code>X, F</code> (one observation per line):</label>
-            <textarea id="indCustomInput" rows="5" class="form-control font-monospace text-center mx-auto" style="background-color: rgba(128,128,128,0.05); color: inherit; font-size: 0.85rem;" oninput="runIndependenceEngine()">Phishing, Compromised
+            <textarea id="indCustomInput" rows="5" class="form-control font-monospace text-center" style="background-color: rgba(128,128,128,0.05); color: inherit; font-size: 0.85rem;" oninput="runIndependenceEngine()">Phishing, Compromised
 Phishing, Compromised
 Phishing, Blocked
 Malware, Compromised
@@ -213,16 +215,15 @@ Malware, Compromised
 Phishing, Compromised</textarea>
             <small class="text-muted d-block mt-1">Any number of distinct categories for X and F is automatically detected and tabulated.</small>
         </div>
-
-        <div class="d-flex justify-content-center mb-3" id="indResampleBtnRow">
-            <button type="button" class="btn btn-sm btn-outline-primary px-4 mx-auto" onclick="runIndependenceEngine()">Sample New Bivariate Dataset (X, F)</button>
+        <!-- ROW 3: Resample Button on its own row -->
+        <div class="d-flex justify-content-center mb-2" id="indResampleBtnRow">
+            <button type="button" class="btn btn-sm btn-outline-primary px-4" onclick="runIndependenceEngine()">Sample New Bivariate Dataset (X, F)</button>
         </div>
     </div>
-
     <!-- Summary Hypothesis Test Results Table -->
-    <div class="px-4 mb-4 mx-auto w-100" style="max-width: 1000px;">
+    <div class="px-4 mb-4">
         <div class="table-responsive">
-            <table class="table table-sm table-bordered text-center mb-0 mx-auto" style="color: inherit; border-color: rgba(150,150,150,0.3);">
+            <table class="table table-sm table-bordered text-center mb-0" style="color: inherit; border-color: rgba(150,150,150,0.3);">
                 <thead style="background-color: rgba(128,128,128,0.1);">
                     <tr>
                         <th class="text-center">Sample Size (N)</th>
@@ -248,56 +249,50 @@ Phishing, Compromised</textarea>
             </table>
         </div>
     </div>
-
     <hr class="w-75 mx-auto mb-4" style="border-color: rgba(150,150,150,0.2);">
-
     <!-- Programmatically Constructed Tables -->
-    <div class="px-4 mb-4 mx-auto w-100" style="max-width: 1050px;">
+    <div class="px-4 mb-4">
         <div class="row justify-content-center">
             <!-- Observed & Marginals -->
             <div class="col-lg-6 mb-4 text-center">
                 <h6 class="font-weight-bold text-center mb-2">1. Observed Contingency Table (Oᵢⱼ) & Marginals</h6>
-                <div class="table-responsive mx-auto" id="obsTableContainer"></div>
+                <div class="table-responsive" id="obsTableContainer"></div>
             </div>
             <!-- Expected & Chi2 Contributions -->
             <div class="col-lg-6 mb-4 text-center">
                 <h6 class="font-weight-bold text-center mb-2">2. Expected Frequencies (Eᵢⱼ) & Cell χ² Terms</h6>
-                <div class="table-responsive mx-auto" id="expTableContainer"></div>
+                <div class="table-responsive" id="expTableContainer"></div>
             </div>
         </div>
-
         <!-- Conditional Frequencies Table -->
         <div class="row justify-content-center mt-2">
             <div class="col-lg-10 text-center">
                 <h6 class="font-weight-bold text-center mb-2">3. Conditional Frequency Profiles P(F = fⱼ | X = xᵢ) vs. Marginal P(F = fⱼ)</h6>
-                <div class="table-responsive mx-auto" id="condTableContainer"></div>
+                <div class="table-responsive" id="condTableContainer"></div>
             </div>
         </div>
     </div>
-
     <hr class="w-75 mx-auto mb-4" style="border-color: rgba(150,150,150,0.2);">
-
     <!-- Visual Charts -->
-    <div class="px-4 mx-auto w-100" style="max-width: 1050px;">
-        <div class="row justify-content-center">
-            <div class="col-md-6 mb-4 text-center">
+    <div class="px-4">
+        <div class="row">
+            <div class="col-md-6 mb-4">
                 <h6 class="font-weight-bold text-center mb-3">Conditional Distributions P(F | X = xᵢ) vs. Marginal P(F)</h6>
-                <div class="w-100" style="position: relative; width: 100%; height: 270px;">
-                    <canvas id="indCondChart" style="display: block; width: 100%; height: 100%;"></canvas>
+                <div style="position: relative; width: 100%; height: 270px;">
+                    <canvas id="indCondChart"></canvas>
                 </div>
             </div>
-            <div class="col-md-6 mb-4 text-center">
+            <div class="col-md-6 mb-4">
                 <h6 class="font-weight-bold text-center mb-3">Sampling Distribution χ²(ν) & Observed Test Statistic</h6>
-                <div class="w-100" style="position: relative; width: 100%; height: 270px;">
-                    <canvas id="indChi2Chart" style="display: block; width: 100%; height: 100%;"></canvas>
+                <div style="position: relative; width: 100%; height: 270px;">
+                    <canvas id="indChi2Chart"></canvas>
                 </div>
             </div>
         </div>
     </div>
-
     <!-- Dynamic Interpretation Callout -->
-    <div class="px-4 mt-2 mx-auto w-100" style="max-width: 950px;">
-        <div id="indInterpretationBox" class="p-3 rounded text-center mx-auto" style="background-color: rgba(128,128,128,0.07); border-top: 3px solid #3498db;">
+    <div class="px-4 mt-2">
+        <div id="indInterpretationBox" class="p-3 rounded text-center" style="background-color: rgba(128,128,128,0.07); border-top: 3px solid #3498db;">
             Initializing statistical contingency engine...
         </div>
     </div>
@@ -326,12 +321,11 @@ Establishing $$X \not\perp F$$ is strictly a statement about the **joint observa
 Consequently, while a contingency table and $$\chi^2$$ test rigorously identify **predictive associations** across variables, establishing **causality** requires randomized experimental assignment (which severs incoming arrows into $$X$$) or valid causal identification strategies (such as back-door adjustment over measured confounders).
 
 <!-- Scripts for interactive contingency & independence suite -->
-<script src="[https://cdn.jsdelivr.net/npm/chart.js](https://cdn.jsdelivr.net/npm/chart.js)" onerror="this.onerror=null;this.src='[https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js](https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js)';"></script>
 {% raw %}
+<script src="[https://cdn.jsdelivr.net/npm/chart.js](https://cdn.jsdelivr.net/npm/chart.js)"></script>
 <script>
 let indCondChartInstance = null;
 let indChi2ChartInstance = null;
-let chartRetryTimer = null;
 
 // --- NUMERICAL SPECIAL FUNCTIONS FOR CHI-SQUARE P-VALUE ---
 
@@ -514,8 +508,7 @@ function onDatasetModeChange() {
     let isCustom = (mode === "custom");
 
     document.getElementById("indCustomBox").style.display = isCustom ? "block" : "none";
-    document.getElementById("indNContainer").style.display = isCustom ? "none" : "block";
-    document.getElementById("indAlphaContainer").style.display = isCustom ? "none" : "block";
+    document.getElementById("indSlidersRow").style.display = isCustom ? "none" : "flex";
     document.getElementById("indResampleBtnRow").style.display = isCustom ? "none" : "flex";
 
     if (mode === "net_indep") {
@@ -621,36 +614,15 @@ function runIndependenceEngine() {
         decCell.style.color = "#2ecc71";
     }
 
-    // 6. Render HTML Tables & Dynamic Interpretation immediately
+    // 6. Render HTML Tables, Charts & Interpretation
     renderContingencyTables(xSet, fSet, obs, exp, chiTerms, condFgivenX, rowTotals, colTotals, N);
+    renderIndependenceCharts(xSet, fSet, condFgivenX, colTotals, N, chi2Total, df);
     updateInterpretationText(r, c, N, chi2Total, df, pVal, cramerV);
-
-    // 7. Render Visual Charts with continuous polling until Chart.js finishes loading
-    scheduleChartRender(xSet, fSet, condFgivenX, colTotals, N, chi2Total, df);
-}
-
-function scheduleChartRender(xSet, fSet, condFgivenX, colTotals, N, chi2Total, df) {
-    if (chartRetryTimer) {
-        clearTimeout(chartRetryTimer);
-        chartRetryTimer = null;
-    }
-
-    function attempt() {
-        const c1 = document.getElementById("indCondChart");
-        const c2 = document.getElementById("indChi2Chart");
-        if (typeof Chart === "undefined" || !c1 || !c2 || c1.parentElement.offsetWidth === 0) {
-            chartRetryTimer = setTimeout(attempt, 60);
-            return;
-        }
-        renderIndependenceCharts(xSet, fSet, condFgivenX, colTotals, N, chi2Total, df);
-    }
-
-    attempt();
 }
 
 function renderContingencyTables(xSet, fSet, obs, exp, chiTerms, condFgivenX, rowTotals, colTotals, N) {
     // Table 1: Observed Counts + Marginals
-    let h1 = `<table class="table table-sm table-bordered text-center mb-0 mx-auto" style="color: inherit; border-color: rgba(150,150,150,0.3); font-size: 0.85rem;">`;
+    let h1 = `<table class="table table-sm table-bordered text-center mb-0" style="color: inherit; border-color: rgba(150,150,150,0.3); font-size: 0.85rem;">`;
     h1 += `<thead style="background-color: rgba(128,128,128,0.1);"><tr><th class="text-center">X \\ F</th>`;
     fSet.forEach(f => h1 += `<th class="text-center">${f}</th>`);
     h1 += `<th class="text-center" style="color: #3498db;">Row Total (Rᵢ)</th><th class="text-center">Marginal P(X)</th></tr></thead><tbody>`;
@@ -673,7 +645,7 @@ function renderContingencyTables(xSet, fSet, obs, exp, chiTerms, condFgivenX, ro
     document.getElementById("obsTableContainer").innerHTML = h1;
 
     // Table 2: Expected Frequencies + Cell Chi2 Contributions
-    let h2 = `<table class="table table-sm table-bordered text-center mb-0 mx-auto" style="color: inherit; border-color: rgba(150,150,150,0.3); font-size: 0.85rem;">`;
+    let h2 = `<table class="table table-sm table-bordered text-center mb-0" style="color: inherit; border-color: rgba(150,150,150,0.3); font-size: 0.85rem;">`;
     h2 += `<thead style="background-color: rgba(128,128,128,0.1);"><tr><th class="text-center">X \\ F</th>`;
     fSet.forEach(f => h2 += `<th class="text-center">${f}</th>`);
     h2 += `<th class="text-center">Row χ²</th></tr></thead><tbody>`;
@@ -691,7 +663,7 @@ function renderContingencyTables(xSet, fSet, obs, exp, chiTerms, condFgivenX, ro
     document.getElementById("expTableContainer").innerHTML = h2;
 
     // Table 3: Conditional Frequency Profiles P(F | X) vs Marginal P(F)
-    let h3 = `<table class="table table-sm table-bordered text-center mb-0 mx-auto" style="color: inherit; border-color: rgba(150,150,150,0.3); font-size: 0.85rem;">`;
+    let h3 = `<table class="table table-sm table-bordered text-center mb-0" style="color: inherit; border-color: rgba(150,150,150,0.3); font-size: 0.85rem;">`;
     h3 += `<thead style="background-color: rgba(128,128,128,0.1);"><tr><th class="text-center">Condition X = xᵢ</th>`;
     fSet.forEach(f => h3 += `<th class="text-center">P(F = ${f} | X)</th>`);
     h3 += `<th class="text-center">Row Sum</th></tr></thead><tbody>`;
@@ -713,6 +685,8 @@ function renderContingencyTables(xSet, fSet, obs, exp, chiTerms, condFgivenX, ro
 }
 
 function renderIndependenceCharts(xSet, fSet, condFgivenX, colTotals, N, chi2Obs, df) {
+    if (typeof Chart === "undefined") return;
+
     const palette = ["#3498db", "#9b59b6", "#2ecc71", "#e67e22", "#e74c3c", "#1abc9c"];
 
     // Chart 1: Grouped Bar Chart of Conditional Distributions P(F | X = x_i) + Marginal P(F)
@@ -840,18 +814,18 @@ function updateInterpretationText(r, c, N, chi2, df, pVal, cramerV) {
     }
 }
 
-function initHomework6() {
-    if (!document.getElementById("indDatasetMode")) {
-        setTimeout(initHomework6, 50);
+function tryInitHomework6() {
+    if (typeof Chart === "undefined" || !document.getElementById("indCondChart")) {
+        setTimeout(tryInitHomework6, 50);
         return;
     }
     onDatasetModeChange();
 }
 
 if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initHomework6);
+    document.addEventListener("DOMContentLoaded", tryInitHomework6);
 } else {
-    initHomework6();
+    tryInitHomework6();
 }
 </script>
-{% endraw %}
+{% endraw %

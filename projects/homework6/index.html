@@ -1,0 +1,1061 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <title> Statistical Independence &amp; Contingency Analysis | Matteo Sulmona </title> <meta name="author" content="Matteo Sulmona"> <meta name="description" content="Programmatic contingency table construction, marginal and conditional frequency profiling, Pearson's Chi-square test, and causal inference discussion."> <meta name="keywords" content="jekyll, jekyll-theme, academic-website, portfolio-website"> <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' data: https:; media-src 'self' https:; frame-src 'self' https:; connect-src 'self' https:;"> <style>
+  :root {
+    --max-content-width: 930px;
+  }
+</style> <link rel="stylesheet" href="/assets/css/tailwind.css?v=50c64c15cbb9fd1ce6056fdb8bcb4b62"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/css/all.min.css" integrity="sha256-MVopmdyC2tYTiJ8wlktf0uh0v4NgT+vNdyVFepi7Q0c=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.5/css/academicons.min.css" integrity="sha256-SzrCOBJbGVFMahewkgjwnApaV2+av1DwMAA+/QGLyZw=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/scholar-icons@1.0.3/css/scholar-icons.css" integrity="sha256-VY3hHVj/hNX3fYG6wtbA6TcKJQl7+FthzGSyIB64klY=" crossorigin="anonymous"> <link defer rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:100,300,400,500,700|Material+Icons&amp;display=swap"> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-github.css?v=591dab5a4e56573bf4ef7fd332894c99" media="" id="highlight_theme_light"> <link rel="shortcut icon" href="data:image/svg+xml,&lt;svg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22&gt;&lt;text%20y=%22.9em%22%20font-size=%2290%22&gt;%E2%9A%9B%EF%B8%8F&lt;/text&gt;&lt;/svg&gt;"> <link rel="stylesheet" href="/assets/css/main.css?v=3116ba77db9ee1581d05bb3e86fbf7f1"> <link rel="canonical" href="https://mattona.github.io/projects/homework6/"> <script src="/assets/js/theme.js?v=5286c3e4c334d0ecb8fc0c40ff4fa7ec"></script> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-native.css?v=5847e5ed4a4568527aa6cfab446049ca" media="none" id="highlight_theme_dark"> <script>
+    initTheme();
+  </script> </head> <body class="fixed-top-nav "> <header> <nav id="navbar" class="navbar navbar-light navbar-expand-sm fixed-top" role="navigation"> <div class="container"> <a class="navbar-brand title font-weight-lighter" href="/"> Matteo Sulmona </a> <button class="navbar-toggler collapsed navbar-toggler-main" type="button" data-nav-toggle="navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar top-bar"></span> <span class="icon-bar middle-bar"></span> <span class="icon-bar bottom-bar"></span> </button> <div class="collapse navbar-collapse navbar-collapse-main" id="navbarNav"> <ul class="navbar-nav navbar-menu-list flex-nowrap"> <li class="nav-item "> <a class="nav-link" href="/">about </a> </li> <li class="nav-item active"> <a class="nav-link" href="/projects/">Projects <span class="sr-only">(current)</span> </a> </li> <li class="nav-item "> <a class="nav-link" href="/cv/">CV </a> </li> <li class="nav-item"> <button id="search-toggle" type="button" title="Search" aria-label="Open search"> <span class="nav-link">ctrl k <i class="fa-solid fa-magnifying-glass"></i></span> </button> </li> <li class="toggle-container"> <button id="light-toggle" type="button" title="Change theme" aria-label="Change color theme"> <i class="fa-half-sun-moon" id="light-toggle-system"></i> <i class="fa-solid fa-moon" id="light-toggle-dark"></i> <i class="fa-solid fa-sun" id="light-toggle-light"></i> </button> </li> </ul> </div> </div> </nav> <progress id="progress" value="0"> <div class="progress-container"> <span class="progress-bar"></span> </div> </progress> </header> <div class="container mt-5" role="main"> <div class="post"> <header class="post-header"> <h1 class="post-title">Statistical Independence &amp; Contingency Analysis</h1> <p class="post-description">Programmatic contingency table construction, marginal and conditional frequency profiling, Pearson's Chi-square test, and causal inference discussion.</p> </header> <article> <p>This assignment investigates the mathematical and empirical foundations of <strong>statistical independence</strong> between two categorical or discretized random variables $(X, F)$. Starting from any bivariate dataset of paired observations ${(x_k, f_k)}_{k=1}^N$, we programmatically construct the two-way contingency table, derive marginal and conditional frequency distributions, evaluate expected counts under the null hypothesis of independence, and compute Pearson’s $\chi^2$ test statistic alongside its exact $p$-value. Finally, we examine the epistemic boundary separating statistical dependence from causal mechanisms.</p> <hr> <h3 id="1-theoretical-foundations-of-statistical-independence">1. Theoretical Foundations of Statistical Independence</h3> <h4 id="probability-theory--joint-distribution-factorization">Probability Theory &amp; Joint Distribution Factorization</h4> <p>In probability theory, two events $A$ and $B$ defined on a probability space $(\Omega, \mathcal{F}, P)$ are <strong>statistically independent</strong> (denoted $A \perp!!!\perp B$) if and only if the probability of their joint occurrence equals the product of their individual probabilities:</p> \[P(A \cap B) = P(A) \cdot P(B)\] <p>Equivalently, whenever $P(B) &gt; 0$, conditioning on $B$ provides no additional information about $A$:</p> \[P(A \mid B) = \frac{P(A \cap B)}{P(B)} = P(A)\] <p>Extending this principle to two discrete random variables $X$ and $F$ taking values in finite alphabets $\mathcal{X} = {x_1, \dots, x_r}$ and $\mathcal{F} = {f_1, \dots, f_c}$, the variables are <strong>statistically independent</strong> ($X \perp!!!\perp F$) if and only if their joint Probability Mass Function (PMF) factorizes globally into the product of their marginal PMFs:</p> \[P(X = x_i, F = f_j) = P(X = x_i) \cdot P(F = f_j) \qquad \forall \, i \in \{1, \dots, r\}, \; j \in \{1, \dots, c\}\] <h4 id="empirical-contingency-tables-marginal--conditional-frequencies">Empirical Contingency Tables: Marginal &amp; Conditional Frequencies</h4> <p>Given a bivariate dataset $\mathcal{D} = {(x_k, f_k)}<em>{k=1}^N$ of size $N$, we organize the joint counts into an $r \times c$ <strong>contingency table</strong> where each cell $O</em>{ij}$ records the observed frequency of the pair $(x_i, f_j)$:</p> \[O_{ij} = \sum_{k=1}^N \mathbf{1}_{\{x_k = x_i \;\wedge\; f_k = f_j\}}\] <p>From the interior cell counts $O_{ij}$, we obtain the <strong>row and column marginal totals</strong> and their corresponding <strong>empirical marginal frequencies</strong>:</p> \[R_i = \sum_{j=1}^c O_{ij}, \quad \hat{p}_{i\cdot} = \frac{R_i}{N} \qquad \text{and} \qquad C_j = \sum_{i=1}^r O_{ij}, \quad \hat{p}_{\cdot j} = \frac{C_j}{N}\] <p>To inspect how the distribution of $F$ shifts across levels of $X$ (and vice versa), we compute the <strong>row-conditional</strong> and <strong>column-conditional frequencies</strong>:</p> \[\hat{P}(F = f_j \mid X = x_i) = \frac{O_{ij}}{R_i}, \qquad \hat{P}(X = x_i \mid F = f_j) = \frac{O_{ij}}{C_j}\] <p>Under exact independence, every row-conditional profile matches the marginal distribution of $F$, i.e., $\frac{O_{ij}}{R_i} = \frac{C_j}{N}$ for all $i$.</p> <div class="my-4 p-4 rounded z-depth-1" style="background-color: rgba(128,128,128,0.03); border: 1px solid rgba(150,150,150,0.25);"> <div class="row align-items-center"> <div class="col-md-6 mb-4 mb-md-0 border-right-md" style="border-color: rgba(150,150,150,0.2);"> <div class="text-center mb-3"> <span class="badge badge-primary px-3 py-2 font-weight-bold" style="background-color: #2ecc71; font-size: 0.9rem;"> STATISTICAL INDEPENDENCE (X ⊥ F) </span> <p class="small text-muted mt-2 mb-0">Identical Conditional Profiles: P(F | X = xᵢ) = P(F)</p> </div> <svg viewbox="0 0 360 200" width="100%" height="100%" style="overflow: visible;"> <line x1="50" y1="165" x2="330" y2="165" stroke="currentColor" stroke-opacity="0.4" stroke-width="2"></line> <line x1="50" y1="165" x2="50" y2="20" stroke="currentColor" stroke-opacity="0.4" stroke-width="2"></line> <text x="15" y="95" fill="currentColor" font-size="11" font-weight="bold" transform="rotate(-90 15,95)" text-anchor="middle">P(F | X)</text> <rect x="80" y="93" width="55" height="72" fill="#3498db" fill-opacity="0.8"></rect> <rect x="80" y="45" width="55" height="48" fill="#9b59b6" fill-opacity="0.8"></rect> <text x="107" y="133" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">60%</text> <text x="107" y="73" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">40%</text> <text x="107" y="182" fill="currentColor" font-size="11" text-anchor="middle">X = x₁</text> <rect x="165" y="93" width="55" height="72" fill="#3498db" fill-opacity="0.8"></rect> <rect x="165" y="45" width="55" height="48" fill="#9b59b6" fill-opacity="0.8"></rect> <text x="192" y="133" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">60%</text> <text x="192" y="73" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">40%</text> <text x="192" y="182" fill="currentColor" font-size="11" text-anchor="middle">X = x₂</text> <rect x="255" y="93" width="55" height="72" fill="#3498db" fill-opacity="0.35" stroke="#3498db" stroke-width="1.5" stroke-dasharray="4,2"></rect> <rect x="255" y="45" width="55" height="48" fill="#9b59b6" fill-opacity="0.35" stroke="#9b59b6" stroke-width="1.5" stroke-dasharray="4,2"></rect> <text x="282" y="182" fill="currentColor" font-size="11" font-weight="bold" text-anchor="middle">Marginal P(F)</text> <line x1="50" y1="93" x2="325" y2="93" stroke="#2ecc71" stroke-width="1.5" stroke-dasharray="5,3"></line> </svg> </div> <div class="col-md-6 pl-md-4"> <div class="text-center mb-3"> <span class="badge badge-primary px-3 py-2 font-weight-bold" style="background-color: #e74c3c; font-size: 0.9rem;"> STATISTICAL DEPENDENCE (X ⊥̸ F) </span> <p class="small text-muted mt-2 mb-0">Divergent Conditional Profiles: P(F | X = xᵢ) ≠ P(F)</p> </div> <svg viewbox="0 0 360 200" width="100%" height="100%" style="overflow: visible;"> <line x1="50" y1="165" x2="330" y2="165" stroke="currentColor" stroke-opacity="0.4" stroke-width="2"></line> <line x1="50" y1="165" x2="50" y2="20" stroke="currentColor" stroke-opacity="0.4" stroke-width="2"></line> <text x="15" y="95" fill="currentColor" font-size="11" font-weight="bold" transform="rotate(-90 15,95)" text-anchor="middle">P(F | X)</text> <rect x="80" y="123" width="55" height="42" fill="#3498db" fill-opacity="0.8"></rect> <rect x="80" y="45" width="55" height="78" fill="#9b59b6" fill-opacity="0.8"></rect> <text x="107" y="148" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">35%</text> <text x="107" y="88" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">65%</text> <text x="107" y="182" fill="currentColor" font-size="11" text-anchor="middle">X = x₁</text> <rect x="165" y="63" width="55" height="102" fill="#3498db" fill-opacity="0.8"></rect> <rect x="165" y="45" width="55" height="18" fill="#9b59b6" fill-opacity="0.8"></rect> <text x="192" y="118" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">85%</text> <text x="192" y="58" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">15%</text> <text x="192" y="182" fill="currentColor" font-size="11" text-anchor="middle">X = x₂</text> <rect x="255" y="93" width="55" height="72" fill="#3498db" fill-opacity="0.35" stroke="#3498db" stroke-width="1.5" stroke-dasharray="4,2"></rect> <rect x="255" y="45" width="55" height="48" fill="#9b59b6" fill-opacity="0.35" stroke="#9b59b6" stroke-width="1.5" stroke-dasharray="4,2"></rect> <text x="282" y="182" fill="currentColor" font-size="11" font-weight="bold" text-anchor="middle">Marginal P(F)</text> <line x1="50" y1="93" x2="325" y2="93" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="5,3"></line> </svg> </div> </div> </div> <h4 id="expected-frequencies--pearsons-chi2-test-of-independence">Expected Frequencies &amp; Pearson’s $\chi^2$ Test of Independence</h4> <p>To test the null hypothesis $H_0: X \perp!!!\perp F$ against the alternative $H_1: X \not!\perp!!!\perp F$, we compute the <strong>expected frequency</strong> $E_{ij}$ in every cell $(i, j)$ under the assumption that the joint probabilities factorize via the observed marginals:</p> \[E_{ij} = N \cdot \hat{p}_{i\cdot} \cdot \hat{p}_{\cdot j} = N \left(\frac{R_i}{N}\right)\left(\frac{C_j}{N}\right) = \frac{R_i \cdot C_j}{N}\] <p><strong>Pearson’s Chi-Square statistic</strong> aggregates the normalized squared deviations between observed and expected cell frequencies across the entire contingency table:</p> \[\chi^2 = \sum_{i=1}^r \sum_{j=1}^c \frac{(O_{ij} - E_{ij})^2}{E_{ij}}\] <p>By Pearson’s theorem, when $H_0$ holds and sample size $N$ is sufficiently large (standard Cochran rule: $E_{ij} \ge 5$), the test statistic converges in distribution to a $\chi^2_{\nu}$ random variable with <strong>degrees of freedom</strong>:</p> \[\nu = (r - 1)(c - 1)\] <p>The corresponding <strong>$p$-value</strong> is the upper-tail probability evaluated via the regularized upper incomplete gamma function $Q(a, x)$:</p> \[p\text{-value} = P\left(\chi^2_{\nu} \ge \chi^2_{\text{obs}}\right) = Q\left(\frac{\nu}{2}, \, \frac{\chi^2_{\text{obs}}}{2}\right) = 1 - \frac{1}{\Gamma(\nu/2)} \int_0^{\chi^2_{\text{obs}}/2} t^{\nu/2 - 1} e^{-t} \, dt\] <p>Because $\chi^2$ scales linearly with sample size $N$ for fixed table proportions, we also report <strong>Cramér’s $V$</strong> to measure the normalized strength of association on $[0, 1]$:</p> \[V = \sqrt{\frac{\chi^2}{N \cdot \min(r - 1, \, c - 1)}}\] <hr> <h3 id="2-interactive-bivariate-contingency--independence-engine">2. Interactive Bivariate Contingency &amp; Independence Engine</h3> <p>This engine programmatically ingests any bivariate dataset $(X, F)$—either generated from configurable security/statistical scenarios or entered directly as custom <code class="language-plaintext highlighter-rouge">(x, f)</code> pairs—constructs the contingency matrix, derives marginal and conditional distributions, and runs the $\chi^2$ independence test in real time.</p> <div class="card py-4 my-4 z-depth-1" style="background-color: transparent; border: 1px solid rgba(150,150,150,0.3);"> <h5 class="text-center mb-4 font-weight-bold">Bivariate Contingency Table &amp; Chi-Square Suite</h5> <div class="px-4 mb-3"> <div class="row"> <div class="col-md-5 mb-3"> <label class="font-weight-bold">Bivariate Dataset Source $(X, F)$:</label> <select id="indDatasetMode" class="form-control" style="background-color: rgba(128,128,128,0.05); color: inherit;" onchange="onDatasetModeChange()"> <option value="cyber_dep">Scenario 1: Attack Vector (X) vs. Breach Outcome (F) [Dependent]</option> <option value="net_indep">Scenario 2: Network Protocol (X) vs. Packet Drop (F) [Independent]</option> <option value="auth_mod">Scenario 3: Auth Mechanism (X) vs. Account Takeover (F) [Moderate]</option> <option value="custom">Custom Bivariate Dataset: Raw (X, F) Pairs Input</option> </select> </div> <div class="col-md-3 mb-3" id="indNContainer"> <label class="font-weight-bold">Sample Size ($N$): <span id="indNVal" style="color: #3498db;">400</span></label> <input type="range" id="indNRange" class="custom-range" min="50" max="2000" step="50" value="400" oninput="document.getElementById('indNVal').innerText = this.value; runIndependenceEngine();"> </div> <div class="col-md-4 mb-3" id="indAlphaContainer"> <label class="font-weight-bold">Association Strength ($\lambda$): <span id="indLambdaVal" style="color: #9b59b6;">0.75</span></label> <input type="range" id="indLambdaRange" class="custom-range" min="0.00" max="1.00" step="0.05" value="0.75" oninput="document.getElementById('indLambdaVal').innerText = parseFloat(this.value).toFixed(2); runIndependenceEngine();"> </div> </div> <div id="indCustomBox" class="mb-3" style="display: none;"> <label class="font-weight-bold">Enter Bivariate Pairs <code>X, F</code> (one observation per line):</label> <textarea id="indCustomInput" rows="5" class="form-control font-monospace" style="background-color: rgba(128,128,128,0.05); color: inherit; font-size: 0.85rem;" oninput="runIndependenceEngine()">Phishing, Compromised
+Phishing, Compromised
+Phishing, Blocked
+Malware, Compromised
+Malware, Compromised
+Malware, Compromised
+Malware, Blocked
+BruteForce, Blocked
+BruteForce, Blocked
+BruteForce, Blocked
+BruteForce, Compromised
+Phishing, Compromised
+BruteForce, Blocked
+Malware, Compromised
+Phishing, Blocked
+BruteForce, Blocked
+Malware, Compromised
+Phishing, Compromised</textarea> <small class="text-muted">Any number of distinct categories for X and F is automatically detected and tabulated.</small> </div> <div class="d-flex justify-content-center mb-3" id="indResampleBtnRow"> <button class="btn btn-sm btn-outline-primary px-4" onclick="runIndependenceEngine()">Sample New Bivariate Dataset $(X, F)$</button> </div> </div> <div class="px-4 mb-4"> <div class="table-responsive"> <table class="table table-sm table-bordered text-center mb-0" style="color: inherit; border-color: rgba(150,150,150,0.3);"> <thead style="background-color: rgba(128,128,128,0.1);"> <tr> <th>Sample Size ($N$)</th> <th>Table Shape ($r \times c$)</th> <th>Degrees of Freedom ($\nu$)</th> <th>Pearson $\chi^2$ Statistic</th> <th>$p$-value ($Q(\nu/2, \chi^2/2)$)</th> <th>Cramér's $V$</th> <th>Statistical Decision ($\alpha = 0.05$)</th> </tr> </thead> <tbody> <tr> <td id="statN" class="font-weight-bold">-</td> <td id="statDim">-</td> <td id="statDf">-</td> <td id="statChi2" style="color: #3498db; font-weight: bold;">-</td> <td id="statPVal" style="color: #9b59b6; font-weight: bold;">-</td> <td id="statCramer">-</td> <td id="statDecision" class="font-weight-bold">-</td> </tr> </tbody> </table> </div> </div> <hr class="w-75 mx-auto mb-4" style="border-color: rgba(150,150,150,0.2);"> <div class="px-4 mb-4"> <div class="row"> <div class="col-lg-6 mb-4"> <h6 class="font-weight-bold text-center mb-2">1. Observed Contingency Table ($O_{ij}$) &amp; Marginals</h6> <div class="table-responsive" id="obsTableContainer"></div> </div> <div class="col-lg-6 mb-4"> <h6 class="font-weight-bold text-center mb-2">2. Expected Frequencies ($E_{ij}$) &amp; Cell $\chi^2$ Terms</h6> <div class="table-responsive" id="expTableContainer"></div> </div> </div> <div class="row mt-2"> <div class="col-12"> <h6 class="font-weight-bold text-center mb-2">3. Conditional Frequency Profiles $\hat{P}(F = f_j \mid X = x_i)$ vs. Marginal $\hat{P}(F = f_j)$</h6> <div class="table-responsive" id="condTableContainer"></div> </div> </div> </div> <hr class="w-75 mx-auto mb-4" style="border-color: rgba(150,150,150,0.2);"> <div class="px-4"> <div class="row"> <div class="col-md-6 mb-4"> <h6 class="font-weight-bold text-center">Conditional Distributions $\hat{P}(F \mid X = x_i)$ vs. Marginal $\hat{P}(F)$</h6> <div style="position: relative; width: 100%; height: 260px;"> <canvas id="indCondChart"></canvas> </div> </div> <div class="col-md-6 mb-4"> <h6 class="font-weight-bold text-center">Sampling Distribution $\chi^2_{\nu}$ &amp; Observed Test Statistic</h6> <div style="position: relative; width: 100%; height: 260px;"> <canvas id="indChi2Chart"></canvas> </div> </div> </div> </div> <div class="px-4 mt-2"> <div id="indInterpretationBox" class="p-3 rounded" style="background-color: rgba(128,128,128,0.07); border-left: 4px solid #3498db;"> Loading interpretation... </div> </div> </div> <hr> <h3 id="3-analytical-conclusions-association-vs-causality">3. Analytical Conclusions: Association vs. Causality</h3> <h4 id="1-interpreting-the-contingency-table-and-chi2-test">1. Interpreting the Contingency Table and $\chi^2$ Test</h4> <ul> <li> <strong>Evidence Against Independence:</strong> When $\chi^2$ exceeds the critical threshold $\chi^2_{1-\alpha, \nu}$ (equivalently, $p\text{-value} &lt; \alpha$), the observed conditional distributions $\hat{P}(F \mid X = x_i)$ deviate significantly from the marginal profile $\hat{P}(F)$. Knowing the state of $X$ shifts the probability distribution of $F$, meaning the variables carry mutual information $I(X; F) &gt; 0$.</li> <li> <strong>Failure to Reject $H_0$:</strong> When $p\text{-value} \ge \alpha$, the discrepancies $(O_{ij} - E_{ij})$ are consistent with random sampling fluctuations under the product measure $P(X, F) = P(X)P(F)$. Note that failing to reject $H_0$ does not prove exact mathematical independence ($I(X; F) = 0$), particularly at small sample sizes $N$ where statistical power is low.</li> <li> <strong>Sample Size Sensitivity:</strong> Because $\chi^2 = N \sum_{i,j} \frac{(\hat{p}<em>{ij} - \hat{p}</em>{i\cdot}\hat{p}<em>{\cdot j})^2}{\hat{p}</em>{i\cdot}\hat{p}_{\cdot j}}$, arbitrarily large datasets ($N \to \infty$) will produce tiny $p$-values for negligible real-world deviations. Evaluating <strong>Cramér’s $V$</strong> alongside the $p$-value separates statistical significance from practical effect magnitude.</li> </ul> <h4 id="2-why-statistical-dependence-does-not-imply-causality">2. Why Statistical Dependence Does Not Imply Causality</h4> <p>Establishing $X \not!\perp!!!\perp F$ is strictly a statement about the <strong>joint observational distribution</strong> $P(X, F)$. Crucially, statistical dependence is <strong>symmetric</strong> ($X \not!\perp!!!\perp F \iff F \not!\perp!!!\perp X$), whereas causal influence is <strong>asymmetric</strong> ($X \to F$ differs fundamentally from $F \to X$). In Judea Pearl’s causal hierarchy, observational conditioning $P(F \mid X = x)$ differs from interventional distributions $P(F \mid \text{do}(X = x))$ due to three primary structural mechanisms:</p> <table> <thead> <tr> <th style="text-align: left">Non-Causal Mechanism</th> <th style="text-align: left">Causal Graph (DAG)</th> <th style="text-align: left">Statistical Mechanism</th> </tr> </thead> <tbody> <tr> <td style="text-align: left"><strong>Confounding (Common Cause)</strong></td> <td style="text-align: left">$X \leftarrow Z \rightarrow F$</td> <td style="text-align: left">A latent confounder $Z$ drives both $X$ and $F$. Conditioning on $Z$ restores conditional independence ($X \perp!!!\perp F \mid Z$), whereas marginalizing over $Z$ induces spurious association (and can even reverse trends, known as <strong>Simpson’s Paradox</strong>).</td> </tr> <tr> <td style="text-align: left"><strong>Reverse Causality</strong></td> <td style="text-align: left">$F \rightarrow X$</td> <td style="text-align: left">The contingency table detects strong dependence, but $F$ is the physical cause of $X$ rather than its consequence.</td> </tr> <tr> <td style="text-align: left"><strong>Selection / Collider Bias</strong></td> <td style="text-align: left">$X \rightarrow S \leftarrow F$</td> <td style="text-align: left">Two independent variables $X \perp!!!\perp F$ share a common effect $S$. Restricting data collection to a subset of $S$ (e.g., analyzing only systems that triggered an audit log) induces artificial dependence between $X$ and $F$.</td> </tr> </tbody> </table> <p>Consequently, while a contingency table and $\chi^2$ test rigorously identify <strong>predictive associations</strong> across variables, establishing <strong>causality</strong> requires randomized experimental assignment (which severs incoming arrows into $X$) or valid causal identification strategies (such as back-door adjustment over measured confounders).</p> <script src="[https://cdn.jsdelivr.net/npm/chart.js](https://cdn.jsdelivr.net/npm/chart.js)"></script> <script>
+let indCondChartInstance = null;
+let indChi2ChartInstance = null;
+
+// --- NUMERICAL SPECIAL FUNCTIONS FOR CHI-SQUARE P-VALUE ---
+
+function logGamma(z) {
+    const c = [
+        76.18009172947146, -86.50532032941677, 24.01409824083091,
+        -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5
+    ];
+    let x = z;
+    let y = z;
+    let tmp = x + 5.5;
+    tmp -= (x + 0.5) * Math.log(tmp);
+    let ser = 1.000000000190015;
+    for (let j = 0; j < 6; j++) {
+        y += 1;
+        ser += c[j] / y;
+    }
+    return -tmp + Math.log(2.5066282746310005 * ser / x);
+}
+
+// Regularized upper incomplete gamma function Q(a, x) = 1 - P(a, x)
+function gammaQ(a, x) {
+    if (x <= 0.0) return 1.0;
+    if (a <= 0.0) return 0.0;
+
+    if (x < a + 1.0) {
+        // Series representation for P(a, x)
+        let ap = a;
+        let sum = 1.0 / a;
+        let del = sum;
+        for (let n = 1; n <= 300; n++) {
+            ap += 1.0;
+            del *= x / ap;
+            sum += del;
+            if (Math.abs(del) < Math.abs(sum) * 1e-14) break;
+        }
+        let pVal = sum * Math.exp(-x + a * Math.log(x) - logGamma(a));
+        return Math.max(0.0, Math.min(1.0, 1.0 - pVal));
+    } else {
+        // Lentz continued fraction for Q(a, x)
+        let b = x + 1.0 - a;
+        let c = 1.0 / 1e-30;
+        let d = 1.0 / b;
+        let h = d;
+        for (let i = 1; i <= 300; i++) {
+            let an = -i * (i - a);
+            b += 2.0;
+            d = an * d + b;
+            if (Math.abs(d) < 1e-30) d = 1e-30;
+            c = b + an / c;
+            if (Math.abs(c) < 1e-30) c = 1e-30;
+            d = 1.0 / d;
+            let del = d * c;
+            h *= del;
+            if (Math.abs(del - 1.0) < 1e-14) break;
+        }
+        let qVal = Math.exp(-x + a * Math.log(x) - logGamma(a)) * h;
+        return Math.max(0.0, Math.min(1.0, qVal));
+    }
+}
+
+function chiSquarePValue(chi2, df) {
+    if (df <= 0 || chi2 <= 0) return 1.0;
+    return gammaQ(df / 2.0, chi2 / 2.0);
+}
+
+function chiSquarePdf(x, df) {
+    if (x <= 0 || df <= 0) return 0.0;
+    let k2 = df / 2.0;
+    let logVal = (k2 - 1.0) * Math.log(x) - (x / 2.0) - k2 * Math.log(2.0) - logGamma(k2);
+    return Math.exp(logVal);
+}
+
+function chiSquareCritical(alpha, df) {
+    let low = 0.0;
+    let high = Math.max(20.0, df * 5.0);
+    while (chiSquarePValue(high, df) > alpha) {
+        high *= 2.0;
+    }
+    for (let iter = 0; iter < 50; iter++) {
+        let mid = 0.5 * (low + high);
+        if (chiSquarePValue(mid, df) > alpha) {
+            low = mid;
+        } else {
+            high = mid;
+        }
+    }
+    return 0.5 * (low + high);
+}
+
+// --- BIVARIATE DATASET GENERATION & PARSING ---
+
+function sampleCategorical(labels, probs) {
+    let u = Math.random();
+    let cum = 0.0;
+    for (let i = 0; i < labels.length; i++) {
+        cum += probs[i];
+        if (u <= cum) return labels[i];
+    }
+    return labels[labels.length - 1];
+}
+
+function generateBivariateDataset(mode, N, lambda) {
+    let pairs = [];
+    if (mode === "cyber_dep") {
+        const xCats = ["Phishing", "Malware", "BruteForce"];
+        const xProbs = [0.40, 0.35, 0.25];
+        const fCats = ["Compromised", "Blocked", "Quarantined"];
+        const fMarg = [0.35, 0.45, 0.20];
+        const fCondMap = {
+            "Phishing":    [0.65, 0.20, 0.15],
+            "Malware":     [0.45, 0.25, 0.30],
+            "BruteForce":  [0.10, 0.80, 0.10]
+        };
+        for (let i = 0; i < N; i++) {
+            let x = sampleCategorical(xCats, xProbs);
+            let cond = fCondMap[x];
+            let mixed = cond.map((p, idx) => lambda * p + (1.0 - lambda) * fMarg[idx]);
+            let f = sampleCategorical(fCats, mixed);
+            pairs.push([x, f]);
+        }
+    } else if (mode === "net_indep") {
+        const xCats = ["TCP", "UDP", "ICMP"];
+        const xProbs = [0.55, 0.30, 0.15];
+        const fCats = ["Delivered", "Dropped"];
+        const fMarg = [0.82, 0.18];
+        const fCondMap = {
+            "TCP":  [0.82, 0.18],
+            "UDP":  [0.82, 0.18],
+            "ICMP": [0.82, 0.18]
+        };
+        for (let i = 0; i < N; i++) {
+            let x = sampleCategorical(xCats, xProbs);
+            let cond = fCondMap[x];
+            let mixed = cond.map((p, idx) => lambda * p + (1.0 - lambda) * fMarg[idx]);
+            let f = sampleCategorical(fCats, mixed);
+            pairs.push([x, f]);
+        }
+    } else if (mode === "auth_mod") {
+        const xCats = ["PasswordOnly", "SMS_2FA", "HardwareKey"];
+        const xProbs = [0.35, 0.40, 0.25];
+        const fCats = ["Takeover", "Prevented"];
+        const fMarg = [0.22, 0.78];
+        const fCondMap = {
+            "PasswordOnly": [0.42, 0.58],
+            "SMS_2FA":      [0.16, 0.84],
+            "HardwareKey":  [0.02, 0.98]
+        };
+        for (let i = 0; i < N; i++) {
+            let x = sampleCategorical(xCats, xProbs);
+            let cond = fCondMap[x];
+            let mixed = cond.map((p, idx) => lambda * p + (1.0 - lambda) * fMarg[idx]);
+            let f = sampleCategorical(fCats, mixed);
+            pairs.push([x, f]);
+        }
+    }
+    return pairs;
+}
+
+function parseCustomBivariateDataset(rawText) {
+    let lines = rawText.split(/\r?\n/);
+    let pairs = [];
+    for (let line of lines) {
+        let trimmed = line.trim();
+        if (!trimmed) continue;
+        let parts = trimmed.split(/[,;\t]+/);
+        if (parts.length >= 2) {
+            let xVal = parts[0].trim();
+            let fVal = parts[1].trim();
+            if (xVal && fVal) {
+                pairs.push([xVal, fVal]);
+            }
+        }
+    }
+    return pairs;
+}
+
+function onDatasetModeChange() {
+    let mode = document.getElementById("indDatasetMode").value;
+    let isCustom = (mode === "custom");
+
+    document.getElementById("indCustomBox").style.display = isCustom ? "block" : "none";
+    document.getElementById("indNContainer").style.display = isCustom ? "none" : "block";
+    document.getElementById("indAlphaContainer").style.display = isCustom ? "none" : "block";
+    document.getElementById("indResampleBtnRow").style.display = isCustom ? "none" : "flex";
+
+    if (mode === "net_indep") {
+        document.getElementById("indLambdaRange").value = "0.00";
+        document.getElementById("indLambdaVal").innerText = "0.00";
+    } else if (mode === "cyber_dep") {
+        document.getElementById("indLambdaRange").value = "0.80";
+        document.getElementById("indLambdaVal").innerText = "0.80";
+    } else if (mode === "auth_mod") {
+        document.getElementById("indLambdaRange").value = "0.75";
+        document.getElementById("indLambdaVal").innerText = "0.75";
+    }
+
+    runIndependenceEngine();
+}
+
+// --- PROGRAMMATIC CONTINGENCY CONSTRUCTION & INFERENCE ---
+
+function runIndependenceEngine() {
+    let mode = document.getElementById("indDatasetMode").value;
+    let pairs = [];
+
+    if (mode === "custom") {
+        pairs = parseCustomBivariateDataset(document.getElementById("indCustomInput").value);
+    } else {
+        let N = parseInt(document.getElementById("indNRange").value);
+        let lambda = parseFloat(document.getElementById("indLambdaRange").value);
+        pairs = generateBivariateDataset(mode, N, lambda);
+    }
+
+    if (pairs.length === 0) return;
+
+    // 1. Extract ordered unique categories for X (rows) and F (columns)
+    let xSet = [];
+    let fSet = [];
+    pairs.forEach(([x, f]) => {
+        if (!xSet.includes(x)) xSet.push(x);
+        if (!fSet.includes(f)) fSet.push(f);
+    });
+
+    let r = xSet.length;
+    let c = fSet.length;
+    let N = pairs.length;
+
+    // 2. Construct Observed Matrix O[i][j]
+    let obs = Array.from({ length: r }, () => new Array(c).fill(0));
+    pairs.forEach(([x, f]) => {
+        let i = xSet.indexOf(x);
+        let j = fSet.indexOf(f);
+        obs[i][j]++;
+    });
+
+    // 3. Compute Row Marginals R[i] and Column Marginals C[j]
+    let rowTotals = obs.map(row => row.reduce((acc, v) => acc + v, 0));
+    let colTotals = new Array(c).fill(0);
+    for (let j = 0; j < c; j++) {
+        for (let i = 0; i < r; i++) {
+            colTotals[j] += obs[i][j];
+        }
+    }
+
+    // 4. Compute Expected Frequencies E[i][j], Chi-Square Terms, and Conditional Frequencies
+    let exp = Array.from({ length: r }, () => new Array(c).fill(0));
+    let chiTerms = Array.from({ length: r }, () => new Array(c).fill(0));
+    let condFgivenX = Array.from({ length: r }, () => new Array(c).fill(0));
+
+    let chi2Total = 0.0;
+    for (let i = 0; i < r; i++) {
+        for (let j = 0; j < c; j++) {
+            let eVal = (rowTotals[i] * colTotals[j]) / N;
+            exp[i][j] = eVal;
+            let term = eVal > 0 ? Math.pow(obs[i][j] - eVal, 2) / eVal : 0.0;
+            chiTerms[i][j] = term;
+            chi2Total += term;
+            condFgivenX[i][j] = rowTotals[i] > 0 ? obs[i][j] / rowTotals[i] : 0.0;
+        }
+    }
+
+    let df = Math.max(1, (r - 1) * (c - 1));
+    let pVal = (r > 1 && c > 1) ? chiSquarePValue(chi2Total, df) : 1.0;
+    let minDim = Math.min(r - 1, c - 1);
+    let cramerV = (minDim > 0 && N > 0) ? Math.sqrt(chi2Total / (N * minDim)) : 0.0;
+
+    // 5. Update Summary Metrics Table
+    document.getElementById("statN").innerText = N;
+    document.getElementById("statDim").innerText = `${r} × ${c}`;
+    document.getElementById("statDf").innerText = (r > 1 && c > 1) ? df : "N/A (<2 cats)";
+    document.getElementById("statChi2").innerText = chi2Total.toFixed(4);
+    document.getElementById("statPVal").innerText = pVal < 1e-6 ? pVal.toExponential(3) : pVal.toFixed(6);
+    document.getElementById("statCramer").innerText = cramerV.toFixed(4);
+
+    let decCell = document.getElementById("statDecision");
+    if (r < 2 || c < 2) {
+        decCell.innerText = "Need ≥ 2 categories per variable";
+        decCell.style.color = "#f39c12";
+    } else if (pVal < 0.05) {
+        decCell.innerText = "Dependent (Reject H₀)";
+        decCell.style.color = "#e74c3c";
+    } else {
+        decCell.innerText = "Independent (Fail to Reject H₀)";
+        decCell.style.color = "#2ecc71";
+    }
+
+    // 6. Render HTML Tables
+    renderContingencyTables(xSet, fSet, obs, exp, chiTerms, condFgivenX, rowTotals, colTotals, N);
+
+    // 7. Render Visual Charts
+    renderIndependenceCharts(xSet, fSet, condFgivenX, colTotals, N, chi2Total, df);
+
+    // 8. Update Analytical Interpretation Callout
+    updateInterpretationText(r, c, N, chi2Total, df, pVal, cramerV);
+}
+
+function renderContingencyTables(xSet, fSet, obs, exp, chiTerms, condFgivenX, rowTotals, colTotals, N) {
+    // Table 1: Observed Counts + Marginals
+    let h1 = `<table class="table table-sm table-bordered text-center mb-0" style="color: inherit; border-color: rgba(150,150,150,0.3); font-size: 0.85rem;">`;
+    h1 += `<thead style="background-color: rgba(128,128,128,0.1);"><tr><th>X \\ F</th>`;
+    fSet.forEach(f => h1 += `<th>${f}</th>`);
+    h1 += `<th style="color: #3498db;">Row Total (Rᵢ)</th><th>Marginal P(X)</th></tr></thead><tbody>`;
+
+    for (let i = 0; i < xSet.length; i++) {
+        h1 += `<tr><td class="font-weight-bold text-left">${xSet[i]}</td>`;
+        for (let j = 0; j < fSet.length; j++) {
+            h1 += `<td>${obs[i][j]}</td>`;
+        }
+        h1 += `<td class="font-weight-bold" style="color: #3498db;">${rowTotals[i]}</td>`;
+        h1 += `<td>${(rowTotals[i] / N).toFixed(3)}</td></tr>`;
+    }
+    h1 += `<tr style="background-color: rgba(128,128,128,0.06);"><td class="font-weight-bold text-left" style="color: #9b59b6;">Col Total (Cⱼ)</td>`;
+    colTotals.forEach(cTot => h1 += `<td class="font-weight-bold" style="color: #9b59b6;">${cTot}</td>`);
+    h1 += `<td class="font-weight-bold">${N}</td><td>1.000</td></tr>`;
+
+    h1 += `<tr style="background-color: rgba(128,128,128,0.06);"><td class="font-weight-bold text-left">Marginal P(F)</td>`;
+    colTotals.forEach(cTot => h1 += `<td>${(cTot / N).toFixed(3)}</td>`);
+    h1 += `<td>1.000</td><td>—</td></tr></tbody></table>`;
+    document.getElementById("obsTableContainer").innerHTML = h1;
+
+    // Table 2: Expected Frequencies + Cell Chi2 Contributions
+    let h2 = `<table class="table table-sm table-bordered text-center mb-0" style="color: inherit; border-color: rgba(150,150,150,0.3); font-size: 0.85rem;">`;
+    h2 += `<thead style="background-color: rgba(128,128,128,0.1);"><tr><th>X \\ F</th>`;
+    fSet.forEach(f => h2 += `<th>${f}</th>`);
+    h2 += `<th>Row χ²</th></tr></thead><tbody>`;
+
+    for (let i = 0; i < xSet.length; i++) {
+        h2 += `<tr><td class="font-weight-bold text-left">${xSet[i]}</td>`;
+        let rowChi = 0;
+        for (let j = 0; j < fSet.length; j++) {
+            rowChi += chiTerms[i][j];
+            h2 += `<td>${exp[i][j].toFixed(2)} <span class="text-muted small">(+${chiTerms[i][j].toFixed(2)})</span></td>`;
+        }
+        h2 += `<td class="font-weight-bold" style="color: #e67e22;">${rowChi.toFixed(3)}</td></tr>`;
+    }
+    h2 += `</tbody></table>`;
+    document.getElementById("expTableContainer").innerHTML = h2;
+
+    // Table 3: Conditional Frequency Profiles P(F | X) vs Marginal P(F)
+    let h3 = `<table class="table table-sm table-bordered text-center mb-0" style="color: inherit; border-color: rgba(150,150,150,0.3); font-size: 0.85rem;">`;
+    h3 += `<thead style="background-color: rgba(128,128,128,0.1);"><tr><th>Condition X = xᵢ</th>`;
+    fSet.forEach(f => h3 += `<th>P(F = ${f} | X)</th>`);
+    h3 += `<th>Row Sum</th></tr></thead><tbody>`;
+
+    for (let i = 0; i < xSet.length; i++) {
+        h3 += `<tr><td class="font-weight-bold text-left">X = ${xSet[i]}</td>`;
+        for (let j = 0; j < fSet.length; j++) {
+            let marg = colTotals[j] / N;
+            let diff = Math.abs(condFgivenX[i][j] - marg);
+            let highlight = diff > 0.12 ? 'style="color: #e74c3c; font-weight: bold;"' : '';
+            h3 += `<td ${highlight}>${(condFgivenX[i][j] * 100).toFixed(1)}%</td>`;
+        }
+        h3 += `<td>100.0%</td></tr>`;
+    }
+    h3 += `<tr style="background-color: rgba(52, 152, 219, 0.1);"><td class="font-weight-bold text-left" style="color: #3498db;">Unconditional Marginal P(F)</td>`;
+    colTotals.forEach(cTot => h3 += `<td class="font-weight-bold" style="color: #3498db;">${((cTot / N) * 100).toFixed(1)}%</td>`);
+    h3 += `<td class="font-weight-bold">100.0%</td></tr></tbody></table>`;
+    document.getElementById("condTableContainer").innerHTML = h3;
+}
+
+function renderIndependenceCharts(xSet, fSet, condFgivenX, colTotals, N, chi2Obs, df) {
+    const palette = ["#3498db", "#9b59b6", "#2ecc71", "#e67e22", "#e74c3c", "#1abc9c"];
+
+    // Chart 1: Grouped Bar Chart of Conditional Distributions P(F | X = x_i) + Marginal P(F)
+    let labelsWithMarginal = [...xSet.map(x => `X = ${x}`), "Marginal P(F)"];
+    let datasets = fSet.map((fName, j) => {
+        let dataArr = xSet.map((_, i) => parseFloat((condFgivenX[i][j] * 100).toFixed(2)));
+        dataArr.push(parseFloat(((colTotals[j] / N) * 100).toFixed(2)));
+        let color = palette[j % palette.length];
+        return {
+            label: `F = ${fName}`,
+            data: dataArr,
+            backgroundColor: color,
+            borderColor: color,
+            borderWidth: 1
+        };
+    });
+
+    const ctxCond = document.getElementById("indCondChart").getContext("2d");
+    if (indCondChartInstance) indCondChartInstance.destroy();
+
+    indCondChartInstance = new Chart(ctxCond, {
+        type: "bar",
+        data: {
+            labels: labelsWithMarginal,
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { title: { display: true, text: "Conditioning Variable (X) vs. Marginal" } },
+                y: { title: { display: true, text: "Conditional Frequency (%)" }, min: 0, max: 100 }
+            }
+        }
+    });
+
+    // Chart 2: Chi-Square PDF & Critical Cutoff / Observed Statistic
+    let critVal = chiSquareCritical(0.05, df);
+    let maxX = Math.max(critVal * 1.6, chi2Obs * 1.25, df + 4 * Math.sqrt(2 * df));
+    let steps = 120;
+    let dx = maxX / steps;
+
+    let xGrid = [];
+    let pdfData = [];
+    let tailData = [];
+    let obsMarkerData = [];
+
+    let peakPdf = 0;
+    for (let k = 1; k <= steps; k++) {
+        let x = k * dx;
+        let y = chiSquarePdf(x, df);
+        if (isFinite(y) && y > peakPdf) peakPdf = y;
+    }
+
+    for (let k = 1; k <= steps; k++) {
+        let x = k * dx;
+        let y = chiSquarePdf(x, df);
+        xGrid.push(x.toFixed(1));
+        pdfData.push(y);
+        tailData.push(x >= critVal ? y : null);
+        obsMarkerData.push(Math.abs(x - chi2Obs) <= dx * 0.6 ? peakPdf * 0.95 : null);
+    }
+
+    const ctxChi2 = document.getElementById("indChi2Chart").getContext("2d");
+    if (indChi2ChartInstance) indChi2ChartInstance.destroy();
+
+    indChi2ChartInstance = new Chart(ctxChi2, {
+        type: "line",
+        data: {
+            labels: xGrid,
+            datasets: [
+                {
+                    label: `χ²(ν=${df}) Density`,
+                    data: pdfData,
+                    borderColor: "#3498db",
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    fill: false
+                },
+                {
+                    label: `Rejection Region (α=0.05, crit=${critVal.toFixed(2)})`,
+                    data: tailData,
+                    backgroundColor: "rgba(231, 76, 60, 0.25)",
+                    borderColor: "transparent",
+                    pointRadius: 0,
+                    fill: true
+                },
+                {
+                    label: `Observed χ² = ${chi2Obs.toFixed(2)}`,
+                    data: obsMarkerData,
+                    type: "bar",
+                    backgroundColor: "#9b59b6",
+                    barThickness: 4
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { title: { display: true, text: "Chi-Square Value (x)" } },
+                y: { title: { display: true, text: "Probability Density f(x)" }, beginAtZero: true }
+            }
+        }
+    });
+}
+
+function updateInterpretationText(r, c, N, chi2, df, pVal, cramerV) {
+    const box = document.getElementById("indInterpretationBox");
+    if (r < 2 || c < 2) {
+        box.style.borderLeftColor = "#f39c12";
+        box.innerHTML = `<strong>Insufficient Dimensionality:</strong> At least two distinct values are required for both <em>X</em> and <em>F</em> to construct a valid contingency test (current shape: ${r} × ${c}).`;
+        return;
+    }
+
+    let strengthLabel = cramerV < 0.10 ? "negligible" : (cramerV < 0.30 ? "weak-to-moderate" : (cramerV < 0.50 ? "moderate-to-strong" : "strong"));
+
+    if (pVal < 0.05) {
+        box.style.borderLeftColor = "#e74c3c";
+        box.innerHTML = `<strong>Statistical Dependence Detected (Reject H₀):</strong> With <em>N</em> = ${N} observations and <em>ν</em> = ${df} degrees of freedom, Pearson's statistic is <strong>χ² = ${chi2.toFixed(3)}</strong> (<em>p</em> = ${pVal < 1e-4 ? pVal.toExponential(3) : pVal.toFixed(4)} &lt; 0.05). The conditional distributions <em>P(F | X)</em> differ significantly from the marginal distribution <em>P(F)</em>, with a <strong>${strengthLabel}</strong> association (Cramér's <em>V</em> = ${cramerV.toFixed(3)}). However, this purely observational dependence does not by itself prove that <em>X</em> causes <em>F</em> without ruling out confounders or selection bias.`;
+    } else {
+        box.style.borderLeftColor = "#2ecc71";
+        box.innerHTML = `<strong>Consistent with Statistical Independence (Fail to Reject H₀):</strong> With <em>N</em> = ${N} observations and <em>ν</em> = ${df} degrees of freedom, Pearson's statistic is <strong>χ² = ${chi2.toFixed(3)}</strong> (<em>p</em> = ${pVal.toFixed(4)} ≥ 0.05). Observed deviations between <em>Oᵢⱼ</em> and expected counts <em>Eᵢⱼ = (Rᵢ·Cⱼ)/N</em> are consistent with random sampling variation, and conditional profiles <em>P(F | X = xᵢ)</em> closely track the unconditional marginal distribution <em>P(F)</em> (Cramér's <em>V</em> = ${cramerV.toFixed(3)}).`;
+    }
+}
+
+function tryInitHomework6() {
+    if (typeof Chart === "undefined" || !document.getElementById("indCondChart")) {
+        setTimeout(tryInitHomework6, 50);
+        return;
+    }
+    onDatasetModeChange();
+}
+
+document.addEventListener("DOMContentLoaded", tryInitHomework6);
+</script> </article> </div> </div> <footer class="fixed-bottom" role="contentinfo"> <div class="container mt-0"> © Copyright 2026 Matteo Sulmona. Powered by <a href="https://jekyllrb.com/" target="_blank" rel="external nofollow noopener">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio" rel="external nofollow noopener" target="_blank">al-folio</a> theme. Hosted by <a href="https://pages.github.com/" target="_blank" rel="external nofollow noopener">GitHub Pages</a>. Photos from <a href="https://unsplash.com" target="_blank" rel="external nofollow noopener">Unsplash</a>. </div> </footer> <script>
+  window.alFolio = {
+    compatBootstrap: false
+  };
+</script> <script src="/assets/js/nav-toggle.js?v=141bd79a73ebc0f0b6ea58e440ae79fc"></script> <script defer src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha256-Nn1q/fx0H7SNLZMQ5Hw5JLaTRZp0yILA/FRexe19VdI=" crossorigin="anonymous"></script> <script defer src="https://cdn.jsdelivr.net/npm/imagesloaded@5.0.0/imagesloaded.pkgd.min.js" integrity="sha256-htrLFfZJ6v5udOG+3kNLINIKh2gvoKqwEhHYfTTMICc=" crossorigin="anonymous"></script> <script defer src="/assets/js/masonry.js?v=e49affc7bd2646f6acdad1dbe02c2359" type="text/javascript"></script> <script defer type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script> <script src="/assets/al_math/js/mathjax-setup.js"></script> <script src="/assets/js/tooltips-setup.js?v=fe487e99db6c43751e6e7bdb2d6a0611"></script> <script src="/assets/js/no_defer.js?v=53b1b1a645525975c963ce8bf8bfefcf"></script> <script defer src="/assets/js/common.js?v=87baac90f765f2f3362dcf6aaf312a8a"></script> <script defer src="/assets/js/copy_code.js?v=c8a01c11a92744d44b093fc3bda915df" type="text/javascript"></script> <script defer src="/assets/js/jupyter_new_tab.js?v=896d254890d9b47f0281f63bfccf0dee"></script> <script async src="https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"></script> <script async src="https://badge.dimensions.ai/badge.js"></script> <script defer src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script> <script defer src="/assets/al_img_tools/js/zoom.js"></script> <script defer src="/assets/js/progress-bar.js?v=499464c5c63ced6cf7ad62509f1e2610" type="text/javascript"></script> <script src="https://cdn.jsdelivr.net/npm/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js" integrity="sha256-uMJJ3EoTyfRBoTbR+lrfu1uRQ87RZG8AR3cVNuQVeFg=" crossorigin="anonymous"></script> <script>
+    addBackToTop();
+  </script> <script type="module" src="/assets/al_search/js/search/ninja-keys.min.js"></script> <ninja-keys hidebreadcrumbs noautoloadmdicons placeholder="Type to start searching"></ninja-keys> <script src="/assets/al_search/js/search-setup.js"></script> <script>
+// get the ninja-keys element
+const ninja = document.querySelector('ninja-keys');
+
+// add the home and posts menu items
+ninja.data = [{
+    id: "nav-about",
+    title: "about",
+    section: "Navigation",
+    handler: () => {
+      window.location.href = "/";
+    },
+  },{id: "nav-projects",
+          title: "Projects",
+          description: "Some of my best projects.",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/projects/";
+          },
+        },{id: "nav-cv",
+          title: "CV",
+          description: "This is a description of the page. You can modify it in '_pages/cv.md'. You can also change or remove the top pdf download button.",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/cv/";
+          },
+        },{id: "post-a-post-with-marimo-snippets",
+        
+          title: "a post with marimo snippets",
+        
+        description: "running Python in the browser with marimo",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2025/marimo/";
+          
+        },
+      },{id: "post-a-post-with-plotly-js",
+        
+          title: "a post with plotly.js",
+        
+        description: "this is what included plotly.js code could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2025/plotly/";
+          
+        },
+      },{id: "post-a-post-with-image-galleries",
+        
+          title: "a post with image galleries",
+        
+        description: "this is what included image galleries could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2024/photo-gallery/";
+          
+        },
+      },{id: "post-google-gemini-updates-flash-1-5-gemma-2-and-project-astra",
+        
+          title: 'Google Gemini updates: Flash 1.5, Gemma 2 and Project Astra <svg width="1.2rem" height="1.2rem" top=".5rem" viewbox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path d="M17 13.5v6H5v-12h6m3-3h6v6m0-6-9 9" class="icon_svg-stroke" stroke="#999" stroke-width="1.5" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"></path></svg>',
+        
+        description: "We’re sharing updates across our Gemini family of models and a glimpse of Project Astra, our vision for the future of AI assistants.",
+        section: "Posts",
+        handler: () => {
+          
+            window.open("https://blog.google/technology/ai/google-gemini-update-flash-ai-assistant-io-2024/", "_blank");
+          
+        },
+      },{id: "post-a-post-with-tabs",
+        
+          title: "a post with tabs",
+        
+        description: "this is what included tabs in a post could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2024/tabs/";
+          
+        },
+      },{id: "post-a-post-with-typograms",
+        
+          title: "a post with typograms",
+        
+        description: "this is what included typograms code could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2024/typograms/";
+          
+        },
+      },{id: "post-a-post-that-can-be-cited",
+        
+          title: "a post that can be cited",
+        
+        description: "this is what a post that can be cited looks like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2024/post-citation/";
+          
+        },
+      },{id: "post-a-post-with-pseudo-code",
+        
+          title: "a post with pseudo code",
+        
+        description: "this is what included pseudo code could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2024/pseudocode/";
+          
+        },
+      },{id: "post-a-post-with-code-diff",
+        
+          title: "a post with code diff",
+        
+        description: "this is how you can display code diffs",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2024/code-diff/";
+          
+        },
+      },{id: "post-a-post-with-advanced-image-components",
+        
+          title: "a post with advanced image components",
+        
+        description: "this is what advanced image components could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2024/advanced-images/";
+          
+        },
+      },{id: "post-a-post-with-vega-lite",
+        
+          title: "a post with vega lite",
+        
+        description: "this is what included vega lite code could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2024/vega-lite/";
+          
+        },
+      },{id: "post-a-post-with-geojson",
+        
+          title: "a post with geojson",
+        
+        description: "this is what included geojson code could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2024/geojson-map/";
+          
+        },
+      },{id: "post-a-post-with-echarts",
+        
+          title: "a post with echarts",
+        
+        description: "this is what included echarts code could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2024/echarts/";
+          
+        },
+      },{id: "post-a-post-with-chart-js",
+        
+          title: "a post with chart.js",
+        
+        description: "this is what included chart.js code could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2024/chartjs/";
+          
+        },
+      },{id: "post-a-post-with-tikzjax",
+        
+          title: "a post with TikZJax",
+        
+        description: "this is what included TikZ code could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2023/tikzjax/";
+          
+        },
+      },{id: "post-a-post-with-bibliography",
+        
+          title: "a post with bibliography",
+        
+        description: "an example of a blog post with bibliography",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2023/post-bibliography/";
+          
+        },
+      },{id: "post-a-post-with-jupyter-notebook",
+        
+          title: "a post with jupyter notebook",
+        
+        description: "an example of a blog post with jupyter notebook",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2023/jupyter-notebook/";
+          
+        },
+      },{id: "post-a-post-with-custom-blockquotes",
+        
+          title: "a post with custom blockquotes",
+        
+        description: "an example of a blog post with custom blockquotes",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2023/custom-blockquotes/";
+          
+        },
+      },{id: "post-a-post-with-table-of-contents-on-a-sidebar",
+        
+          title: "a post with table of contents on a sidebar",
+        
+        description: "an example of a blog post with table of contents on a sidebar",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2023/sidebar-table-of-contents/";
+          
+        },
+      },{id: "post-a-post-with-audios",
+        
+          title: "a post with audios",
+        
+        description: "this is what included audios could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2023/audios/";
+          
+        },
+      },{id: "post-a-post-with-videos",
+        
+          title: "a post with videos",
+        
+        description: "this is what included videos could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2023/videos/";
+          
+        },
+      },{id: "post-displaying-beautiful-interactive-tables",
+        
+          title: "displaying beautiful interactive tables",
+        
+        description: "an example of how to use interactive tables in al-folio",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2023/tables/";
+          
+        },
+      },{id: "post-a-post-with-table-of-contents",
+        
+          title: "a post with table of contents",
+        
+        description: "an example of a blog post with table of contents",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2023/table-of-contents/";
+          
+        },
+      },{id: "post-a-post-with-giscus-comments",
+        
+          title: "a post with giscus comments",
+        
+        description: "an example of a blog post with giscus comments",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2022/giscus-comments/";
+          
+        },
+      },{id: "post-یک-نوشتهٔ-راست-چین",
+        
+          title: "یک نوشتهٔ راست‌چین",
+        
+        description: "نمونه‌ای از پشتیبانی زبان‌های راست‌چین",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2022/rtl/";
+          
+        },
+      },{id: "post-displaying-external-posts-on-your-al-folio-blog",
+        
+          title: 'Displaying External Posts on Your al-folio Blog <svg width="1.2rem" height="1.2rem" top=".5rem" viewbox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path d="M17 13.5v6H5v-12h6m3-3h6v6m0-6-9 9" class="icon_svg-stroke" stroke="#999" stroke-width="1.5" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"></path></svg>',
+        
+        description: "",
+        section: "Posts",
+        handler: () => {
+          
+            window.open("https://medium.com/@al-folio/displaying-external-posts-on-your-al-folio-blog-b60a1d241a0a?source=rss-17feae71c3c4------2", "_blank");
+          
+        },
+      },{id: "post-a-post-with-redirect",
+        
+          title: "a post with redirect",
+        
+        description: "you can also redirect to assets like pdf",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/assets/pdf/example_pdf.pdf";
+          
+        },
+      },{id: "post-a-post-with-diagrams",
+        
+          title: "a post with diagrams",
+        
+        description: "an example of a blog post with diagrams",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2021/diagrams/";
+          
+        },
+      },{id: "post-a-distill-style-blog-post",
+        
+          title: "a distill-style blog post",
+        
+        description: "an example of a distill-style blog post and main elements",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2021/distill/";
+          
+        },
+      },{id: "post-a-post-with-twitter",
+        
+          title: "a post with twitter",
+        
+        description: "an example of a blog post with twitter",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2020/twitter/";
+          
+        },
+      },{id: "post-a-post-with-disqus-comments",
+        
+          title: "a post with disqus comments",
+        
+        description: "an example of a blog post with disqus comments",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2015/disqus-comments/";
+          
+        },
+      },{id: "post-a-post-with-math",
+        
+          title: "a post with math",
+        
+        description: "an example of a blog post with some math",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2015/math/";
+          
+        },
+      },{id: "post-a-post-with-code",
+        
+          title: "a post with code",
+        
+        description: "an example of a blog post with some code",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2015/code/";
+          
+        },
+      },{id: "post-a-post-with-images",
+        
+          title: "a post with images",
+        
+        description: "this is what included images could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2015/images/";
+          
+        },
+      },{id: "post-a-post-with-formatting-and-links",
+        
+          title: "a post with formatting and links",
+        
+        description: "march & april, looking forward to summer",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2015/formatting-and-links/";
+          
+        },
+      },{id: "books-the-godfather",
+          title: 'The Godfather',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/the_godfather/";
+            },},{id: "news-a-simple-inline-announcement",
+          title: 'A simple inline announcement.',
+          description: "",
+          section: "News",},{id: "news-a-long-announcement-with-details",
+          title: 'A long announcement with details',
+          description: "",
+          section: "News",handler: () => {
+              window.location.href = "/news/announcement_2/";
+            },},{id: "news-a-simple-inline-announcement-with-markdown-emoji-sparkles-smile",
+          title: 'A simple inline announcement with Markdown emoji! <img class="emoji" title=":sparkles:" alt=":sparkles:" src="https://github.githubassets.com/images/icons/emoji/unicode/2728.png" height="20" width="20"> <img class="emoji" title=":smile:" alt=":smile:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f604.png" height="20" width="20">',
+          description: "",
+          section: "News",},{id: "projects-ecc-public-key-cryptography",
+          title: 'ECC Public-Key Cryptography',
+          description: "A toy example of elliptic-curve scalar multiplication and statistical property exploration.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/1_project/";
+            },},{id: "projects-wallet-pipeline-amp-key-derivation",
+          title: 'Wallet Pipeline &amp; Key Derivation',
+          description: "Research on how Ethereum wallets handle hashing, seeds, and cryptographic primitives.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/2_project/";
+            },},{id: "projects-encryption-amp-cryptanalysis",
+          title: 'Encryption &amp; Cryptanalysis',
+          description: "Comparing ECC and Caesar ciphers, statistical leaks, and key-space attacks.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/3_project/";
+            },},{id: "projects-stochastic-penetration-models",
+          title: 'Stochastic Penetration Models',
+          description: "Simulating network breaches using Bernoulli and Rademacher stochastic processes.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/homework3/";
+            },},{id: "projects-welford-39-s-algorithm-amp-sampling-distributions",
+          title: 'Welford&#39;s Algorithm &amp; Sampling Distributions',
+          description: "Online variance computation and empirical verification of estimator unbiasedness and consistency across multi-system penetration trajectories.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/homework4/";
+            },},{id: "projects-riemann-vs-lebesgue-integration-amp-normal-cdf-approximations",
+          title: 'Riemann vs. Lebesgue Integration &amp; Normal CDF Approximations',
+          description: "Comparative numerical measure theory, Lebesgue-Riemann integration engine, and non-elementary Standard Normal CDF algorithms.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/homework5/";
+            },},{id: "projects-statistical-independence-amp-contingency-analysis",
+          title: 'Statistical Independence &amp; Contingency Analysis',
+          description: "Programmatic contingency table construction, marginal and conditional frequency profiling, Pearson's Chi-square test, and causal inference discussion.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/homework6/";
+            },},{id: "projects-project-8",
+          title: 'project 8',
+          description: "an other project with a background image and giscus comments",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/8_project/";
+            },},{id: "projects-project-9",
+          title: 'project 9',
+          description: "another project with an image 🎉",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/9_project/";
+            },},{id: "teachings-data-science-fundamentals",
+          title: 'Data Science Fundamentals',
+          description: "This course covers the foundational aspects of data science, including data collection, cleaning, analysis, and visualization. Students will learn practical skills for working with real-world datasets.",
+          section: "Teachings",handler: () => {
+              window.location.href = "/teachings/data-science-fundamentals/";
+            },},{id: "teachings-introduction-to-machine-learning",
+          title: 'Introduction to Machine Learning',
+          description: "This course provides an introduction to machine learning concepts, algorithms, and applications. Students will learn about supervised and unsupervised learning, model evaluation, and practical implementations.",
+          section: "Teachings",handler: () => {
+              window.location.href = "/teachings/introduction-to-machine-learning/";
+            },},{
+        id: 'social-cv',
+        title: 'CV',
+        section: 'Socials',
+        handler: () => {
+          window.open("/assets/pdf/CV_Europeo%20Matteo%20Sulmona.pdf", "_blank");
+        },
+      },{
+        id: 'social-email',
+        title: 'email',
+        section: 'Socials',
+        handler: () => {
+          window.open("mailto:%73%75%6C%6D%6F%6E%61.%32%33%34%37%32%31%34@%73%74%75%64%65%6E%74%69.%75%6E%69%72%6F%6D%61%31.%69%74", "_blank");
+        },
+      },{
+        id: 'social-linkedin',
+        title: 'LinkedIn',
+        section: 'Socials',
+        handler: () => {
+          window.open("https://www.linkedin.com/in/matteo-sulmona-6a095633a", "_blank");
+        },
+      },{
+      id: 'light-theme',
+      title: 'Change theme to light',
+      description: 'Change the theme of the site to Light',
+      section: 'Theme',
+      handler: () => {
+        setThemeSetting("light");
+      },
+    },
+    {
+      id: 'dark-theme',
+      title: 'Change theme to dark',
+      description: 'Change the theme of the site to Dark',
+      section: 'Theme',
+      handler: () => {
+        setThemeSetting("dark");
+      },
+    },
+    {
+      id: 'system-theme',
+      title: 'Use system default theme',
+      description: 'Change the theme of the site to System Default',
+      section: 'Theme',
+      handler: () => {
+        setThemeSetting("system");
+      },
+    },];
+
+</script> <script src="/assets/al_search/js/shortcut-key.js"></script> </body> </html>

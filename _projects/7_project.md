@@ -283,19 +283,18 @@ Phishing, Compromised</textarea>
     </div>
     <hr class="w-75 mx-auto mb-4" style="border-color: rgba(150,150,150,0.2);">
     <!-- Visual Charts -->
-    <!-- Visual Charts -->
 <div class="px-4">
-    <div class="ind-charts">
-        <div>
-            <h6 class="font-weight-bold text-center mb-3">Conditional Distributions P(F | X = xᵢ) vs. Marginal P(F)</h6>
-            <div class="ind-chart-box"><canvas id="indCondChart"></canvas></div>
-        </div>
-        <div>
-            <h6 class="font-weight-bold text-center mb-3">Sampling Distribution χ²(ν) & Observed Test Statistic</h6>
-            <div class="ind-chart-box"><canvas id="indChi2Chart"></canvas></div>
+        <div class="ind-charts">
+            <div>
+                <h6 class="font-weight-bold text-center mb-3">Conditional Distributions P(F | X = xᵢ) vs. Marginal P(F)</h6>
+                <div id="indCondChart" class="ind-chart-box"></div>
+            </div>
+            <div>
+                <h6 class="font-weight-bold text-center mb-3">Sampling Distribution χ²(ν) &amp; Observed Test Statistic</h6>
+                <div id="indChi2Chart" class="ind-chart-box"></div>
+            </div>
         </div>
     </div>
-</div>
     <!-- Dynamic Interpretation Callout -->
     <div class="px-4 mt-2">
         <div id="indInterpretationBox" class="p-3 rounded text-center" style="background-color: rgba(128,128,128,0.07); border-top: 3px solid #3498db;">
@@ -329,20 +328,6 @@ Consequently, while a contingency table and $$\chi^2$$ test rigorously identify 
 <!-- Scripts for interactive contingency & independence suite -->
 {% raw %}
 <script>
-// Load Chart.js v4 dynamically and run the callback once it is available
-function loadChartJs(callback) {
-    if (window.Chart && Chart.version && parseInt(Chart.version, 10) >= 3) { callback(); return; }
-    var s = document.createElement("script");
-    s.src = "https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js";
-    s.onload = callback;
-    s.onerror = function () { console.error("Chart.js failed to load"); };
-    document.head.appendChild(s);
-}
-</script>
-<script>
-let indCondChartInstance = null;
-let indChi2ChartInstance = null;
-
 // --- NUMERICAL SPECIAL FUNCTIONS FOR CHI-SQUARE P-VALUE ---
 
 function logGamma(z) {
@@ -443,58 +428,54 @@ function sampleCategorical(labels, probs) {
 }
 
 function generateBivariateDataset(mode, N, lambda) {
-    let pairs = [];
+    let cfg;
     if (mode === "cyber_dep") {
-        const xCats = ["Phishing", "Malware", "BruteForce"];
-        const xProbs = [0.40, 0.35, 0.25];
-        const fCats = ["Compromised", "Blocked", "Quarantined"];
-        const fMarg = [0.35, 0.45, 0.20];
-        const fCondMap = {
-            "Phishing":    [0.65, 0.20, 0.15],
-            "Malware":     [0.45, 0.25, 0.30],
-            "BruteForce":  [0.10, 0.80, 0.10]
+        cfg = {
+            xCats: ["Phishing", "Malware", "BruteForce"],
+            xProbs: [0.40, 0.35, 0.25],
+            fCats: ["Compromised", "Blocked", "Quarantined"],
+            fMarg: [0.35, 0.45, 0.20],
+            fCondMap: {
+                "Phishing":   [0.65, 0.20, 0.15],
+                "Malware":    [0.45, 0.25, 0.30],
+                "BruteForce": [0.10, 0.80, 0.10]
+            }
         };
-        for (let i = 0; i < N; i++) {
-            let x = sampleCategorical(xCats, xProbs);
-            let cond = fCondMap[x];
-            let mixed = cond.map((p, idx) => lambda * p + (1.0 - lambda) * fMarg[idx]);
-            let f = sampleCategorical(fCats, mixed);
-            pairs.push([x, f]);
-        }
     } else if (mode === "net_indep") {
-        const xCats = ["TCP", "UDP", "ICMP"];
-        const xProbs = [0.55, 0.30, 0.15];
-        const fCats = ["Delivered", "Dropped"];
-        const fMarg = [0.82, 0.18];
-        const fCondMap = {
-            "TCP":  [0.82, 0.18],
-            "UDP":  [0.82, 0.18],
-            "ICMP": [0.82, 0.18]
+        cfg = {
+            xCats: ["TCP", "UDP", "ICMP"],
+            xProbs: [0.55, 0.30, 0.15],
+            fCats: ["Delivered", "Dropped"],
+            fMarg: [0.82, 0.18],
+            fCondMap: {
+                "TCP":  [0.82, 0.18],
+                "UDP":  [0.82, 0.18],
+                "ICMP": [0.82, 0.18]
+            }
         };
-        for (let i = 0; i < N; i++) {
-            let x = sampleCategorical(xCats, xProbs);
-            let cond = fCondMap[x];
-            let mixed = cond.map((p, idx) => lambda * p + (1.0 - lambda) * fMarg[idx]);
-            let f = sampleCategorical(fCats, mixed);
-            pairs.push([x, f]);
-        }
     } else if (mode === "auth_mod") {
-        const xCats = ["PasswordOnly", "SMS_2FA", "HardwareKey"];
-        const xProbs = [0.35, 0.40, 0.25];
-        const fCats = ["Takeover", "Prevented"];
-        const fMarg = [0.22, 0.78];
-        const fCondMap = {
-            "PasswordOnly": [0.42, 0.58],
-            "SMS_2FA":      [0.16, 0.84],
-            "HardwareKey":  [0.02, 0.98]
+        cfg = {
+            xCats: ["PasswordOnly", "SMS_2FA", "HardwareKey"],
+            xProbs: [0.35, 0.40, 0.25],
+            fCats: ["Takeover", "Prevented"],
+            fMarg: [0.22, 0.78],
+            fCondMap: {
+                "PasswordOnly": [0.42, 0.58],
+                "SMS_2FA":      [0.16, 0.84],
+                "HardwareKey":  [0.02, 0.98]
+            }
         };
-        for (let i = 0; i < N; i++) {
-            let x = sampleCategorical(xCats, xProbs);
-            let cond = fCondMap[x];
-            let mixed = cond.map((p, idx) => lambda * p + (1.0 - lambda) * fMarg[idx]);
-            let f = sampleCategorical(fCats, mixed);
-            pairs.push([x, f]);
-        }
+    } else {
+        return [];
+    }
+
+    let pairs = [];
+    for (let i = 0; i < N; i++) {
+        let x = sampleCategorical(cfg.xCats, cfg.xProbs);
+        let cond = cfg.fCondMap[x];
+        let mixed = cond.map((p, idx) => lambda * p + (1.0 - lambda) * cfg.fMarg[idx]);
+        let f = sampleCategorical(cfg.fCats, mixed);
+        pairs.push([x, f]);
     }
     return pairs;
 }
@@ -552,9 +533,9 @@ function runIndependenceEngine() {
     if (mode === "custom") {
         pairs = parseCustomBivariateDataset(document.getElementById("indCustomInput").value);
     } else {
-        let N = parseInt(document.getElementById("indNRange").value, 10);
+        let Nsel = parseInt(document.getElementById("indNRange").value, 10);
         let lambda = parseFloat(document.getElementById("indLambdaRange").value);
-        pairs = generateBivariateDataset(mode, N, lambda);
+        pairs = generateBivariateDataset(mode, Nsel, lambda);
     }
 
     if (pairs.length === 0) return;
@@ -574,9 +555,7 @@ function runIndependenceEngine() {
     // 2. Construct Observed Matrix O[i][j]
     let obs = Array.from({ length: r }, () => new Array(c).fill(0));
     pairs.forEach(([x, f]) => {
-        let i = xSet.indexOf(x);
-        let j = fSet.indexOf(f);
-        obs[i][j]++;
+        obs[xSet.indexOf(x)][fSet.indexOf(f)]++;
     });
 
     // 3. Compute Row Marginals R[i] and Column Marginals C[j]
@@ -588,7 +567,7 @@ function runIndependenceEngine() {
         }
     }
 
-    // 4. Compute Expected Frequencies E[i][j], Chi-Square Terms, and Conditional Frequencies
+    // 4. Compute Expected Frequencies, Chi-Square Terms, and Conditional Frequencies
     let exp = Array.from({ length: r }, () => new Array(c).fill(0));
     let chiTerms = Array.from({ length: r }, () => new Array(c).fill(0));
     let condFgivenX = Array.from({ length: r }, () => new Array(c).fill(0));
@@ -632,99 +611,7 @@ function runIndependenceEngine() {
 
     // 6. Render HTML Tables, Charts & Interpretation
     renderContingencyTables(xSet, fSet, obs, exp, chiTerms, condFgivenX, rowTotals, colTotals, N);
-function renderIndependenceCharts(xSet, fSet, condFgivenX, colTotals, N, chi2Obs, df) {
-    if (typeof Chart === "undefined") return;
-
-    const palette = ["#3498db", "#9b59b6", "#2ecc71", "#e67e22", "#e74c3c", "#1abc9c"];
-
-    // --- Chart 1: conditional distributions P(F | X = x_i) vs. marginal P(F) ---
-    let labelsWithMarginal = [...xSet.map(x => `X = ${x}`), "Marginal P(F)"];
-    let datasets = fSet.map((fName, j) => {
-        let dataArr = xSet.map((_, i) => parseFloat((condFgivenX[i][j] * 100).toFixed(2)));
-        dataArr.push(parseFloat(((colTotals[j] / N) * 100).toFixed(2)));
-        let color = palette[j % palette.length];
-        return { label: `F = ${fName}`, data: dataArr, backgroundColor: color, borderColor: color, borderWidth: 1 };
-    });
-
-    if (indCondChartInstance) indCondChartInstance.destroy();
-    indCondChartInstance = new Chart(document.getElementById("indCondChart"), {
-        type: "bar",
-        data: { labels: labelsWithMarginal, datasets: datasets },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            animation: false,
-            scales: {
-                x: { title: { display: true, text: "Conditioning Variable (X) vs. Marginal" } },
-                y: { title: { display: true, text: "Conditional Frequency (%)" }, min: 0, max: 100 }
-            }
-        }
-    });
-
-    // --- Chart 2: chi-square density, rejection region, observed statistic ---
-    let critVal = chiSquareCritical(0.05, df);
-    let maxX = Math.max(critVal * 1.6, chi2Obs * 1.25, df + 4 * Math.sqrt(2 * df));
-    let steps = 200;
-    let dx = maxX / steps;
-
-    let pdfData = [];
-    let tailData = [];
-    let peakPdf = 0;
-    for (let k = 1; k <= steps; k++) {
-        let x = k * dx;
-        let y = chiSquarePdf(x, df);
-        if (!isFinite(y)) continue;
-        pdfData.push({ x: x, y: y });
-        if (x >= critVal) tailData.push({ x: x, y: y });
-        if (y > peakPdf) peakPdf = y;
-    }
-    let yTop = peakPdf * 1.1;
-
-    if (indChi2ChartInstance) indChi2ChartInstance.destroy();
-    indChi2ChartInstance = new Chart(document.getElementById("indChi2Chart"), {
-        type: "line",
-        data: {
-            datasets: [
-                {
-                    label: `χ²(ν=${df}) Density`,
-                    data: pdfData,
-                    borderColor: "#3498db",
-                    borderWidth: 2,
-                    pointRadius: 0,
-                    fill: false
-                },
-                {
-                    label: `Rejection Region (α=0.05, crit=${critVal.toFixed(2)})`,
-                    data: tailData,
-                    borderColor: "rgba(231, 76, 60, 0.9)",
-                    backgroundColor: "rgba(231, 76, 60, 0.25)",
-                    borderWidth: 1,
-                    pointRadius: 0,
-                    fill: "origin"
-                },
-                {
-                    label: `Observed χ² = ${chi2Obs.toFixed(2)}`,
-                    data: [{ x: chi2Obs, y: 0 }, { x: chi2Obs, y: yTop }],
-                    borderColor: "#9b59b6",
-                    borderWidth: 3,
-                    borderDash: [6, 4],
-                    pointRadius: 0,
-                    fill: false
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            animation: false,
-            parsing: false,
-            scales: {
-                x: { type: "linear", min: 0, max: maxX, title: { display: true, text: "Chi-Square Value (x)" } },
-                y: { min: 0, max: yTop, title: { display: true, text: "Probability Density f(x)" } }
-            }
-        }
-    });
-}
+    renderIndependenceCharts(xSet, fSet, condFgivenX, colTotals, N, chi2Total, df);
     updateInterpretationText(r, c, N, chi2Total, df, pVal, cramerV);
 }
 
@@ -792,114 +679,120 @@ function renderContingencyTables(xSet, fSet, obs, exp, chiTerms, condFgivenX, ro
     document.getElementById("condTableContainer").innerHTML = h3;
 }
 
+// --- PURE SVG CHARTS (no external library) ---
+
+function svgEsc(s) {
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
 function renderIndependenceCharts(xSet, fSet, condFgivenX, colTotals, N, chi2Obs, df) {
-    if (typeof Chart === "undefined") return;
-
     const palette = ["#3498db", "#9b59b6", "#2ecc71", "#e67e22", "#e74c3c", "#1abc9c"];
+    const axis = 'stroke="currentColor" stroke-opacity="0.4"';
+    const grid = 'stroke="currentColor" stroke-opacity="0.12"';
 
-    // Chart 1: Grouped Bar Chart of Conditional Distributions P(F | X = x_i) + Marginal P(F)
-    let labelsWithMarginal = [...xSet.map(x => `X = ${x}`), "Marginal P(F)"];
-    let datasets = fSet.map((fName, j) => {
-        let dataArr = xSet.map((_, i) => parseFloat((condFgivenX[i][j] * 100).toFixed(2)));
-        dataArr.push(parseFloat(((colTotals[j] / N) * 100).toFixed(2)));
-        let color = palette[j % palette.length];
-        return {
-            label: `F = ${fName}`,
-            data: dataArr,
-            backgroundColor: color,
-            borderColor: color,
-            borderWidth: 1
-        };
-    });
+    // ---------- Chart 1: grouped bars, P(F | X = x_i) vs. marginal P(F) ----------
+    (function () {
+        const W = 460, H = 300, L = 48, R = 10, T = 12, B = 90;
+        const pw = W - L - R, ph = H - T - B;
+        const groups = xSet.map(x => "X = " + x).concat(["Marginal P(F)"]);
+        const gw = pw / groups.length;
+        const bw = Math.min(30, (gw * 0.8) / fSet.length);
+        let s = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:100%;display:block;" xmlns="http://www.w3.org/2000/svg">`;
 
-    const ctxCond = document.getElementById("indCondChart").getContext("2d");
-    if (indCondChartInstance) indCondChartInstance.destroy();
+        [0, 25, 50, 75, 100].forEach(v => {
+            const y = T + ph - (v / 100) * ph;
+            s += `<line x1="${L}" y1="${y}" x2="${W - R}" y2="${y}" ${grid}/>`;
+            s += `<text x="${L - 6}" y="${y + 3}" fill="currentColor" font-size="10" text-anchor="end">${v}</text>`;
+        });
+        s += `<line x1="${L}" y1="${T}" x2="${L}" y2="${T + ph}" ${axis}/>`;
+        s += `<line x1="${L}" y1="${T + ph}" x2="${W - R}" y2="${T + ph}" ${axis}/>`;
+        s += `<text x="12" y="${T + ph / 2}" fill="currentColor" font-size="10" text-anchor="middle" transform="rotate(-90 12,${T + ph / 2})">Conditional Frequency (%)</text>`;
 
-    indCondChartInstance = new Chart(ctxCond, {
-        type: "bar",
-        data: {
-            labels: labelsWithMarginal,
-            datasets: datasets
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: { title: { display: true, text: "Conditioning Variable (X) vs. Marginal" } },
-                y: { title: { display: true, text: "Conditional Frequency (%)" }, min: 0, max: 100 }
-            }
+        groups.forEach((g, gi) => {
+            const x0 = L + gi * gw + (gw - bw * fSet.length) / 2;
+            fSet.forEach((f, j) => {
+                const val = gi < xSet.length ? condFgivenX[gi][j] * 100 : (colTotals[j] / N) * 100;
+                const h = (val / 100) * ph;
+                const x = x0 + j * bw;
+                s += `<rect x="${x}" y="${T + ph - h}" width="${bw - 2}" height="${h}" fill="${palette[j % palette.length]}" fill-opacity="${gi === xSet.length ? 0.55 : 0.9}"/>`;
+                if (bw >= 14) s += `<text x="${x + (bw - 2) / 2}" y="${T + ph - h - 3}" fill="currentColor" font-size="8" text-anchor="middle">${val.toFixed(0)}</text>`;
+            });
+            const label = g.length > 16 ? g.slice(0, 15) + "…" : g;
+            s += `<text x="${L + gi * gw + gw / 2}" y="${T + ph + 15}" fill="currentColor" font-size="10" text-anchor="middle">${svgEsc(label)}</text>`;
+        });
+
+        fSet.forEach((f, k) => {
+            const lx = L + (k % 3) * 130, ly = H - 40 + Math.floor(k / 3) * 15;
+            s += `<rect x="${lx}" y="${ly - 8}" width="10" height="10" fill="${palette[k % palette.length]}"/>`;
+            s += `<text x="${lx + 14}" y="${ly + 1}" fill="currentColor" font-size="10">F = ${svgEsc(f.length > 14 ? f.slice(0, 13) + "…" : f)}</text>`;
+        });
+        s += `</svg>`;
+        document.getElementById("indCondChart").innerHTML = s;
+    })();
+
+    // ---------- Chart 2: chi-square density, rejection region, observed statistic ----------
+    (function () {
+        const W = 460, H = 300, L = 52, R = 14, T = 12, B = 84;
+        const pw = W - L - R, ph = H - T - B;
+        const critVal = chiSquareCritical(0.05, df);
+        const maxX = Math.max(critVal * 1.6, chi2Obs * 1.25, df + 4 * Math.sqrt(2 * df));
+        const steps = 240, dx = maxX / steps;
+
+        let pts = [], peak = 0;
+        for (let k = 1; k <= steps; k++) {
+            const x = k * dx, y = chiSquarePdf(x, df);
+            if (!isFinite(y)) continue;
+            pts.push([x, y]);
+            if (y > peak) peak = y;
         }
-    });
+        const yTop = peak * 1.1 || 1;
+        const sx = x => L + (x / maxX) * pw;
+        const sy = y => T + ph - (y / yTop) * ph;
 
-    // Chart 2: Chi-Square PDF & Critical Cutoff / Observed Statistic
-    let critVal = chiSquareCritical(0.05, df);
-    let maxX = Math.max(critVal * 1.6, chi2Obs * 1.25, df + 4 * Math.sqrt(2 * df));
-    let steps = 120;
-    let dx = maxX / steps;
+        let s = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:100%;display:block;" xmlns="http://www.w3.org/2000/svg">`;
 
-    let xGrid = [];
-    let pdfData = [];
-    let tailData = [];
-    let obsMarkerData = [];
-
-    let peakPdf = 0;
-    for (let k = 1; k <= steps; k++) {
-        let x = k * dx;
-        let y = chiSquarePdf(x, df);
-        if (isFinite(y) && y > peakPdf) peakPdf = y;
-    }
-
-    for (let k = 1; k <= steps; k++) {
-        let x = k * dx;
-        let y = chiSquarePdf(x, df);
-        xGrid.push(x.toFixed(1));
-        pdfData.push(y);
-        tailData.push(x >= critVal ? y : null);
-        obsMarkerData.push(Math.abs(x - chi2Obs) <= dx * 0.6 ? peakPdf * 0.95 : null);
-    }
-
-    const ctxChi2 = document.getElementById("indChi2Chart").getContext("2d");
-    if (indChi2ChartInstance) indChi2ChartInstance.destroy();
-
-    indChi2ChartInstance = new Chart(ctxChi2, {
-        type: "line",
-        data: {
-            labels: xGrid,
-            datasets: [
-                {
-                    label: `χ²(ν=${df}) Density`,
-                    data: pdfData,
-                    borderColor: "#3498db",
-                    borderWidth: 2,
-                    pointRadius: 0,
-                    fill: false
-                },
-                {
-                    label: `Rejection Region (α=0.05, crit=${critVal.toFixed(2)})`,
-                    data: tailData,
-                    backgroundColor: "rgba(231, 76, 60, 0.25)",
-                    borderColor: "transparent",
-                    pointRadius: 0,
-                    fill: true
-                },
-                {
-                    label: `Observed χ² = ${chi2Obs.toFixed(2)}`,
-                    data: obsMarkerData,
-                    type: "bar",
-                    backgroundColor: "#9b59b6",
-                    barThickness: 4
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: { title: { display: true, text: "Chi-Square Value (x)" } },
-                y: { title: { display: true, text: "Probability Density f(x)" }, beginAtZero: true }
-            }
+        for (let t = 0; t <= 5; t++) {
+            const xv = (maxX / 5) * t, x = sx(xv);
+            s += `<line x1="${x}" y1="${T}" x2="${x}" y2="${T + ph}" ${grid}/>`;
+            s += `<text x="${x}" y="${T + ph + 14}" fill="currentColor" font-size="10" text-anchor="middle">${xv.toFixed(xv < 10 ? 1 : 0)}</text>`;
         }
-    });
+        for (let t = 0; t <= 4; t++) {
+            const yv = (yTop / 4) * t, y = sy(yv);
+            s += `<line x1="${L}" y1="${y}" x2="${W - R}" y2="${y}" ${grid}/>`;
+            s += `<text x="${L - 6}" y="${y + 3}" fill="currentColor" font-size="10" text-anchor="end">${yv.toFixed(2)}</text>`;
+        }
+        s += `<line x1="${L}" y1="${T}" x2="${L}" y2="${T + ph}" ${axis}/>`;
+        s += `<line x1="${L}" y1="${T + ph}" x2="${W - R}" y2="${T + ph}" ${axis}/>`;
+        s += `<text x="${L + pw / 2}" y="${T + ph + 28}" fill="currentColor" font-size="10" text-anchor="middle">Chi-Square Value (x)</text>`;
+        s += `<text x="12" y="${T + ph / 2}" fill="currentColor" font-size="10" text-anchor="middle" transform="rotate(-90 12,${T + ph / 2})">Density f(x)</text>`;
+
+        // Rejection region (filled)
+        const tail = pts.filter(p => p[0] >= critVal);
+        if (tail.length > 1) {
+            let d = `M ${sx(tail[0][0])} ${sy(0)} ` + tail.map(p => `L ${sx(p[0])} ${sy(p[1])}`).join(" ") +
+                    ` L ${sx(tail[tail.length - 1][0])} ${sy(0)} Z`;
+            s += `<path d="${d}" fill="#e74c3c" fill-opacity="0.3"/>`;
+        }
+        // Density curve
+        s += `<path d="M ${pts.map(p => sx(p[0]).toFixed(1) + " " + sy(p[1]).toFixed(1)).join(" L ")}" fill="none" stroke="#3498db" stroke-width="2"/>`;
+        // Observed statistic
+        const xo = sx(Math.min(chi2Obs, maxX));
+        s += `<line x1="${xo}" y1="${T}" x2="${xo}" y2="${T + ph}" stroke="#9b59b6" stroke-width="3" stroke-dasharray="6,4"/>`;
+
+        // Legend
+        const items = [
+            ["#3498db", `χ²(ν=${df}) density`],
+            ["#e74c3c", `Rejection region (α=0.05, crit=${critVal.toFixed(2)})`],
+            ["#9b59b6", `Observed χ² = ${chi2Obs.toFixed(2)}`]
+        ];
+        items.forEach((it, k) => {
+            const ly = H - 38 + k * 14;
+            s += `<rect x="${L}" y="${ly - 8}" width="10" height="10" fill="${it[0]}"/>`;
+            s += `<text x="${L + 14}" y="${ly + 1}" fill="currentColor" font-size="10">${svgEsc(it[1])}</text>`;
+        });
+        s += `</svg>`;
+        document.getElementById("indChi2Chart").innerHTML = s;
+    })();
 }
 
 function updateInterpretationText(r, c, N, chi2, df, pVal, cramerV) {
@@ -922,18 +815,21 @@ function updateInterpretationText(r, c, N, chi2, df, pVal, cramerV) {
     }
 }
 
-function tryInitHomework6() {
-    if (typeof Chart === "undefined" || !document.getElementById("indCondChart")) {
-        setTimeout(tryInitHomework6, 50);
+// --- STARTUP ---
+
+function startHomework6() {
+    if (!document.getElementById("indCondChart") || !document.getElementById("indDatasetMode")) {
+        setTimeout(startHomework6, 50);
         return;
     }
     onDatasetModeChange();
 }
 
 if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", tryInitHomework6);
+    document.addEventListener("DOMContentLoaded", startHomework6);
 } else {
-    tryInitHomework6();
+    startHomework6();
 }
 </script>
 {% endraw %}
+

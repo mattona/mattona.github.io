@@ -1,0 +1,1007 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <title> Modes of Convergence &amp; Bayesian Statistical Inference | Matteo Sulmona </title> <meta name="author" content="Matteo Sulmona"> <meta name="description" content="Asymptotic convergence hierarchy in probability (LLN, CLT, and the √n scaling law) alongside Bayesian sequential updating via Prior, Likelihood, and Posterior distributions."> <meta name="keywords" content="jekyll, jekyll-theme, academic-website, portfolio-website"> <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' data: https:; media-src 'self' https:; frame-src 'self' https:; connect-src 'self' https:;"> <style>
+  :root {
+    --max-content-width: 930px;
+  }
+</style> <link rel="stylesheet" href="/assets/css/tailwind.css?v=50c64c15cbb9fd1ce6056fdb8bcb4b62"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/css/all.min.css" integrity="sha256-MVopmdyC2tYTiJ8wlktf0uh0v4NgT+vNdyVFepi7Q0c=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.5/css/academicons.min.css" integrity="sha256-SzrCOBJbGVFMahewkgjwnApaV2+av1DwMAA+/QGLyZw=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/scholar-icons@1.0.3/css/scholar-icons.css" integrity="sha256-VY3hHVj/hNX3fYG6wtbA6TcKJQl7+FthzGSyIB64klY=" crossorigin="anonymous"> <link defer rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:100,300,400,500,700|Material+Icons&amp;display=swap"> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-github.css?v=591dab5a4e56573bf4ef7fd332894c99" media="" id="highlight_theme_light"> <link rel="shortcut icon" href="data:image/svg+xml,&lt;svg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22&gt;&lt;text%20y=%22.9em%22%20font-size=%2290%22&gt;%E2%9A%9B%EF%B8%8F&lt;/text&gt;&lt;/svg&gt;"> <link rel="stylesheet" href="/assets/css/main.css?v=3116ba77db9ee1581d05bb3e86fbf7f1"> <link rel="canonical" href="https://mattona.github.io/projects/homework7/"> <script src="/assets/js/theme.js?v=5286c3e4c334d0ecb8fc0c40ff4fa7ec"></script> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-native.css?v=5847e5ed4a4568527aa6cfab446049ca" media="none" id="highlight_theme_dark"> <script>
+    initTheme();
+  </script> </head> <body class="fixed-top-nav "> <header> <nav id="navbar" class="navbar navbar-light navbar-expand-sm fixed-top" role="navigation"> <div class="container"> <a class="navbar-brand title font-weight-lighter" href="/"> Matteo Sulmona </a> <button class="navbar-toggler collapsed navbar-toggler-main" type="button" data-nav-toggle="navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar top-bar"></span> <span class="icon-bar middle-bar"></span> <span class="icon-bar bottom-bar"></span> </button> <div class="collapse navbar-collapse navbar-collapse-main" id="navbarNav"> <ul class="navbar-nav navbar-menu-list flex-nowrap"> <li class="nav-item "> <a class="nav-link" href="/">about </a> </li> <li class="nav-item active"> <a class="nav-link" href="/projects/">Projects <span class="sr-only">(current)</span> </a> </li> <li class="nav-item "> <a class="nav-link" href="/cv/">CV </a> </li> <li class="nav-item"> <button id="search-toggle" type="button" title="Search" aria-label="Open search"> <span class="nav-link">ctrl k <i class="fa-solid fa-magnifying-glass"></i></span> </button> </li> <li class="toggle-container"> <button id="light-toggle" type="button" title="Change theme" aria-label="Change color theme"> <i class="fa-half-sun-moon" id="light-toggle-system"></i> <i class="fa-solid fa-moon" id="light-toggle-dark"></i> <i class="fa-solid fa-sun" id="light-toggle-light"></i> </button> </li> </ul> </div> </div> </nav> <progress id="progress" value="0"> <div class="progress-container"> <span class="progress-bar"></span> </div> </progress> </header> <div class="container mt-5" role="main"> <div class="post"> <header class="post-header"> <h1 class="post-title">Modes of Convergence &amp; Bayesian Statistical Inference</h1> <p class="post-description">Asymptotic convergence hierarchy in probability (LLN, CLT, and the √n scaling law) alongside Bayesian sequential updating via Prior, Likelihood, and Posterior distributions.</p> </header> <article> <p>This assignment explores two foundational pillars of mathematical statistics and probabilistic reasoning:</p> <ol> <li> <strong>Asymptotic Theory &amp; Modes of Convergence:</strong> Contrasting almost sure, mean-square (\(L^2\)), in-probability, and weak (in-distribution) convergence; establishing their hierarchy and roles in the <strong>Law of Large Numbers (LLN)</strong> and <strong>Central Limit Theorem (CLT)</strong>; and proving why the <strong>\(\sqrt{n}\)</strong> scaling rate arises from variance additivity under independence.</li> <li> <strong>Conditional Probability &amp; Bayesian Inference:</strong> Formalizing Bayes’ theorem as a coherent belief-updating mechanism that combines <strong>Prior</strong>, <strong>Likelihood</strong>, and <strong>Posterior</strong> distributions, illustrated through analytical conjugate models, diagnostic base-rate reasoning, and a critical evaluation of prior sensitivity.</li> </ol> <hr> <h3 id="1-modes-of-convergence-in-probability-theory">1. Modes of Convergence in Probability Theory</h3> <h4 id="mathematical-definitions-of-the-four-principal-modes">Mathematical Definitions of the Four Principal Modes</h4> <p>Let \((\Omega, \mathcal{F}, P)\) be a probability space, let \(\{X_n\}_{n \ge 1}\) be a sequence of real-valued random variables, and let \(X\) be a limiting random variable defined on the same space (except for convergence in distribution, which requires only marginal laws).</p> <ol> <li> <p><strong>Almost Sure Convergence (Strong Convergence, \(X_n \xrightarrow{\text{a.s.}} X\)):</strong> The sequence converges pointwise to \(X\) on an event of probability one: \(P\left(\left\{\omega \in \Omega : \lim_{n \to \infty} X_n(\omega) = X(\omega)\right\}\right) = 1\) Equivalently, for every \(\varepsilon &gt; 0\), \(\lim_{m \to \infty} P\left(\sup_{n \ge m} |X_n - X| \ge \varepsilon\right) = 0\).</p> </li> <li> <p><strong>Mean-Square Convergence (Quadratic Mean / \(L^2\) Convergence, \(X_n \xrightarrow{L^2} X\)):</strong> Assuming \(\mathbb{E}[X_n^2] &lt; \infty\) and \(\mathbb{E}[X^2] &lt; \infty\), the expected squared error vanishes: \(\lim_{n \to \infty} \mathbb{E}\left[(X_n - X)^2\right] = 0\) When \(X = \theta\) is a deterministic parameter, the \(L^2\) error decomposes into variance plus squared bias: \(\mathbb{E}[(X_n - \theta)^2] = \text{Var}(X_n) + \left(\mathbb{E}[X_n] - \theta\right)^2\).</p> </li> <li> <p><strong>Convergence in Probability (Weak Convergence in Measure, \(X_n \xrightarrow{P} X\)):</strong> For every tolerance threshold \(\varepsilon &gt; 0\), the probability of observing a deviation exceeding \(\varepsilon\) tends to zero: \(\forall \varepsilon &gt; 0, \qquad \lim_{n \to \infty} P\left(|X_n - X| \ge \varepsilon\right) = 0\) Unlike almost sure convergence, \(X_n \xrightarrow{P} X\) permits rare outlier spikes to recur infinitely often along individual sample paths, provided their instantaneous probability decays to zero.</p> </li> <li> <p><strong>Convergence in Distribution (Weak Convergence / Convergence in Law, \(X_n \xrightarrow{d} X\)):</strong> Let \(F_{X_n}(x) = P(X_n \le x)\) and \(F_X(x) = P(X \le x)\) denote the cumulative distribution functions (CDFs). Then \(X_n \xrightarrow{d} X\) if: \(\lim_{n \to \infty} F_{X_n}(x) = F_X(x) \qquad \text{for every continuity point } x \text{ of } F_X\) This is a property solely of the marginal probability laws rather than joint coupling on \(\Omega\).</p> </li> </ol> <div class="my-4 p-4 rounded z-depth-1" style="background-color: rgba(128,128,128,0.03); border: 1px solid rgba(150,150,150,0.25);"> <div class="text-center mb-3"> <span class="badge badge-primary px-3 py-2 font-weight-bold" style="background-color: #3498db; font-size: 0.85rem;"> HIERARCHY OF STOCHASTIC CONVERGENCE IMPLICATION GRAPH </span> <p class="small text-muted mt-2 mb-0">Solid arrows indicate unconditional implications; dashed arrows require supplementary regularity conditions.</p> </div> <svg viewbox="0 0 760 215" class="w-100" style="max-height: 215px; display: block; overflow: visible;"> <defs> <marker id="arrowSolid" markerwidth="8" markerheight="8" refx="7" refy="4" orient="auto"> <path d="M 0 1 L 7 4 L 0 7 z" fill="#3498db"></path> </marker> <marker id="arrowDashed" markerwidth="8" markerheight="8" refx="7" refy="4" orient="auto"> <path d="M 0 1 L 7 4 L 0 7 z" fill="#e67e22"></path> </marker> </defs> <rect x="20" y="20" width="190" height="62" rx="8" fill="#9b59b6" fill-opacity="0.15" stroke="#9b59b6" stroke-width="2"></rect> <text x="115" y="46" fill="currentColor" font-size="13" font-weight="bold" text-anchor="middle">Almost Sure (a.s.)</text> <text x="115" y="66" fill="#9b59b6" font-size="11" font-weight="bold" text-anchor="middle">P(lim Xₙ = X) = 1</text> <rect x="20" y="130" width="190" height="62" rx="8" fill="#2ecc71" fill-opacity="0.15" stroke="#2ecc71" stroke-width="2"></rect> <text x="115" y="156" fill="currentColor" font-size="13" font-weight="bold" text-anchor="middle">Mean-Square (L²)</text> <text x="115" y="176" fill="#2ecc71" font-size="11" font-weight="bold" text-anchor="middle">E[(Xₙ − X)²] → 0</text> <rect x="295" y="75" width="190" height="62" rx="8" fill="#3498db" fill-opacity="0.18" stroke="#3498db" stroke-width="2"></rect> <text x="390" y="101" fill="currentColor" font-size="13" font-weight="bold" text-anchor="middle">In Probability (P)</text> <text x="390" y="121" fill="#3498db" font-size="11" font-weight="bold" text-anchor="middle">P(|Xₙ − X| ≥ ε) → 0</text> <rect x="555" y="75" width="185" height="62" rx="8" fill="#e74c3c" fill-opacity="0.15" stroke="#e74c3c" stroke-width="2"></rect> <text x="647" y="101" fill="currentColor" font-size="13" font-weight="bold" text-anchor="middle">In Distribution (d)</text> <text x="647" y="121" fill="#e74c3c" font-size="11" font-weight="bold" text-anchor="middle">Fₙ(x) → F(x)</text> <line x1="210" y1="55" x2="292" y2="95" stroke="#3498db" stroke-width="2" marker-end="url(#arrowSolid)"></line> <text x="248" y="64" fill="#3498db" font-size="10" font-weight="bold" text-anchor="middle">Fatou / Borel-Cantelli</text> <line x1="210" y1="158" x2="292" y2="118" stroke="#3498db" stroke-width="2" marker-end="url(#arrowSolid)"></line> <text x="252" y="153" fill="#3498db" font-size="10" font-weight="bold" text-anchor="middle">Chebyshev Ineq.</text> <line x1="485" y1="98" x2="552" y2="98" stroke="#3498db" stroke-width="2" marker-end="url(#arrowSolid)"></line> <text x="518" y="88" fill="#3498db" font-size="10" font-weight="bold" text-anchor="middle">Always</text> <line x1="555" y1="118" x2="488" y2="118" stroke="#e67e22" stroke-width="1.8" stroke-dasharray="4,3" marker-end="url(#arrowDashed)"></line> <text x="520" y="135" fill="#e67e22" font-size="10" font-weight="bold" text-anchor="middle">If X = c (const)</text> <path d="M 320 75 Q 260 22, 213 38" fill="none" stroke="#e67e22" stroke-width="1.8" stroke-dasharray="4,3" marker-end="url(#arrowDashed)"></path> <text x="265" y="18" fill="#e67e22" font-size="10" font-weight="bold" text-anchor="middle">Fast rate: ∑ P(|Xₙ−X|≥ε) &lt; ∞</text> </svg> </div> <h4 id="roles-in-the-law-of-large-numbers-central-limit-theorem--statistical-inference">Roles in the Law of Large Numbers, Central Limit Theorem &amp; Statistical Inference</h4> <table> <thead> <tr> <th style="text-align: left">Mode of Convergence</th> <th style="text-align: left">Core Limit Theorem</th> <th style="text-align: left">Canonical Statement</th> <th style="text-align: left">Role in Statistical Inference</th> <th> </th> <th> </th> </tr> </thead> <tbody> <tr> <td style="text-align: left"><strong>Almost Sure (\(\xrightarrow{\text{a.s.}}\))</strong></td> <td style="text-align: left"> <strong>Strong Law of Large Numbers (SLLN)</strong> (Kolmogorov)</td> <td style="text-align: left">\(\bar{X}_n = \frac{1}{n}\sum_{i=1}^n X_i \xrightarrow{\text{a.s.}} \mu\) iff $$\mathbb{E}[</td> <td style="text-align: left">X_1</td> <td>] &lt; \infty$$</td> <td>Guarantees <strong>strong consistency</strong>: with probability \(1\), a single infinitely extended sample trajectory stabilizes at the true parameter \(\theta_0\).</td> </tr> <tr> <td style="text-align: left"><strong>Mean-Square (\(\xrightarrow{L^2}\))</strong></td> <td style="text-align: left"><strong>\(L^2\) Law of Large Numbers</strong></td> <td style="text-align: left">\(\mathbb{E}[(\bar{X}_n - \mu)^2] = \frac{\sigma^2}{n} \to 0\)</td> <td style="text-align: left">Evaluates <strong>Mean Squared Error (MSE)</strong> efficiency, governs unbiasedness-variance trade-offs, and establishes consistency of minimum-variance estimators.</td> <td> </td> <td> </td> </tr> <tr> <td style="text-align: left"><strong>In Probability (\(\xrightarrow{P}\))</strong></td> <td style="text-align: left"> <strong>Weak Law of Large Numbers (WLLN)</strong> (Khinchin)</td> <td style="text-align: left">\(\bar{X}_n \xrightarrow{P} \mu\)</td> <td style="text-align: left">Defines <strong>weak consistency</strong> (\(\hat{\theta}_n \xrightarrow{P} \theta_0\)) for MLE, Method of Moments, and empirical risk minimizers; powers <strong>Slutsky’s Theorem</strong>.</td> <td> </td> <td> </td> </tr> <tr> <td style="text-align: left"><strong>In Distribution (\(\xrightarrow{d}\))</strong></td> <td style="text-align: left"> <strong>Central Limit Theorem (CLT)</strong> (Lindeberg–Lévy)</td> <td style="text-align: left">\(\frac{\sqrt{n}(\bar{X}_n - \mu)}{\sigma} \xrightarrow{d} \mathcal{N}(0, 1)\)</td> <td style="text-align: left">Provides <strong>asymptotic normality</strong> for approximate confidence intervals, Wald/Score/LRT hypothesis tests, and the <strong>Delta Method</strong> without knowing the exact parent distribution.</td> <td> </td> <td> </td> </tr> </tbody> </table> <h4 id="why-the-term-sqrtn-appears-in-convergence-theorems">Why the Term \(\sqrt{n}\) Appears in Convergence Theorems</h4> <p>The ubiquity of \(\sqrt{n}\) in asymptotic statistics is a direct algebraic consequence of the <strong>additivity of variance</strong> for independent (or uncorrelated) random variables. Let \(X_1, X_2, \dots, X_n\) be independent observations with mean \(\mathbb{E}[X_i] = \mu\) and finite variance \(\text{Var}(X_i) = \sigma^2 \in (0, \infty)\).</p> <ol> <li> <p><strong>Linear Growth of Total Variance under Independence:</strong> For a general sum \(S_n = \sum_{i=1}^n X_i\), the variance expands as: \(\text{Var}(S_n) = \sum_{i=1}^n \text{Var}(X_i) + 2 \sum_{1 \le i &lt; j \le n} \text{Cov}(X_i, X_j)\) Because independence implies \(\text{Cov}(X_i, X_j) = 0\) for all \(i \neq j\), all cross-covariance terms vanish and the variance of the sum scales linearly with \(n\): \(\text{Var}(S_n) = n\sigma^2 \implies \text{SD}(S_n) = \sqrt{n}\,\sigma\)</p> </li> <li> <p><strong>\(1/\sqrt{n}\) Decay of the Sample Mean Standard Error:</strong> Dividing \(S_n\) by \(n\) to form the sample average \(\bar{X}_n = \frac{1}{n}S_n\) scales the variance by \(1/n^2\): \(\text{Var}(\bar{X}_n) = \frac{1}{n^2}\text{Var}(S_n) = \frac{n\sigma^2}{n^2} = \frac{\sigma^2}{n} \implies \text{SE}(\bar{X}_n) = \frac{\sigma}{\sqrt{n}}\)</p> </li> <li> <strong>Critical Rescaling to Stabilize Asymptotic Fluctuations:</strong> Consider rescaling the estimation error \((\bar{X}_n - \mu)\) by a power law \(n^{\gamma}\): \(\text{Var}\left(n^{\gamma}(\bar{X}_n - \mu)\right) = n^{2\gamma} \cdot \frac{\sigma^2}{n} = \sigma^2 \, n^{2\gamma - 1}\) <ul> <li>If <strong>\(\gamma = 0\)</strong> (unscaled error \(\bar{X}_n - \mu\)), variance decays as \(\sigma^2 / n \to 0\), collapsing the distribution to a degenerate Dirac point mass at \(0\) (the LLN).</li> <li>If <strong>\(\gamma &gt; 1/2\)</strong> (e.g., \(\gamma = 1\), total error \(S_n - n\mu\)), variance grows as \(\sigma^2 n^{2\gamma - 1} \to \infty\), so the distribution spreads out without bound.</li> <li> <strong>Unique Non-Degenerate Exponent (\(\gamma = 1/2 \iff n^{\gamma} = \sqrt{n}\)):</strong> Setting \(2\gamma - 1 = 0\) gives \(\gamma = 1/2\), stabilizing the variance at \(\sigma^2\) for every \(n\) so that \(\sqrt{n}(\bar{X}_n - \mu)\) converges in distribution to a non-trivial Gaussian law \(\mathcal{N}(0, \sigma^2)\).</li> </ul> </li> <li> <strong>Impact of Dependence and Inference Precision:</strong> <ul> <li> <strong>Short-Range Dependence:</strong> In stationary time series with summable autocovariances \(\sum_{k=-\infty}^{\infty} \gamma(k) = \sigma_{\text{LR}}^2 &lt; \infty\), variance still scales as \(O(n)\), preserving the \(\sqrt{n}\) rate with an inflated long-run variance \(\sigma_{\text{LR}}^2\) (requiring HAC / Newey–West standard errors).</li> <li> <strong>Long-Range Dependence vs. Boundary Estimation:</strong> If correlations decay slowly (\(\text{Cov}(X_t, X_{t+k}) \sim k^{-\alpha}\) with \(0 &lt; \alpha &lt; 1\)), \(\text{Var}(S_n) \sim n^{2-\alpha}\) and the normalizing factor becomes \(n^{\alpha/2}\). Conversely, for extreme-order statistics such as \(\hat{\theta}_n = \max_{1 \le i \le n} X_i\) on \(\text{Uniform}(0, \theta)\), \(\text{Var}(\hat{\theta}_n) = O(n^{-2})\), yielding a faster \(n\)-convergence rate rather than \(\sqrt{n}\).</li> <li> <strong>Practical Statistical Inference:</strong> Because confidence interval half-widths \(z_{1-\alpha/2}\frac{\sigma}{\sqrt{n}}\) shrink at rate \(n^{-1/2}\), <strong>doubling measurement precision requires quadrupling the sample size (\(4n\))</strong>.</li> </ul> </li> </ol> <hr> <h3 id="2-conditional-probability-bayes-theorem--statistical-inference">2. Conditional Probability, Bayes’ Theorem &amp; Statistical Inference</h3> <h4 id="conditional-probability--derivation-of-bayes-theorem">Conditional Probability &amp; Derivation of Bayes’ Theorem</h4> <p>In Kolmogorov probability theory, for two events \(A, B \in \mathcal{F}\) with \(P(B) &gt; 0\), the <strong>conditional probability</strong> of \(A\) given \(B\) restricts the sample space to \(B\) and renormalizes measure:</p> \[P(A \mid B) = \frac{P(A \cap B)}{P(B)}\] <p>By symmetry of intersection (\(P(A \cap B) = P(B \mid A)P(A)\)) and the <strong>Law of Total Probability</strong> over a measurable partition \(\{A_k\}\), we obtain <strong>Bayes’ Theorem</strong>:</p> \[P(A_k \mid B) = \frac{P(B \mid A_k) \, P(A_k)}{\sum_{j} P(B \mid A_j) \, P(A_j)}\] <p>In <strong>parametric statistical inference</strong>, the observable data \(\mathcal{D} = (x_1, \dots, x_n)\) are generated by a probabilistic model indexed by an unknown parameter \(\theta \in \Theta\). Treating \(\theta\) itself as a random variable endowed with a probability distribution, Bayes’ theorem inverts the generative direction \(p(\mathcal{D} \mid \theta)\) into inferential uncertainty about \(\theta\):</p> \[\pi(\theta \mid \mathcal{D}) = \frac{p(\mathcal{D} \mid \theta) \, \pi(\theta)}{p(\mathcal{D})} = \frac{\mathcal{L}(\theta; \mathcal{D}) \, \pi(\theta)}{\int_{\Theta} \mathcal{L}(\tilde{\theta}; \mathcal{D}) \, \pi(\tilde{\theta}) \, d\tilde{\theta}} \propto \mathcal{L}(\theta; \mathcal{D}) \, \pi(\theta)\] <h4 id="the-three-core-components-of-bayesian-inference">The Three Core Components of Bayesian Inference</h4> <ol> <li> <strong>Prior Distribution \(\pi(\theta)\):</strong> Represents epistemic beliefs, physical constraints, or historical baseline rates regarding \(\theta \in \Theta\) <em>before</em> observing the current dataset \(\mathcal{D}\). Priors may be <strong>informative</strong> (encoding validated domain knowledge), <strong>weakly informative</strong> (regularizing extreme parameter values), or <strong>non-informative / reference</strong> (e.g., Jeffreys prior \(\pi(\theta) \propto \sqrt{\det \mathcal{I}(\theta)}\), invariant under reparameterization).</li> <li> <strong>Likelihood Function \(\mathcal{L}(\theta; \mathcal{D}) = p(\mathcal{D} \mid \theta)\):</strong> For independent observations \(\mathcal{D} = (x_1, \dots, x_n)\), \(\mathcal{L}(\theta; \mathcal{D}) = \prod_{i=1}^n f(x_i \mid \theta)\). Crucially, \(\mathcal{L}(\theta; \mathcal{D})\) is viewed as a function of \(\theta\) for <em>fixed</em> observed data \(\mathcal{D}\); it is <strong>not</strong> a probability density in \(\theta\) (its integral over \(\Theta\) need not equal \(1\)), but serves as the conduit through which empirical evidence modifies prior weights.</li> <li> <strong>Posterior Distribution \(\pi(\theta \mid \mathcal{D})\) (and Marginal Evidence \(p(\mathcal{D})\)):</strong> The normalized product of prior and likelihood. It encapsulates <em>all</em> post-data uncertainty about \(\theta\), enabling direct probability statements such as <strong>Bayesian Credible Intervals</strong> \(P(\theta \in [a, b] \mid \mathcal{D}) = 1 - \alpha\) and <strong>Posterior Predictive Distributions</strong> \(p(x_{\text{new}} \mid \mathcal{D}) = \int_{\Theta} p(x_{\text{new}} \mid \theta)\pi(\theta \mid \mathcal{D})\,d\theta\).</li> </ol> <h4 id="why-sequential-bayesian-updating-is-central-to-inference">Why Sequential Bayesian Updating is Central to Inference</h4> <p>Suppose data arrive in two conditionally independent batches \(\mathcal{D}_1\) and \(\mathcal{D}_2\). Applying Bayes’ rule sequentially—using the posterior from \(\mathcal{D}_1\) as the prior for \(\mathcal{D}_2\)—yields:</p> \[\pi(\theta \mid \mathcal{D}_1, \mathcal{D}_2) = \frac{p(\mathcal{D}_2 \mid \theta) \, \pi(\theta \mid \mathcal{D}_1)}{p(\mathcal{D}_2 \mid \mathcal{D}_1)} \propto p(\mathcal{D}_2 \mid \theta) \, p(\mathcal{D}_1 \mid \theta) \, \pi(\theta) = p(\mathcal{D}_1, \mathcal{D}_2 \mid \theta) \, \pi(\theta)\] <ul> <li> <strong>Coherent Online Learning:</strong> Sequential updating produces the <strong>exact same posterior</strong> as batch processing \(\mathcal{D}_1 \cup \mathcal{D}_2\) simultaneously. This invariance makes Bayesian inference foundational for real-time telemetry filtering, adaptive clinical trials, and anomaly detection.</li> <li> <strong>Asymptotic Bridge (Bernstein–von Mises Theorem):</strong> Connecting Bayesian updating back to Section 1, as \(n \to \infty\) under regularity conditions and a positive smooth prior \(\pi(\theta_0) &gt; 0\), the posterior concentrates around \(\theta_0\) at rate \(\sqrt{n}\) and converges in total variation to a Gaussian distribution centered at the Maximum Likelihood Estimator: \(\sqrt{n}\left(\theta - \hat{\theta}_{\text{MLE}}\right) \mid \mathcal{D} \xrightarrow{d} \mathcal{N}\left(0, \, \mathcal{I}(\theta_0)^{-1}\right)\) Thus, as sample size grows, empirical likelihood overwhelms the prior, reconciling Bayesian and frequentist asymptotics.</li> </ul> <h4 id="concrete-analytical-examples">Concrete Analytical Examples</h4> <ul> <li> <p><strong>Example 1 — Conjugate Beta–Binomial Model (Conversion / Defect / Intrusion Rate \(\theta \in (0, 1)\)):</strong> Suppose we observe \(k\) successes in \(n\) Bernoulli trials with likelihood \(\mathcal{L}(\theta; k, n) = \binom{n}{k}\theta^k (1-\theta)^{n-k}\), paired with a conjugate prior \(\theta \sim \text{Beta}(\alpha_0, \beta_0)\), \(\pi(\theta) \propto \theta^{\alpha_0 - 1}(1-\theta)^{\beta_0 - 1}\). Multiplying prior and likelihood gives an exact Beta posterior: \(\theta \mid k, n \sim \text{Beta}(\alpha_n, \beta_n), \qquad \alpha_n = \alpha_0 + k, \quad \beta_n = \beta_0 + n - k\) The <strong>posterior mean</strong> is an explicit precision-weighted convex combination of the prior mean \(\mu_0 = \frac{\alpha_0}{\alpha_0 + \beta_0}\) and the empirical MLE \(\hat{p} = \frac{k}{n}\): \(\mathbb{E}[\theta \mid k, n] = \frac{\alpha_0 + k}{\alpha_0 + \beta_0 + n} = \underbrace{\left(\frac{\alpha_0 + \beta_0}{\alpha_0 + \beta_0 + n}\right)}_{\text{Prior Weight}} \mu_0 + \underbrace{\left(\frac{n}{\alpha_0 + \beta_0 + n}\right)}_{\text{Data Weight}} \hat{p}\) Here \(\kappa_0 = \alpha_0 + \beta_0\) acts as an <strong>effective prior sample size</strong> (pseudo-counts).</p> </li> <li> <p><strong>Example 2 — Rare-Event Base-Rate Updating (Diagnostic / Security Alert Triage):</strong> Suppose an automated intrusion detector has sensitivity \(P(\text{Alert} \mid \text{Attack}) = 0.99\) and false-positive rate \(P(\text{Alert} \mid \text{Benign}) = 0.02\), while true attacks occur with low prior prevalence \(P(\text{Attack}) = 0.005\). Observing a single alert updates the attack probability to: \(P(\text{Attack} \mid \text{Alert}) = \frac{0.99 \times 0.005}{0.99 \times 0.005 + 0.02 \times 0.995} = \frac{0.00495}{0.02485} \approx 0.1992 \;(19.9\%)\) Ignoring the prior (the <em>base-rate fallacy</em>) would falsely equate a \(99\%\) sensitivity with a \(99\%\) posterior probability of attack.</p> </li> <li> <p><strong>Example 3 — Conjugate Normal–Normal Location Model (Gaussian Shrinkage):</strong> For Gaussian data \(\bar{X}_n \mid \mu \sim \mathcal{N}(\mu, \sigma^2/n)\) and prior \(\mu \sim \mathcal{N}(\mu_0, \tau_0^2)\), posterior precision equals the sum of prior precision and sample precision (\(\tau_n^{-2} = \tau_0^{-2} + n/\sigma^2\)), shrinking noisy small-sample estimates toward \(\mu_0\) (mathematically equivalent to \(L_2\) Ridge regularization).</p> </li> </ul> <h4 id="applications-advantages-limitations--influence-on-conclusions">Applications, Advantages, Limitations &amp; Influence on Conclusions</h4> <table> <thead> <tr> <th style="text-align: left">Dimension</th> <th style="text-align: left">Key Characteristics &amp; Impact on Statistical Conclusions</th> </tr> </thead> <tbody> <tr> <td style="text-align: left"><strong>Primary Applications</strong></td> <td style="text-align: left">Hierarchical / multilevel modeling, A/B testing with early stopping, medical diagnostics, spam/intrusion filtering, Kalman filtering, and small-sample forecasting.</td> </tr> <tr> <td style="text-align: left"><strong>Advantages</strong></td> <td style="text-align: left">Exact finite-sample uncertainty quantification without relying on asymptotic CLT approximations; natural incorporation of historical knowledge; automatic regularization against overfitting in sparse data; seamless sequential updating.</td> </tr> <tr> <td style="text-align: left"><strong>Limitations</strong></td> <td style="text-align: left"> <strong>Prior sensitivity</strong> when sample size \(n\) is small; <strong>Cromwell’s Rule</strong> (assigning \(\pi(\theta) = 0\) to a region makes posterior probability zero regardless of future data); analytical intractability of \(p(\mathcal{D})\) in high-dimensional non-conjugate models, requiring Markov Chain Monte Carlo (MCMC) or Variational Inference.</td> </tr> <tr> <td style="text-align: left"><strong>Influence on Conclusions</strong></td> <td style="text-align: left">In small samples (\(n \ll \kappa_0\)), an informative prior strongly pulls point estimates and narrows credible intervals toward \(\mu_0\). As \(n \gg \kappa_0\), the likelihood dominates and Bayesian credible intervals numerically align with frequentist confidence intervals.</td> </tr> </tbody> </table> <hr> <h3 id="3-interactive-probability--bayesian-inference-lab">3. Interactive Probability &amp; Bayesian Inference Lab</h3> <div class="card py-4 my-4 z-depth-1" style="background-color: transparent; border: 1px solid rgba(150,150,150,0.3);"> <h5 class="text-center mb-4 font-weight-bold">Interactive Asymptotic Convergence &amp; Bayesian Updating Suite</h5> <div class="px-4 mb-5"> <h5 class="font-weight-bold text-center mb-3" style="color: #3498db;">1. Modes of Convergence (LLN, CLT &amp; √n Scaling)</h5> <div class="d-flex flex-column flex-md-row align-items-center justify-content-center mb-3"> <label for="convDistSelect" class="font-weight-bold mb-2 mb-md-0 mr-md-3" style="white-space: nowrap;"> Parent Distribution Xᵢ: </label> <select id="convDistSelect" class="form-control" style="max-width: 460px; background-color: rgba(128,128,128,0.05); color: inherit;" onchange="runConvergenceLab()"> <option value="bernoulli">Bernoulli(p = 0.30) — Discrete Skewed [μ = 0.30, σ = 0.458]</option> <option value="exponential">Exponential(λ = 1.0) — Continuous Right-Skewed [μ = 1.00, σ = 1.000]</option> <option value="uniform">Uniform(0, 1) — Bounded Symmetric [μ = 0.50, σ = 0.289]</option> <option value="pareto">Pareto(α = 2.5, xₘ = 1) — Heavy-Tailed Finite Variance [μ = 1.667, σ = 1.491]</option> </select> </div> <div class="row justify-content-center mb-3"> <div class="col-md-4 mb-2 mb-md-0 text-center"> <label class="font-weight-bold d-block text-center">Sample Size (n): <span id="convNVal" style="color: #3498db;">100</span></label> <input type="range" id="convNRange" class="custom-range" min="10" max="500" step="10" value="100" oninput="document.getElementById('convNVal').innerText = this.value; runConvergenceLab();"> </div> <div class="col-md-4 mb-2 mb-md-0 text-center"> <label class="font-weight-bold d-block text-center">Monte Carlo Trials (M): <span id="convMVal" style="color: #9b59b6;">400</span></label> <input type="range" id="convMRange" class="custom-range" min="100" max="1000" step="100" value="400" oninput="document.getElementById('convMVal').innerText = this.value; runConvergenceLab();"> </div> <div class="col-md-4 text-center"> <label class="font-weight-bold d-block text-center">Tolerance Threshold (ε): <span id="convEpsVal" style="color: #e67e22;">0.10</span></label> <input type="range" id="convEpsRange" class="custom-range" min="0.02" max="0.30" step="0.02" value="0.10" oninput="document.getElementById('convEpsVal').innerText = parseFloat(this.value).toFixed(2); runConvergenceLab();"> </div> </div> <div class="d-flex justify-content-center mb-3"> <button type="button" class="btn btn-sm btn-outline-primary px-4" onclick="runConvergenceLab()">Resimulate Sample Paths</button> </div> <div class="table-responsive my-3"> <table class="table table-sm table-bordered text-center mb-0" style="color: inherit; border-color: rgba(150,150,150,0.3);"> <thead style="background-color: rgba(128,128,128,0.1);"> <tr> <th class="text-center">Theoretical Mean (μ)</th> <th class="text-center">Standard Error (σ / √n)</th> <th class="text-center">Empirical L² Error E[(X̄ₙ − μ)²]</th> <th class="text-center">Theoretical L² (σ² / n)</th> <th class="text-center">Tail Prob P(|X̄ₙ − μ| ≥ ε)</th> <th class="text-center">CLT Scaled SD √n(X̄ₙ − μ)/σ</th> </tr> </thead> <tbody> <tr> <td id="convTrueMean" class="font-weight-bold text-center">-</td> <td id="convSE" class="text-center" style="color: #3498db; font-weight: bold;">-</td> <td id="convEmpL2" class="text-center" style="color: #2ecc71; font-weight: bold;">-</td> <td id="convTheoL2" class="text-center">-</td> <td id="convTailProb" class="text-center" style="color: #e67e22; font-weight: bold;">-</td> <td id="convCltSd" class="text-center" style="color: #9b59b6; font-weight: bold;">-</td> </tr> </tbody> </table> </div> <div class="row mt-4"> <div class="col-md-6 mb-4"> <h6 class="font-weight-bold text-center mb-3">LLN Sample Paths X̄ₖ → μ &amp; ±1.96σ/√k Envelope</h6> <div style="position: relative; width: 100%; height: 270px;"> <canvas id="convPathsChart"></canvas> </div> </div> <div class="col-md-6 mb-4"> <h6 class="font-weight-bold text-center mb-3">CLT Scaling: Unscaled (X̄ₙ − μ) vs. √n-Scaled Statistic</h6> <div style="position: relative; width: 100%; height: 270px;"> <canvas id="convCltChart"></canvas> </div> </div> </div> </div> <hr class="w-75 mx-auto mb-5" style="border-color: rgba(150,150,150,0.25);"> <div class="px-4 mb-2"> <h5 class="font-weight-bold text-center mb-3" style="color: #9b59b6;">2. Bayesian Sequential Updating Lab (Beta–Binomial Model)</h5> <div class="d-flex flex-column flex-md-row align-items-center justify-content-center mb-3"> <label for="bayesPriorPreset" class="font-weight-bold mb-2 mb-md-0 mr-md-3" style="white-space: nowrap;"> Prior Belief Regime π(θ): </label> <select id="bayesPriorPreset" class="form-control" style="max-width: 460px; background-color: rgba(128,128,128,0.05); color: inherit;" onchange="onBayesPresetChange()"> <option value="uniform">Non-Informative Uniform Prior: Beta(α₀ = 1, β₀ = 1)</option> <option value="jeffreys">Jeffreys Reference Prior: Beta(α₀ = 0.5, β₀ = 0.5)</option> <option value="skeptical">Skeptical Low-Rate Prior: Beta(α₀ = 2, β₀ = 18) [Mean = 0.10]</option> <option value="informative">Strong Informative Prior: Beta(α₀ = 15, β₀ = 15) [Mean = 0.50]</option> </select> </div> <div class="row justify-content-center mb-3"> <div class="col-md-3 mb-2 mb-md-0 text-center"> <label class="font-weight-bold d-block text-center">Prior α₀: <span id="bayesAlphaVal" style="color: #3498db;">1.0</span></label> <input type="range" id="bayesAlphaRange" class="custom-range" min="0.5" max="30" step="0.5" value="1" oninput="document.getElementById('bayesAlphaVal').innerText = parseFloat(this.value).toFixed(1); runBayesianLab();"> </div> <div class="col-md-3 mb-2 mb-md-0 text-center"> <label class="font-weight-bold d-block text-center">Prior β₀: <span id="bayesBetaVal" style="color: #3498db;">1.0</span></label> <input type="range" id="bayesBetaRange" class="custom-range" min="0.5" max="30" step="0.5" value="1" oninput="document.getElementById('bayesBetaVal').innerText = parseFloat(this.value).toFixed(1); runBayesianLab();"> </div> <div class="col-md-3 mb-2 mb-md-0 text-center"> <label class="font-weight-bold d-block text-center">Trials (n): <span id="bayesNVal" style="color: #2ecc71;">25</span></label> <input type="range" id="bayesNRange" class="custom-range" min="1" max="200" step="1" value="25" oninput="syncSuccessSlider(); runBayesianLab();"> </div> <div class="col-md-3 text-center"> <label class="font-weight-bold d-block text-center">Successes (k): <span id="bayesKVal" style="color: #e74c3c;">18</span></label> <input type="range" id="bayesKRange" class="custom-range" min="0" max="25" step="1" value="18" oninput="document.getElementById('bayesKVal').innerText = this.value; runBayesianLab();"> </div> </div> <div class="table-responsive my-3"> <table class="table table-sm table-bordered text-center mb-0" style="color: inherit; border-color: rgba(150,150,150,0.3);"> <thead style="background-color: rgba(128,128,128,0.1);"> <tr> <th class="text-center">Prior Mean E[θ]</th> <th class="text-center">Likelihood MLE (k / n)</th> <th class="text-center">Posterior Beta(αₙ, βₙ)</th> <th class="text-center">Posterior Mean E[θ | D]</th> <th class="text-center">Posterior Mode (MAP)</th> <th class="text-center">95% Credible Interval</th> </tr> </thead> <tbody> <tr> <td id="bayesPriorMean" class="text-center" style="color: #3498db; font-weight: bold;">-</td> <td id="bayesMle" class="text-center" style="color: #2ecc71; font-weight: bold;">-</td> <td id="bayesPostParams" class="text-center">-</td> <td id="bayesPostMean" class="text-center" style="color: #9b59b6; font-weight: bold;">-</td> <td id="bayesPostMap" class="text-center">-</td> <td id="bayesPostCI" class="font-weight-bold text-center">-</td> </tr> </tbody> </table> </div> <div class="row justify-content-center mt-4"> <div class="col-lg-10"> <h6 class="font-weight-bold text-center mb-3">Bayesian Updating: Prior π(θ), Scaled Likelihood L(θ; k, n) &amp; Posterior π(θ | k, n)</h6> <div style="position: relative; width: 100%; height: 290px;"> <canvas id="bayesUpdateChart"></canvas> </div> </div> </div> <div class="mt-3"> <div id="bayesInsightBox" class="p-3 rounded text-center" style="background-color: rgba(128,128,128,0.07); border-top: 3px solid #9b59b6;"> Initializing Bayesian updating engine... </div> </div> </div> </div> <script src="[https://cdn.jsdelivr.net/npm/chart.js](https://cdn.jsdelivr.net/npm/chart.js)"></script> <script>
+let convPathsChartInstance = null;
+let convCltChartInstance = null;
+let bayesUpdateChartInstance = null;
+
+// --- PART 1: MODES OF CONVERGENCE & CLT SIMULATION ---
+
+function getParentDistribution(type) {
+    switch (type) {
+        case "bernoulli": {
+            const p = 0.30;
+            return {
+                mean: p,
+                sd: Math.sqrt(p * (1 - p)),
+                sample: () => (Math.random() < p ? 1.0 : 0.0)
+            };
+        }
+        case "exponential": {
+            const rate = 1.0;
+            return {
+                mean: 1.0 / rate,
+                sd: 1.0 / rate,
+                sample: () => -Math.log(1.0 - Math.random()) / rate
+            };
+        }
+        case "uniform": {
+            return {
+                mean: 0.5,
+                sd: Math.sqrt(1.0 / 12.0),
+                sample: () => Math.random()
+            };
+        }
+        case "pareto": {
+            // Pareto(alpha=2.5, xm=1): mean = alpha/(alpha-1) = 5/3, var = alpha / ((alpha-1)^2 * (alpha-2))
+            const alpha = 2.5;
+            const xm = 1.0;
+            const mean = (alpha * xm) / (alpha - 1.0);
+            const variance = (xm * xm * alpha) / (Math.pow(alpha - 1.0, 2) * (alpha - 2.0));
+            return {
+                mean: mean,
+                sd: Math.sqrt(variance),
+                sample: () => xm / Math.pow(1.0 - Math.random(), 1.0 / alpha)
+            };
+        }
+        default:
+            return { mean: 0.5, sd: Math.sqrt(1 / 12), sample: () => Math.random() };
+    }
+}
+
+function runConvergenceLab() {
+    const distEl = document.getElementById("convDistSelect");
+    if (!distEl) return;
+
+    const distType = distEl.value;
+    const n = parseInt(document.getElementById("convNRange").value, 10);
+    const M = parseInt(document.getElementById("convMRange").value, 10);
+    const eps = parseFloat(document.getElementById("convEpsRange").value);
+
+    const dist = getParentDistribution(distType);
+    const mu = dist.mean;
+    const sigma = dist.sd;
+    const theoSE = sigma / Math.sqrt(n);
+    const theoL2 = (sigma * sigma) / n;
+
+    // Generate M Monte Carlo trials of length n
+    const numPathsToPlot = 8;
+    const samplePaths = [];
+    const sampleMeans = new Array(M);
+    const unscaledErrors = new Array(M);
+    const cltScaled = new Array(M);
+
+    let sqErrorSum = 0.0;
+    let tailCount = 0;
+
+    for (let m = 0; m < M; m++) {
+        let runningSum = 0.0;
+        let path = m < numPathsToPlot ? new Array(n) : null;
+
+        for (let i = 0; i < n; i++) {
+            runningSum += dist.sample();
+            if (path) {
+                path[i] = runningSum / (i + 1);
+            }
+        }
+
+        if (path) samplePaths.push(path);
+
+        let xBar = runningSum / n;
+        let err = xBar - mu;
+        sampleMeans[m] = xBar;
+        unscaledErrors[m] = err;
+        cltScaled[m] = (Math.sqrt(n) * err) / sigma;
+
+        sqErrorSum += err * err;
+        if (Math.abs(err) >= eps) tailCount++;
+    }
+
+    let empL2 = sqErrorSum / M;
+    let tailProb = tailCount / M;
+    let cltMean = cltScaled.reduce((a, b) => a + b, 0) / M;
+    let cltVar = cltScaled.reduce((a, b) => a + Math.pow(b - cltMean, 2), 0) / M;
+
+    // Update Summary Table
+    document.getElementById("convTrueMean").innerText = mu.toFixed(4);
+    document.getElementById("convSE").innerText = theoSE.toFixed(4);
+    document.getElementById("convEmpL2").innerText = empL2.toExponential(3);
+    document.getElementById("convTheoL2").innerText = theoL2.toExponential(3);
+    document.getElementById("convTailProb").innerText = tailProb.toFixed(4);
+    document.getElementById("convCltSd").innerText = Math.sqrt(cltVar).toFixed(3);
+
+    renderConvergenceCharts(n, mu, sigma, samplePaths, unscaledErrors, cltScaled);
+}
+
+function renderConvergenceCharts(n, mu, sigma, samplePaths, unscaledErrors, cltScaled) {
+    if (typeof Chart === "undefined") return;
+
+    // Chart 1: Sample Paths converging to mu inside +/- 1.96 * sigma / sqrt(k)
+    const step = Math.max(1, Math.floor(n / 60));
+    const kLabels = [];
+    const muLine = [];
+    const upperEnv = [];
+    const lowerEnv = [];
+
+    for (let k = 1; k <= n; k += step) {
+        kLabels.push(k);
+        muLine.push(mu);
+        let band = 1.96 * sigma / Math.sqrt(k);
+        upperEnv.push(mu + band);
+        lowerEnv.push(mu - band);
+    }
+
+    const pathColors = ["#3498db", "#9b59b6", "#2ecc71", "#e67e22", "#1abc9c", "#f1c40f", "#e84393", "#00cec9"];
+    const datasets1 = samplePaths.map((path, idx) => {
+        const sub = [];
+        for (let k = 1; k <= n; k += step) {
+            sub.push(path[k - 1]);
+        }
+        return {
+            label: `Path ${idx + 1}`,
+            data: sub,
+            borderColor: pathColors[idx % pathColors.length],
+            borderWidth: 1.4,
+            pointRadius: 0,
+            fill: false
+        };
+    });
+
+    datasets1.push(
+        {
+            label: "True Mean μ",
+            data: muLine,
+            borderColor: "#e74c3c",
+            borderWidth: 2.2,
+            borderDash: [5, 4],
+            pointRadius: 0,
+            fill: false
+        },
+        {
+            label: "+1.96 σ/√k",
+            data: upperEnv,
+            borderColor: "rgba(150,150,150,0.55)",
+            borderWidth: 1.2,
+            borderDash: [3, 3],
+            pointRadius: 0,
+            fill: false
+        },
+        {
+            label: "-1.96 σ/√k",
+            data: lowerEnv,
+            borderColor: "rgba(150,150,150,0.55)",
+            borderWidth: 1.2,
+            borderDash: [3, 3],
+            pointRadius: 0,
+            fill: false
+        }
+    );
+
+    const ctxPaths = document.getElementById("convPathsChart").getContext("2d");
+    if (convPathsChartInstance) convPathsChartInstance.destroy();
+
+    convPathsChartInstance = new Chart(ctxPaths, {
+        type: "line",
+        data: { labels: kLabels, datasets: datasets1 },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { title: { display: true, text: "Sample Size (k)" } },
+                y: { title: { display: true, text: "Sample Mean X̄ₖ" } }
+            }
+        }
+    });
+
+    // Chart 2: Density Histogram on [-3.5, 3.5] comparing Unscaled (Xbar - mu) vs CLT-scaled sqrt(n)*(Xbar - mu)/sigma vs N(0,1)
+    const numBins = 28;
+    const minX = -3.5;
+    const maxX = 3.5;
+    const binW = (maxX - minX) / numBins;
+
+    const binCenters = [];
+    const cltHist = new Array(numBins).fill(0);
+    const unscaledHist = new Array(numBins).fill(0);
+    const normalCurve = [];
+
+    const M = cltScaled.length;
+    for (let m = 0; m < M; m++) {
+        let zVal = cltScaled[m];
+        let b1 = Math.floor((zVal - minX) / binW);
+        if (b1 >= 0 && b1 < numBins) cltHist[b1]++;
+
+        let uVal = unscaledErrors[m];
+        let b2 = Math.floor((uVal - minX) / binW);
+        if (b2 >= 0 && b2 < numBins) unscaledHist[b2]++;
+    }
+
+    for (let b = 0; b < numBins; b++) {
+        let center = minX + (b + 0.5) * binW;
+        binCenters.push(center.toFixed(2));
+        cltHist[b] = cltHist[b] / (M * binW);
+        unscaledHist[b] = unscaledHist[b] / (M * binW);
+        normalCurve.push((1.0 / Math.sqrt(2.0 * Math.PI)) * Math.exp(-0.5 * center * center));
+    }
+
+    const ctxClt = document.getElementById("convCltChart").getContext("2d");
+    if (convCltChartInstance) convCltChartInstance.destroy();
+
+    convCltChartInstance = new Chart(ctxClt, {
+        data: {
+            labels: binCenters,
+            datasets: [
+                {
+                    type: "line",
+                    label: "Standard Normal N(0, 1)",
+                    data: normalCurve,
+                    borderColor: "#e74c3c",
+                    borderWidth: 2.2,
+                    pointRadius: 0,
+                    fill: false,
+                    tension: 0.3
+                },
+                {
+                    type: "bar",
+                    label: "CLT Scaled √n(X̄ₙ − μ)/σ",
+                    data: cltHist,
+                    backgroundColor: "rgba(52, 152, 219, 0.45)",
+                    borderColor: "#3498db",
+                    borderWidth: 1
+                },
+                {
+                    type: "bar",
+                    label: "Unscaled Error (X̄ₙ − μ)",
+                    data: unscaledHist,
+                    backgroundColor: "rgba(155, 89, 182, 0.35)",
+                    borderColor: "#9b59b6",
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { title: { display: true, text: "Value" } },
+                y: { title: { display: true, text: "Probability Density" }, beginAtZero: true }
+            }
+        }
+    });
+}
+
+// --- PART 2: BAYESIAN SEQUENTIAL UPDATING (BETA-BINOMIAL) ---
+
+function logGammaBayes(z) {
+    const c = [
+        76.18009172947146, -86.50532032941677, 24.01409824083091,
+        -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5
+    ];
+    let x = z;
+    let y = z;
+    let tmp = x + 5.5;
+    tmp -= (x + 0.5) * Math.log(tmp);
+    let ser = 1.000000000190015;
+    for (let j = 0; j < 6; j++) {
+        y += 1;
+        ser += c[j] / y;
+    }
+    return -tmp + Math.log(2.5066282746310005 * ser / x);
+}
+
+function betaPdf(x, a, b) {
+    if (x <= 0.0 || x >= 1.0) return 0.0;
+    let logB = logGammaBayes(a) + logGammaBayes(b) - logGammaBayes(a + b);
+    let logVal = (a - 1.0) * Math.log(x) + (b - 1.0) * Math.log(1.0 - x) - logB;
+    return Math.exp(logVal);
+}
+
+function onBayesPresetChange() {
+    const preset = document.getElementById("bayesPriorPreset").value;
+    let a0 = 1.0, b0 = 1.0;
+    if (preset === "jeffreys") { a0 = 0.5; b0 = 0.5; }
+    else if (preset === "skeptical") { a0 = 2.0; b0 = 18.0; }
+    else if (preset === "informative") { a0 = 15.0; b0 = 15.0; }
+
+    document.getElementById("bayesAlphaRange").value = a0;
+    document.getElementById("bayesBetaRange").value = b0;
+    document.getElementById("bayesAlphaVal").innerText = a0.toFixed(1);
+    document.getElementById("bayesBetaVal").innerText = b0.toFixed(1);
+    runBayesianLab();
+}
+
+function syncSuccessSlider() {
+    const n = parseInt(document.getElementById("bayesNRange").value, 10);
+    document.getElementById("bayesNVal").innerText = n;
+    const kSlider = document.getElementById("bayesKRange");
+    const oldMax = parseInt(kSlider.max, 10) || 25;
+    const oldK = parseInt(kSlider.value, 10);
+    const prop = oldK / oldMax;
+    kSlider.max = n;
+    const newK = Math.min(n, Math.round(prop * n));
+    kSlider.value = newK;
+    document.getElementById("bayesKVal").innerText = newK;
+}
+
+function runBayesianLab() {
+    const aEl = document.getElementById("bayesAlphaRange");
+    if (!aEl) return;
+
+    const a0 = parseFloat(aEl.value);
+    const b0 = parseFloat(document.getElementById("bayesBetaRange").value);
+    const n = parseInt(document.getElementById("bayesNRange").value, 10);
+    const k = Math.min(n, parseInt(document.getElementById("bayesKRange").value, 10));
+
+    const aPost = a0 + k;
+    const bPost = b0 + (n - k);
+
+    const priorMean = a0 / (a0 + b0);
+    const mle = k / n;
+    const postMean = aPost / (aPost + bPost);
+    const postMode = (aPost > 1.0 && bPost > 1.0)
+        ? ((aPost - 1.0) / (aPost + bPost - 2.0)).toFixed(4)
+        : (aPost <= 1.0 && bPost > 1.0 ? "0.0000 (boundary)" : (bPost <= 1.0 && aPost > 1.0 ? "1.0000 (boundary)" : "Bimodal (0 & 1)"));
+
+    // Grid evaluation on (0, 1) for curves and numerical 95% credible interval
+    const steps = 200;
+    const dx = 1.0 / steps;
+    const thetaLabels = [];
+    const priorCurve = [];
+    const likCurve = [];
+    const postCurve = [];
+
+    // Compute normalized likelihood Beta(k+1, n-k+1) for clear visual scale comparison
+    let cumProb = 0.0;
+    let ciLow = 0.0;
+    let ciHigh = 1.0;
+    let foundLow = false;
+
+    for (let i = 1; i < steps; i++) {
+        let th = i * dx;
+        thetaLabels.push(th.toFixed(2));
+        let pVal = betaPdf(th, a0, b0);
+        let lVal = betaPdf(th, k + 1.0, (n - k) + 1.0);
+        let postVal = betaPdf(th, aPost, bPost);
+
+        priorCurve.push(isFinite(pVal) ? pVal : null);
+        likCurve.push(isFinite(lVal) ? lVal : null);
+        postCurve.push(isFinite(postVal) ? postVal : null);
+
+        if (isFinite(postVal)) {
+            cumProb += postVal * dx;
+            if (!foundLow && cumProb >= 0.025) {
+                ciLow = th;
+                foundLow = true;
+            }
+            if (cumProb <= 0.975) {
+                ciHigh = th;
+            }
+        }
+    }
+
+    document.getElementById("bayesPriorMean").innerText = priorMean.toFixed(4);
+    document.getElementById("bayesMle").innerText = mle.toFixed(4);
+    document.getElementById("bayesPostParams").innerText = `Beta(${aPost.toFixed(1)}, ${bPost.toFixed(1)})`;
+    document.getElementById("bayesPostMean").innerText = postMean.toFixed(4);
+    document.getElementById("bayesPostMap").innerText = postMode;
+    document.getElementById("bayesPostCI").innerText = `[${ciLow.toFixed(3)}, ${ciHigh.toFixed(3)}]`;
+
+    const priorWeight = (a0 + b0) / (a0 + b0 + n);
+    const dataWeight = n / (a0 + b0 + n);
+    const insightBox = document.getElementById("bayesInsightBox");
+    if (insightBox) {
+        insightBox.innerHTML = `<strong>Posterior Compromise Decomposition:</strong> The posterior mean <strong>E[θ | D] = ${postMean.toFixed(4)}</strong> equals <strong>${(priorWeight * 100).toFixed(1)}%</strong> of the prior mean (${priorMean.toFixed(4)}) plus <strong>${(dataWeight * 100).toFixed(1)}%</strong> of the empirical likelihood MLE (${mle.toFixed(4)}). As sample size <em>n</em> increases, data weight approaches 100% and the posterior sharpens around the MLE.`;
+    }
+
+    renderBayesianChart(thetaLabels, priorCurve, likCurve, postCurve);
+}
+
+function renderBayesianChart(labels, priorData, likData, postData) {
+    if (typeof Chart === "undefined") return;
+
+    const ctxBayes = document.getElementById("bayesUpdateChart").getContext("2d");
+    if (bayesUpdateChartInstance) bayesUpdateChartInstance.destroy();
+
+    bayesUpdateChartInstance = new Chart(ctxBayes, {
+        type: "line",
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: "Prior Density π(θ)",
+                    data: priorData,
+                    borderColor: "#3498db",
+                    borderWidth: 2,
+                    borderDash: [5, 4],
+                    pointRadius: 0,
+                    fill: false,
+                    tension: 0.25
+                },
+                {
+                    label: "Normalized Likelihood L(θ; k, n)",
+                    data: likData,
+                    borderColor: "#2ecc71",
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    fill: false,
+                    tension: 0.25
+                },
+                {
+                    label: "Posterior Density π(θ | k, n)",
+                    data: postData,
+                    borderColor: "#9b59b6",
+                    backgroundColor: "rgba(155, 89, 182, 0.22)",
+                    borderWidth: 2.5,
+                    pointRadius: 0,
+                    fill: true,
+                    tension: 0.25
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { title: { display: true, text: "Parameter Value (θ)" } },
+                y: { title: { display: true, text: "Probability Density" }, beginAtZero: true }
+            }
+        }
+    });
+}
+
+function tryInitHomework7() {
+    if (typeof Chart === "undefined" || !document.getElementById("convPathsChart") || !document.getElementById("bayesUpdateChart")) {
+        setTimeout(tryInitHomework7, 50);
+        return;
+    }
+    runConvergenceLab();
+    runBayesianLab();
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", tryInitHomework7);
+} else {
+    tryInitHomework7();
+}
+</script> </article> <div id="giscus_thread"> <blockquote class="block-danger"> <h5>giscus comments misconfigured</h5> <p>Please follow instructions at <a href="http://giscus.app" rel="external nofollow noopener" target="_blank">http://giscus.app</a> and update your giscus configuration.</p> <p>Missing required keys: <code>repo_id, category_id</code>.</p> </blockquote> </div> </div> </div> <footer class="fixed-bottom" role="contentinfo"> <div class="container mt-0"> © Copyright 2026 Matteo Sulmona. Powered by <a href="https://jekyllrb.com/" target="_blank" rel="external nofollow noopener">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio" rel="external nofollow noopener" target="_blank">al-folio</a> theme. Hosted by <a href="https://pages.github.com/" target="_blank" rel="external nofollow noopener">GitHub Pages</a>. Photos from <a href="https://unsplash.com" target="_blank" rel="external nofollow noopener">Unsplash</a>. </div> </footer> <script>
+  window.alFolio = {
+    compatBootstrap: false
+  };
+</script> <script src="/assets/js/nav-toggle.js?v=141bd79a73ebc0f0b6ea58e440ae79fc"></script> <script defer src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha256-Nn1q/fx0H7SNLZMQ5Hw5JLaTRZp0yILA/FRexe19VdI=" crossorigin="anonymous"></script> <script defer src="https://cdn.jsdelivr.net/npm/imagesloaded@5.0.0/imagesloaded.pkgd.min.js" integrity="sha256-htrLFfZJ6v5udOG+3kNLINIKh2gvoKqwEhHYfTTMICc=" crossorigin="anonymous"></script> <script defer src="/assets/js/masonry.js?v=e49affc7bd2646f6acdad1dbe02c2359" type="text/javascript"></script> <script defer type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script> <script src="/assets/al_math/js/mathjax-setup.js"></script> <script src="/assets/js/tooltips-setup.js?v=fe487e99db6c43751e6e7bdb2d6a0611"></script> <script src="/assets/js/no_defer.js?v=53b1b1a645525975c963ce8bf8bfefcf"></script> <script defer src="/assets/js/common.js?v=87baac90f765f2f3362dcf6aaf312a8a"></script> <script defer src="/assets/js/copy_code.js?v=c8a01c11a92744d44b093fc3bda915df" type="text/javascript"></script> <script defer src="/assets/js/jupyter_new_tab.js?v=896d254890d9b47f0281f63bfccf0dee"></script> <script async src="https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"></script> <script async src="https://badge.dimensions.ai/badge.js"></script> <script defer src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script> <script defer src="/assets/al_img_tools/js/zoom.js"></script> <script defer src="/assets/js/progress-bar.js?v=499464c5c63ced6cf7ad62509f1e2610" type="text/javascript"></script> <script src="https://cdn.jsdelivr.net/npm/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js" integrity="sha256-uMJJ3EoTyfRBoTbR+lrfu1uRQ87RZG8AR3cVNuQVeFg=" crossorigin="anonymous"></script> <script>
+    addBackToTop();
+  </script> <script type="module" src="/assets/al_search/js/search/ninja-keys.min.js"></script> <ninja-keys hidebreadcrumbs noautoloadmdicons placeholder="Type to start searching"></ninja-keys> <script src="/assets/al_search/js/search-setup.js"></script> <script>
+// get the ninja-keys element
+const ninja = document.querySelector('ninja-keys');
+
+// add the home and posts menu items
+ninja.data = [{
+    id: "nav-about",
+    title: "about",
+    section: "Navigation",
+    handler: () => {
+      window.location.href = "/";
+    },
+  },{id: "nav-projects",
+          title: "Projects",
+          description: "Some of my best projects.",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/projects/";
+          },
+        },{id: "nav-cv",
+          title: "CV",
+          description: "This is a description of the page. You can modify it in '_pages/cv.md'. You can also change or remove the top pdf download button.",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/cv/";
+          },
+        },{id: "post-a-post-with-marimo-snippets",
+        
+          title: "a post with marimo snippets",
+        
+        description: "running Python in the browser with marimo",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2025/marimo/";
+          
+        },
+      },{id: "post-a-post-with-plotly-js",
+        
+          title: "a post with plotly.js",
+        
+        description: "this is what included plotly.js code could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2025/plotly/";
+          
+        },
+      },{id: "post-a-post-with-image-galleries",
+        
+          title: "a post with image galleries",
+        
+        description: "this is what included image galleries could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2024/photo-gallery/";
+          
+        },
+      },{id: "post-google-gemini-updates-flash-1-5-gemma-2-and-project-astra",
+        
+          title: 'Google Gemini updates: Flash 1.5, Gemma 2 and Project Astra <svg width="1.2rem" height="1.2rem" top=".5rem" viewbox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path d="M17 13.5v6H5v-12h6m3-3h6v6m0-6-9 9" class="icon_svg-stroke" stroke="#999" stroke-width="1.5" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"></path></svg>',
+        
+        description: "We’re sharing updates across our Gemini family of models and a glimpse of Project Astra, our vision for the future of AI assistants.",
+        section: "Posts",
+        handler: () => {
+          
+            window.open("https://blog.google/technology/ai/google-gemini-update-flash-ai-assistant-io-2024/", "_blank");
+          
+        },
+      },{id: "post-a-post-with-tabs",
+        
+          title: "a post with tabs",
+        
+        description: "this is what included tabs in a post could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2024/tabs/";
+          
+        },
+      },{id: "post-a-post-with-typograms",
+        
+          title: "a post with typograms",
+        
+        description: "this is what included typograms code could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2024/typograms/";
+          
+        },
+      },{id: "post-a-post-that-can-be-cited",
+        
+          title: "a post that can be cited",
+        
+        description: "this is what a post that can be cited looks like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2024/post-citation/";
+          
+        },
+      },{id: "post-a-post-with-pseudo-code",
+        
+          title: "a post with pseudo code",
+        
+        description: "this is what included pseudo code could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2024/pseudocode/";
+          
+        },
+      },{id: "post-a-post-with-code-diff",
+        
+          title: "a post with code diff",
+        
+        description: "this is how you can display code diffs",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2024/code-diff/";
+          
+        },
+      },{id: "post-a-post-with-advanced-image-components",
+        
+          title: "a post with advanced image components",
+        
+        description: "this is what advanced image components could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2024/advanced-images/";
+          
+        },
+      },{id: "post-a-post-with-vega-lite",
+        
+          title: "a post with vega lite",
+        
+        description: "this is what included vega lite code could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2024/vega-lite/";
+          
+        },
+      },{id: "post-a-post-with-geojson",
+        
+          title: "a post with geojson",
+        
+        description: "this is what included geojson code could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2024/geojson-map/";
+          
+        },
+      },{id: "post-a-post-with-echarts",
+        
+          title: "a post with echarts",
+        
+        description: "this is what included echarts code could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2024/echarts/";
+          
+        },
+      },{id: "post-a-post-with-chart-js",
+        
+          title: "a post with chart.js",
+        
+        description: "this is what included chart.js code could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2024/chartjs/";
+          
+        },
+      },{id: "post-a-post-with-tikzjax",
+        
+          title: "a post with TikZJax",
+        
+        description: "this is what included TikZ code could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2023/tikzjax/";
+          
+        },
+      },{id: "post-a-post-with-bibliography",
+        
+          title: "a post with bibliography",
+        
+        description: "an example of a blog post with bibliography",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2023/post-bibliography/";
+          
+        },
+      },{id: "post-a-post-with-jupyter-notebook",
+        
+          title: "a post with jupyter notebook",
+        
+        description: "an example of a blog post with jupyter notebook",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2023/jupyter-notebook/";
+          
+        },
+      },{id: "post-a-post-with-custom-blockquotes",
+        
+          title: "a post with custom blockquotes",
+        
+        description: "an example of a blog post with custom blockquotes",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2023/custom-blockquotes/";
+          
+        },
+      },{id: "post-a-post-with-table-of-contents-on-a-sidebar",
+        
+          title: "a post with table of contents on a sidebar",
+        
+        description: "an example of a blog post with table of contents on a sidebar",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2023/sidebar-table-of-contents/";
+          
+        },
+      },{id: "post-a-post-with-audios",
+        
+          title: "a post with audios",
+        
+        description: "this is what included audios could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2023/audios/";
+          
+        },
+      },{id: "post-a-post-with-videos",
+        
+          title: "a post with videos",
+        
+        description: "this is what included videos could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2023/videos/";
+          
+        },
+      },{id: "post-displaying-beautiful-interactive-tables",
+        
+          title: "displaying beautiful interactive tables",
+        
+        description: "an example of how to use interactive tables in al-folio",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2023/tables/";
+          
+        },
+      },{id: "post-a-post-with-table-of-contents",
+        
+          title: "a post with table of contents",
+        
+        description: "an example of a blog post with table of contents",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2023/table-of-contents/";
+          
+        },
+      },{id: "post-a-post-with-giscus-comments",
+        
+          title: "a post with giscus comments",
+        
+        description: "an example of a blog post with giscus comments",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2022/giscus-comments/";
+          
+        },
+      },{id: "post-یک-نوشتهٔ-راست-چین",
+        
+          title: "یک نوشتهٔ راست‌چین",
+        
+        description: "نمونه‌ای از پشتیبانی زبان‌های راست‌چین",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2022/rtl/";
+          
+        },
+      },{id: "post-displaying-external-posts-on-your-al-folio-blog",
+        
+          title: 'Displaying External Posts on Your al-folio Blog <svg width="1.2rem" height="1.2rem" top=".5rem" viewbox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path d="M17 13.5v6H5v-12h6m3-3h6v6m0-6-9 9" class="icon_svg-stroke" stroke="#999" stroke-width="1.5" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"></path></svg>',
+        
+        description: "",
+        section: "Posts",
+        handler: () => {
+          
+            window.open("https://medium.com/@al-folio/displaying-external-posts-on-your-al-folio-blog-b60a1d241a0a?source=rss-17feae71c3c4------2", "_blank");
+          
+        },
+      },{id: "post-a-post-with-redirect",
+        
+          title: "a post with redirect",
+        
+        description: "you can also redirect to assets like pdf",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/assets/pdf/example_pdf.pdf";
+          
+        },
+      },{id: "post-a-post-with-diagrams",
+        
+          title: "a post with diagrams",
+        
+        description: "an example of a blog post with diagrams",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2021/diagrams/";
+          
+        },
+      },{id: "post-a-distill-style-blog-post",
+        
+          title: "a distill-style blog post",
+        
+        description: "an example of a distill-style blog post and main elements",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2021/distill/";
+          
+        },
+      },{id: "post-a-post-with-twitter",
+        
+          title: "a post with twitter",
+        
+        description: "an example of a blog post with twitter",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2020/twitter/";
+          
+        },
+      },{id: "post-a-post-with-disqus-comments",
+        
+          title: "a post with disqus comments",
+        
+        description: "an example of a blog post with disqus comments",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2015/disqus-comments/";
+          
+        },
+      },{id: "post-a-post-with-math",
+        
+          title: "a post with math",
+        
+        description: "an example of a blog post with some math",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2015/math/";
+          
+        },
+      },{id: "post-a-post-with-code",
+        
+          title: "a post with code",
+        
+        description: "an example of a blog post with some code",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2015/code/";
+          
+        },
+      },{id: "post-a-post-with-images",
+        
+          title: "a post with images",
+        
+        description: "this is what included images could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2015/images/";
+          
+        },
+      },{id: "post-a-post-with-formatting-and-links",
+        
+          title: "a post with formatting and links",
+        
+        description: "march & april, looking forward to summer",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2015/formatting-and-links/";
+          
+        },
+      },{id: "books-the-godfather",
+          title: 'The Godfather',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/the_godfather/";
+            },},{id: "news-a-simple-inline-announcement",
+          title: 'A simple inline announcement.',
+          description: "",
+          section: "News",},{id: "news-a-long-announcement-with-details",
+          title: 'A long announcement with details',
+          description: "",
+          section: "News",handler: () => {
+              window.location.href = "/news/announcement_2/";
+            },},{id: "news-a-simple-inline-announcement-with-markdown-emoji-sparkles-smile",
+          title: 'A simple inline announcement with Markdown emoji! <img class="emoji" title=":sparkles:" alt=":sparkles:" src="https://github.githubassets.com/images/icons/emoji/unicode/2728.png" height="20" width="20"> <img class="emoji" title=":smile:" alt=":smile:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f604.png" height="20" width="20">',
+          description: "",
+          section: "News",},{id: "projects-ecc-public-key-cryptography",
+          title: 'ECC Public-Key Cryptography',
+          description: "A toy example of elliptic-curve scalar multiplication and statistical property exploration.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/1_project/";
+            },},{id: "projects-wallet-pipeline-amp-key-derivation",
+          title: 'Wallet Pipeline &amp; Key Derivation',
+          description: "Research on how Ethereum wallets handle hashing, seeds, and cryptographic primitives.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/2_project/";
+            },},{id: "projects-encryption-amp-cryptanalysis",
+          title: 'Encryption &amp; Cryptanalysis',
+          description: "Comparing ECC and Caesar ciphers, statistical leaks, and key-space attacks.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/3_project/";
+            },},{id: "projects-stochastic-penetration-models",
+          title: 'Stochastic Penetration Models',
+          description: "Simulating network breaches using Bernoulli and Rademacher stochastic processes.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/homework3/";
+            },},{id: "projects-welford-39-s-algorithm-amp-sampling-distributions",
+          title: 'Welford&#39;s Algorithm &amp; Sampling Distributions',
+          description: "Online variance computation and empirical verification of estimator unbiasedness and consistency across multi-system penetration trajectories.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/homework4/";
+            },},{id: "projects-riemann-vs-lebesgue-integration-amp-normal-cdf-approximations",
+          title: 'Riemann vs. Lebesgue Integration &amp; Normal CDF Approximations',
+          description: "Comparative numerical measure theory, Lebesgue-Riemann integration engine, and non-elementary Standard Normal CDF algorithms.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/homework5/";
+            },},{id: "projects-statistical-independence-amp-contingency-analysis",
+          title: 'Statistical Independence &amp; Contingency Analysis',
+          description: "Programmatic contingency table construction, marginal and conditional frequency profiling, Pearson's Chi-square test, and causal inference discussion.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/homework6/";
+            },},{id: "projects-modes-of-convergence-amp-bayesian-statistical-inference",
+          title: 'Modes of Convergence &amp; Bayesian Statistical Inference',
+          description: "Asymptotic convergence hierarchy in probability (LLN, CLT, and the √n scaling law) alongside Bayesian sequential updating via Prior, Likelihood, and Posterior distributions.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/homework7/";
+            },},{id: "projects-project-9",
+          title: 'project 9',
+          description: "another project with an image 🎉",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/9_project/";
+            },},{id: "teachings-data-science-fundamentals",
+          title: 'Data Science Fundamentals',
+          description: "This course covers the foundational aspects of data science, including data collection, cleaning, analysis, and visualization. Students will learn practical skills for working with real-world datasets.",
+          section: "Teachings",handler: () => {
+              window.location.href = "/teachings/data-science-fundamentals/";
+            },},{id: "teachings-introduction-to-machine-learning",
+          title: 'Introduction to Machine Learning',
+          description: "This course provides an introduction to machine learning concepts, algorithms, and applications. Students will learn about supervised and unsupervised learning, model evaluation, and practical implementations.",
+          section: "Teachings",handler: () => {
+              window.location.href = "/teachings/introduction-to-machine-learning/";
+            },},{
+        id: 'social-cv',
+        title: 'CV',
+        section: 'Socials',
+        handler: () => {
+          window.open("/assets/pdf/CV_Europeo%20Matteo%20Sulmona.pdf", "_blank");
+        },
+      },{
+        id: 'social-email',
+        title: 'email',
+        section: 'Socials',
+        handler: () => {
+          window.open("mailto:%73%75%6C%6D%6F%6E%61.%32%33%34%37%32%31%34@%73%74%75%64%65%6E%74%69.%75%6E%69%72%6F%6D%61%31.%69%74", "_blank");
+        },
+      },{
+        id: 'social-linkedin',
+        title: 'LinkedIn',
+        section: 'Socials',
+        handler: () => {
+          window.open("https://www.linkedin.com/in/matteo-sulmona-6a095633a", "_blank");
+        },
+      },{
+      id: 'light-theme',
+      title: 'Change theme to light',
+      description: 'Change the theme of the site to Light',
+      section: 'Theme',
+      handler: () => {
+        setThemeSetting("light");
+      },
+    },
+    {
+      id: 'dark-theme',
+      title: 'Change theme to dark',
+      description: 'Change the theme of the site to Dark',
+      section: 'Theme',
+      handler: () => {
+        setThemeSetting("dark");
+      },
+    },
+    {
+      id: 'system-theme',
+      title: 'Use system default theme',
+      description: 'Change the theme of the site to System Default',
+      section: 'Theme',
+      handler: () => {
+        setThemeSetting("system");
+      },
+    },];
+
+</script> <script src="/assets/al_search/js/shortcut-key.js"></script> </body> </html>

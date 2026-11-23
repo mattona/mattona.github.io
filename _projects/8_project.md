@@ -6,7 +6,6 @@ img: assets/img/hmw7.jpg
 importance: 7
 category: Statistics
 permalink: /projects/homework7/
-giscus_comments: true
 ---
 
 This assignment covers two topics. The first is how a sequence of random variables can converge to a limit, how those notions show up in the Law of Large Numbers (LLN) and the Central Limit Theorem (CLT), and why the factor $$\sqrt{n}$$ keeps appearing. The second is Bayesian inference: how Bayes' theorem combines a **prior** with a **likelihood** to give a **posterior**, and how much the choice of prior matters. Both topics have an interactive simulation at the end of the page.
